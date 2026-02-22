@@ -1,1 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodologia Institucional - ILPI</title>
+<link rel="stylesheet" href="style.css">
 
+<style>
+.method-card {
+    border-left: 5px solid var(--secondary-color);
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 0 10px 10px 0;
+    margin-bottom: 30px;
+}
+
+.formula {
+    background: #eee;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    display: inline-block;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.ref-list {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
+            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
+            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
+            <a href="metodologia.html" class="nav-link home-btn">📘 Metodologia</a>
+            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<header>
+<h1>Metodologia Clínica Institucional</h1>
+<p>Sistema de Gestão Nutricional – ILPI</p>
+</header>
+
+<!-- IMC -->
+<section>
+<h3>1. Avaliação Antropométrica</h3>
+
+<div class="method-card">
+<p>O sistema utiliza o Índice de Massa Corporal (IMC) com classificação específica para idosos, conforme Lipschitz (1994).</p>
+
+<div class="formula">
+IMC = Peso (kg) / Altura² (m)
+</div>
+
+<p><strong>Classificação para Idosos:</strong></p>
+<ul>
+<li>IMC &lt; 22 → Baixo Peso</li>
+<li>22 – 27 → Eutrofia</li>
+<li>&gt; 27 → Excesso de Peso</li>
+</ul>
+</div>
+</section>
+
+<!-- MNA -->
+<section>
+<h3>2. Mini Nutritional Assessment (MNA®)</h3>
+<div class="method-card">
+<p>Instrumento validado para avaliação nutricional de idosos institucionalizados.</p>
+
+<p><strong>Classificação:</strong></p>
+<ul>
+<li>≥ 24 → Estado Nutricional Normal</li>
+<li>17 – 23,5 → Risco de Desnutrição</li>
+<li>&lt; 17 → Desnutrição</li>
+</ul>
+</div>
+</section>
+
+<!-- NRS -->
+<section>
+<h3>3. Nutritional Risk Screening (NRS 2002)</h3>
+<div class="method-card">
+<p>Avalia risco nutricional considerando estado nutricional e gravidade da doença.</p>
+<p>O sistema adiciona automaticamente 1 ponto se idade ≥ 70 anos.</p>
+</div>
+</section>
+
+<!-- ICN -->
+<section>
+<h3>4. Índice de Condição Nutricional (ICN)</h3>
+<div class="method-card">
+<p>Algoritmo institucional integrado ao sistema que consolida MNA, NRS e IMC.</p>
+
+<div class="formula">
+ICN = (MNA × 0.4) + (NRS × 0.4) + (Score IMC × 2)
+</div>
+
+<p><strong>Classificação do ICN:</strong></p>
+<ul>
+<li>&lt; 8 → Alto Risco Clínico</li>
+<li>8 – 12,9 → Risco Moderado</li>
+<li>≥ 13 → Baixo Risco</li>
+</ul>
+
+<p>O Score IMC utilizado no cálculo é:</p>
+<ul>
+<li>IMC &lt; 22 → 0 pontos</li>
+<li>22–27 → 1 ponto</li>
+<li>&gt; 27 → 2 pontos</li>
+</ul>
+</div>
+</section>
+
+<!-- PES -->
+<section>
+<h3>5. Diagnóstico Nutricional (PES)</h3>
+<div class="method-card">
+<p>O sistema gera automaticamente diagnóstico nutricional baseado na estrutura internacional:</p>
+
+<ul>
+<li><strong>P</strong> – Problema nutricional</li>
+<li><strong>E</strong> – Etiologia</li>
+<li><strong>S</strong> – Sinais e Sintomas</li>
+</ul>
+
+<p>O texto é ajustado automaticamente conforme classificação do ICN.</p>
+</div>
+</section>
+
+<!-- INDICADORES -->
+<section>
+<h3>6. Indicadores Institucionais</h3>
+<div class="method-card">
+<p>O sistema gera automaticamente indicadores epidemiológicos:</p>
+<ul>
+<li>Total de residentes avaliados</li>
+<li>Distribuição de risco (ICN)</li>
+<li>Média institucional de IMC</li>
+<li>Distribuição nutricional por IMC</li>
+</ul>
+</div>
+</section>
+
+<!-- REFERÊNCIAS -->
+<section>
+<h3>Referências Técnicas</h3>
+<div class="ref-list">
+<p>• Lipschitz, D.A. Screening for nutritional status in the elderly. Primary Care, 1994.</p>
+<p>• Kondrup, J. et al. Nutritional Risk Screening (NRS 2002). Clinical Nutrition, 2003.</p>
+<p>• Mini Nutritional Assessment (MNA®).</p>
+<p>• Organização Mundial da Saúde (OMS). Avaliação Antropométrica.</p>
+</div>
+</section>
+
+</div>
+
+</body>
+</html>
