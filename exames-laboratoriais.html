@@ -102,21 +102,15 @@ const exames = [
 {nome:"Neutrófilos", ref:[45,70], unidade:"%", alto:"Infecção bacteriana.", baixo:"Risco infeccioso."},
 {nome:"Plaquetas", ref:[150000,450000], unidade:"/mm³", alto:"Inflamação.", baixo:"Risco hemorrágico."},
 {nome:"Glicemia Jejum", ref:[70,99], unidade:"mg/dL", alto:"Hiperglicemia.", baixo:"Hipoglicemia."},
-{nome:"HbA1c", ref:[0,5.7], unidade:"%", alto:"Controle glicêmico inadequado.", baixo:"Pode interferir na interpretação."},
+{nome:"HbA1c", ref:[0,5.7], unidade:"%", alto:"Controle glicêmico inadequado.", baixo:"Possível interferência hematológica."},
 {nome:"Albumina", ref:[3.5,5.0], unidade:"g/dL", alto:"Desidratação.", baixo:"Desnutrição ou inflamação."},
 {nome:"PCR", ref:[0,0.3], unidade:"mg/dL", alto:"Inflamação aguda.", baixo:"Normal."},
-{nome:"Ureia", ref:[10,50], unidade:"mg/dL", alto:"Insuficiência renal.", baixo:"Dieta hipoproteica."},
-{nome:"Creatinina", ref:[0.6,1.3], unidade:"mg/dL", alto:"Disfunção renal.", baixo:"Sarcopenia."},
-{nome:"Colesterol Total", ref:[0,190], unidade:"mg/dL", alto:"Risco cardiovascular.", baixo:"Desnutrição."},
-{nome:"HDL", ref:[40,999], unidade:"mg/dL", alto:"Proteção cardiovascular.", baixo:"Risco cardiovascular."},
-{nome:"LDL", ref:[0,130], unidade:"mg/dL", alto:"Aterosclerose.", baixo:"Desnutrição."},
+{nome:"Ferritina", ref:[13,400], unidade:"ng/mL", alto:"Proteína de fase aguda / inflamação.", baixo:"Deficiência de ferro."},
+{nome:"Ferro Sérico", ref:[60,170], unidade:"mcg/dL", alto:"Sobrecarga de ferro.", baixo:"Anemia ferropriva."},
+{nome:"LDL", ref:[0,130], unidade:"mg/dL", alto:"Risco aterosclerótico.", baixo:"Desnutrição."},
 {nome:"Triglicerídeos", ref:[0,150], unidade:"mg/dL", alto:"Risco pancreatite.", baixo:"Má absorção."},
 {nome:"Vitamina D", ref:[20,999], unidade:"ng/mL", alto:"Toxicidade rara.", baixo:"Deficiência óssea."},
-{nome:"Vitamina B12", ref:[200,900], unidade:"pg/mL", alto:"Suplementação excessiva.", baixo:"Deficiência comum."},
-{nome:"Ferritina", ref:[13,400], unidade:"ng/mL", alto:"Inflamação.", baixo:"Deficiência de ferro."},
-{nome:"Ferro Sérico", ref:[60,170], unidade:"mcg/dL", alto:"Hemocromatose.", baixo:"Anemia ferropriva."},
-{nome:"Potássio", ref:[3.5,5.1], unidade:"mEq/L", alto:"Risco cardíaco.", baixo:"Diuréticos/vômitos."},
-{nome:"TSH", ref:[0.45,4.5], unidade:"mIU/L", alto:"Hipotireoidismo.", baixo:"Hipertireoidismo."}
+{nome:"Vitamina B12", ref:[200,900], unidade:"pg/mL", alto:"Suplementação excessiva.", baixo:"Deficiência comum."}
 ];
 
 const tbody = document.getElementById("corpoTabela");
@@ -136,7 +130,6 @@ function analisarLinha(i){
 
 const ex = exames[i];
 const val = parseFloat(document.getElementById("res_"+i).value);
-
 const status = document.getElementById("status_"+i);
 const interp = document.getElementById("interp_"+i);
 
@@ -149,12 +142,12 @@ return;
 }
 
 if(val > ex.ref[1]){
-status.innerText="↑ Alto";
+status.innerText="↑";
 status.className="resultado-alto";
 interp.innerText=ex.alto;
 }
 else if(val < ex.ref[0]){
-status.innerText="↓ Baixo";
+status.innerText="↓";
 status.className="resultado-baixo";
 interp.innerText=ex.baixo;
 }
@@ -169,59 +162,70 @@ gerarRelatorioAutomatico();
 
 function gerarRelatorioAutomatico(){
 
-let alterados = {};
+let achados = [];
 
 exames.forEach((ex,i)=>{
-let status = document.getElementById("status_"+i)?.innerText;
-if(status && status.includes("↓")){
-alterados[ex.nome] = "baixo";
-}
-if(status && status.includes("↑")){
-alterados[ex.nome] = "alto";
+let interpretacao = document.getElementById("interp_"+i).innerText;
+if(interpretacao !== "-" && interpretacao !== "Dentro da normalidade."){
+achados.push({
+nome: ex.nome,
+descricao: interpretacao
+});
 }
 });
 
 let texto = "";
 
-/* Anemia ferropriva */
-if(alterados["Hemoglobina"]==="baixo" &&
-alterados["Ferritina"]==="baixo" &&
-alterados["Ferro Sérico"]==="baixo"){
-texto += "Perfil compatível com anemia ferropriva, com impacto funcional e risco de fadiga.\n\n";
+/* ===== ANEMIA ===== */
+if(
+achados.some(a=>a.nome==="Hemoglobina" && a.descricao.includes("Anemia")) &&
+achados.some(a=>a.nome==="Ferritina" && a.descricao.includes("Deficiência")) &&
+achados.some(a=>a.nome==="Ferro Sérico" && a.descricao.includes("Anemia"))
+){
+texto += "Perfil laboratorial compatível com anemia ferropriva, sugerindo redução dos estoques de ferro e possível impacto na capacidade funcional, fadiga e piora do estado nutricional.\n\n";
 }
 
-/* Inflamação sistêmica */
-if(alterados["PCR"]==="alto" &&
-alterados["Ferritina"]==="alto"){
-texto += "Padrão sugestivo de inflamação sistêmica ativa.\n\n";
+/* ===== INFLAMAÇÃO SISTÊMICA ===== */
+if(
+achados.some(a=>a.nome==="PCR" && a.descricao.includes("Inflamação")) &&
+achados.some(a=>a.nome==="Ferritina" && a.descricao.includes("fase aguda"))
+){
+texto += "Padrão sugestivo de inflamação sistêmica ativa, com possível resposta de fase aguda e risco de catabolismo proteico.\n\n";
 }
 
-/* Risco cardiometabólico */
-if(alterados["Glicemia Jejum"]==="alto" &&
-alterados["HbA1c"]==="alto"){
-texto += "Perfil compatível com descontrole glicêmico crônico.\n\n";
+/* ===== RISCO CARDIOMETABÓLICO ===== */
+if(
+achados.some(a=>a.nome==="Glicemia Jejum") &&
+achados.some(a=>a.nome==="HbA1c")
+){
+texto += "Achados compatíveis com descontrole glicêmico crônico e aumento do risco cardiometabólico.\n\n";
 }
 
-if(alterados["LDL"]==="alto" || alterados["Triglicerídeos"]==="alto"){
-texto += "Risco aumentado para doença cardiovascular.\n\n";
+if(
+achados.some(a=>a.nome==="LDL" && a.descricao.includes("Risco")) ||
+achados.some(a=>a.nome==="Triglicerídeos" && a.descricao.includes("Risco"))
+){
+texto += "Perfil lipídico com potencial risco aterosclerótico, recomendando intervenção nutricional cardioprotetora.\n\n";
 }
 
-/* Desnutrição proteica */
-if(alterados["Albumina"]==="baixo"){
-texto += "Albumina reduzida sugere risco de desnutrição proteico-calórica.\n\n";
+/* ===== DESNUTRIÇÃO ===== */
+if(
+achados.some(a=>a.nome==="Albumina" && a.descricao.includes("Desnutrição"))
+){
+texto += "Albumina reduzida sugere risco de desnutrição proteico-calórica ou estado inflamatório associado.\n\n";
 }
 
-/* Deficiências */
-if(alterados["Vitamina D"]==="baixo"){
-texto += "Deficiência de vitamina D com possível impacto ósseo.\n\n";
+/* ===== DEFICIÊNCIAS ===== */
+if(achados.some(a=>a.nome==="Vitamina D" && a.descricao.includes("Deficiência"))){
+texto += "Deficiência de vitamina D com possível impacto ósseo e imunológico.\n\n";
 }
 
-if(alterados["Vitamina B12"]==="baixo"){
-texto += "Deficiência de vitamina B12 com risco hematológico e neurológico.\n\n";
+if(achados.some(a=>a.nome==="Vitamina B12" && a.descricao.includes("Deficiência"))){
+texto += "Deficiência de vitamina B12 associada a risco hematológico e neurológico.\n\n";
 }
 
 if(texto===""){
-texto="Exames dentro da normalidade laboratorial, sem alterações clinicamente relevantes.";
+texto="Sem cruzamentos laboratoriais clínicos relevantes no momento.";
 }
 
 document.getElementById("relatorioAutomatico").value = texto;
