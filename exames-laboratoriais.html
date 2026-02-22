@@ -95,22 +95,32 @@ placeholder="O parecer clínico será gerado automaticamente conforme os resulta
 <script>
 
 const exames = [
-{nome:"Hemoglobina", ref:[12,17.5], unidade:"g/dL", alto:"Policitemia ou desidratação.", baixo:"Anemia ou perda de sangue."},
-{nome:"VCM", ref:[80,100], unidade:"fL", alto:"Anemia macrocítica.", baixo:"Anemia microcítica."},
-{nome:"RDW", ref:[11.5,14.5], unidade:"%", alto:"Anisocitose.", baixo:"Sem significado isolado."},
-{nome:"Leucócitos", ref:[4000,11000], unidade:"/mm³", alto:"Infecção ou inflamação.", baixo:"Imunossupressão."},
-{nome:"Neutrófilos", ref:[45,70], unidade:"%", alto:"Infecção bacteriana.", baixo:"Risco infeccioso."},
-{nome:"Plaquetas", ref:[150000,450000], unidade:"/mm³", alto:"Inflamação.", baixo:"Risco hemorrágico."},
-{nome:"Glicemia Jejum", ref:[70,99], unidade:"mg/dL", alto:"Hiperglicemia.", baixo:"Hipoglicemia."},
-{nome:"HbA1c", ref:[0,5.7], unidade:"%", alto:"Controle glicêmico inadequado.", baixo:"Possível interferência hematológica."},
-{nome:"Albumina", ref:[3.5,5.0], unidade:"g/dL", alto:"Desidratação.", baixo:"Desnutrição ou inflamação."},
-{nome:"PCR", ref:[0,0.3], unidade:"mg/dL", alto:"Inflamação aguda.", baixo:"Normal."},
-{nome:"Ferritina", ref:[13,400], unidade:"ng/mL", alto:"Proteína de fase aguda / inflamação.", baixo:"Deficiência de ferro."},
-{nome:"Ferro Sérico", ref:[60,170], unidade:"mcg/dL", alto:"Sobrecarga de ferro.", baixo:"Anemia ferropriva."},
-{nome:"LDL", ref:[0,130], unidade:"mg/dL", alto:"Risco aterosclerótico.", baixo:"Desnutrição."},
-{nome:"Triglicerídeos", ref:[0,150], unidade:"mg/dL", alto:"Risco pancreatite.", baixo:"Má absorção."},
-{nome:"Vitamina D", ref:[20,999], unidade:"ng/mL", alto:"Toxicidade rara.", baixo:"Deficiência óssea."},
-{nome:"Vitamina B12", ref:[200,900], unidade:"pg/mL", alto:"Suplementação excessiva.", baixo:"Deficiência comum."}
+{nome:"Hemoglobina", ref:[12,17.5], alto:"Policitemia ou desidratação.", baixo:"Anemia ou perda de sangue."},
+{nome:"VCM", ref:[80,100], alto:"Anemia macrocítica.", baixo:"Anemia microcítica."},
+{nome:"RDW", ref:[11.5,14.5], alto:"Anisocitose.", baixo:"Sem significado isolado."},
+{nome:"Leucócitos", ref:[4000,11000], alto:"Infecção ou inflamação.", baixo:"Imunossupressão."},
+{nome:"Neutrófilos", ref:[45,70], alto:"Infecção bacteriana.", baixo:"Risco infeccioso."},
+{nome:"Eosinófilos", ref:[1,4], alto:"Alergias ou parasitoses.", baixo:"Estresse agudo."},
+{nome:"Plaquetas", ref:[150000,450000], alto:"Inflamação ou reação pós-esplenectomia.", baixo:"Risco hemorrágico."},
+{nome:"Glicemia Jejum", ref:[70,99], alto:"Hiperglicemia.", baixo:"Hipoglicemia."},
+{nome:"HbA1c", ref:[0,5.7], alto:"Controle glicêmico inadequado.", baixo:"Possível interferência hematológica."},
+{nome:"Albumina", ref:[3.5,5.0], alto:"Desidratação.", baixo:"Desnutrição ou inflamação."},
+{nome:"PCR", ref:[0,0.3], alto:"Inflamação aguda.", baixo:"Normal."},
+{nome:"Ureia", ref:[10,50], alto:"Insuficiência renal ou dieta hiperproteica.", baixo:"Dieta hipoproteica ou doença hepática."},
+{nome:"Creatinina", ref:[0.6,1.3], alto:"Disfunção renal.", baixo:"Baixa massa muscular (sarcopenia)."},
+{nome:"Colesterol Total", ref:[0,190], alto:"Risco cardiovascular.", baixo:"Má absorção ou hipertireoidismo."},
+{nome:"HDL", ref:[40,999], alto:"Fator protetor cardiovascular.", baixo:"Risco cardiovascular aumentado."},
+{nome:"LDL", ref:[0,130], alto:"Risco aterosclerótico.", baixo:"Desnutrição."},
+{nome:"Triglicerídeos", ref:[0,150], alto:"Risco pancreatite.", baixo:"Má absorção."},
+{nome:"Vitamina D", ref:[20,999], alto:"Toxicidade rara.", baixo:"Deficiência óssea."},
+{nome:"Vitamina B12", ref:[200,900], alto:"Suplementação excessiva.", baixo:"Deficiência comum."},
+{nome:"Ferritina", ref:[13,400], alto:"Proteína de fase aguda (inflamação).", baixo:"Deficiência de ferro."},
+{nome:"Ferro Sérico", ref:[60,170], alto:"Sobrecarga de ferro.", baixo:"Anemia ferropriva."},
+{nome:"Zinco", ref:[70,120], alto:"Suplementação excessiva.", baixo:"Baixa imunidade e cicatrização prejudicada."},
+{nome:"Potássio", ref:[3.5,5.1], alto:"Risco cardíaco.", baixo:"Uso de diuréticos ou perdas gastrointestinais."},
+{nome:"Cálcio", ref:[8.5,10.2], alto:"Hiperparatireoidismo.", baixo:"Deficiência de vitamina D."},
+{nome:"TGO/TGP", ref:[0,40], alto:"Lesão hepática ou muscular.", baixo:"Sem significado clínico relevante."},
+{nome:"TSH", ref:[0.45,4.5], alto:"Hipotireoidismo.", baixo:"Hipertireoidismo."}
 ];
 
 const tbody = document.getElementById("corpoTabela");
@@ -120,7 +130,7 @@ tbody.innerHTML += `
 <tr>
 <td>${ex.nome}</td>
 <td><input type="number" step="any" id="res_${i}" oninput="analisarLinha(${i})"></td>
-<td>${ex.ref[0]} - ${ex.ref[1]} ${ex.unidade}</td>
+<td>${ex.ref[0]} - ${ex.ref[1]}</td>
 <td id="status_${i}">-</td>
 <td id="interp_${i}">-</td>
 </tr>`;
@@ -167,65 +177,70 @@ let achados = [];
 exames.forEach((ex,i)=>{
 let interpretacao = document.getElementById("interp_"+i).innerText;
 if(interpretacao !== "-" && interpretacao !== "Dentro da normalidade."){
-achados.push({
-nome: ex.nome,
-descricao: interpretacao
-});
+achados.push({nome: ex.nome, descricao: interpretacao});
 }
 });
 
 let texto = "";
 
-/* ===== ANEMIA ===== */
+/* ANEMIA FERROPRIVA */
 if(
 achados.some(a=>a.nome==="Hemoglobina" && a.descricao.includes("Anemia")) &&
 achados.some(a=>a.nome==="Ferritina" && a.descricao.includes("Deficiência")) &&
 achados.some(a=>a.nome==="Ferro Sérico" && a.descricao.includes("Anemia"))
 ){
-texto += "Perfil laboratorial compatível com anemia ferropriva, sugerindo redução dos estoques de ferro e possível impacto na capacidade funcional, fadiga e piora do estado nutricional.\n\n";
+texto += "Perfil compatível com anemia ferropriva, com impacto funcional e possível redução da capacidade física.\n\n";
 }
 
-/* ===== INFLAMAÇÃO SISTÊMICA ===== */
+/* INFLAMAÇÃO SISTÊMICA */
 if(
 achados.some(a=>a.nome==="PCR" && a.descricao.includes("Inflamação")) &&
 achados.some(a=>a.nome==="Ferritina" && a.descricao.includes("fase aguda"))
 ){
-texto += "Padrão sugestivo de inflamação sistêmica ativa, com possível resposta de fase aguda e risco de catabolismo proteico.\n\n";
+texto += "Padrão laboratorial sugestivo de inflamação sistêmica ativa.\n\n";
 }
 
-/* ===== RISCO CARDIOMETABÓLICO ===== */
+/* DISFUNÇÃO RENAL */
 if(
-achados.some(a=>a.nome==="Glicemia Jejum") &&
-achados.some(a=>a.nome==="HbA1c")
+achados.some(a=>a.nome==="Creatinina" && a.descricao.includes("renal")) ||
+achados.some(a=>a.nome==="Ureia" && a.descricao.includes("renal"))
 ){
-texto += "Achados compatíveis com descontrole glicêmico crônico e aumento do risco cardiometabólico.\n\n";
+texto += "Achados compatíveis com possível comprometimento da função renal.\n\n";
 }
 
+/* RISCO CARDIOVASCULAR */
 if(
 achados.some(a=>a.nome==="LDL" && a.descricao.includes("Risco")) ||
-achados.some(a=>a.nome==="Triglicerídeos" && a.descricao.includes("Risco"))
+achados.some(a=>a.nome==="Colesterol Total") ||
+achados.some(a=>a.nome==="HDL" && a.descricao.includes("Risco"))
 ){
-texto += "Perfil lipídico com potencial risco aterosclerótico, recomendando intervenção nutricional cardioprotetora.\n\n";
+texto += "Perfil lipídico sugere risco cardiovascular aumentado.\n\n";
 }
 
-/* ===== DESNUTRIÇÃO ===== */
-if(
-achados.some(a=>a.nome==="Albumina" && a.descricao.includes("Desnutrição"))
-){
-texto += "Albumina reduzida sugere risco de desnutrição proteico-calórica ou estado inflamatório associado.\n\n";
+/* DESNUTRIÇÃO */
+if(achados.some(a=>a.nome==="Albumina" && a.descricao.includes("Desnutrição"))){
+texto += "Albumina reduzida sugere risco de desnutrição proteico-calórica.\n\n";
 }
 
-/* ===== DEFICIÊNCIAS ===== */
+/* ALTERAÇÃO TIREOIDIANA */
+if(achados.some(a=>a.nome==="TSH" && a.descricao.includes("Hipo"))){
+texto += "Achados compatíveis com hipotireoidismo.\n\n";
+}
+if(achados.some(a=>a.nome==="TSH" && a.descricao.includes("Hiper"))){
+texto += "Achados compatíveis com hipertireoidismo.\n\n";
+}
+
+/* DEFICIÊNCIAS */
 if(achados.some(a=>a.nome==="Vitamina D" && a.descricao.includes("Deficiência"))){
-texto += "Deficiência de vitamina D com possível impacto ósseo e imunológico.\n\n";
+texto += "Deficiência de vitamina D com possível impacto ósseo.\n\n";
 }
 
-if(achados.some(a=>a.nome==="Vitamina B12" && a.descricao.includes("Deficiência"))){
-texto += "Deficiência de vitamina B12 associada a risco hematológico e neurológico.\n\n";
+if(achados.some(a=>a.nome==="Zinco" && a.descricao.includes("Baixa"))){
+texto += "Possível deficiência de zinco associada a imunidade reduzida.\n\n";
 }
 
 if(texto===""){
-texto="Sem cruzamentos laboratoriais clínicos relevantes no momento.";
+texto="Sem cruzamentos laboratoriais clinicamente relevantes no momento.";
 }
 
 document.getElementById("relatorioAutomatico").value = texto;
