@@ -3,184 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - ILPI</title>
+<title>Dashboard ILPI</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body onload="renderizarDashboard()">
 
-<!-- NAVBAR -->
 <div class="navbar">
-    <div class="nav-container">
-        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
-
-        <div class="nav-links">
-            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
-            <a href="dashboard.html" class="nav-link home-btn">📊 Dashboard</a>
-            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
-            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
-            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
-            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
-        </div>
-    </div>
+<div class="nav-container">
+<img src="assets/logo.png" class="nav-logo">
+<div class="nav-links">
+<a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
+<a href="dashboard.html" class="nav-link home-btn">📊 Dashboard</a>
+<a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
+<a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
+<a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
+<a href="metodologia.html" class="nav-link">📘 Metodologia</a>
+</div>
+</div>
 </div>
 
 <div class="container">
-
-<header style="display:flex; justify-content:space-between; align-items:center;">
-<div>
-<h1>Painel Epidemiológico Institucional</h1>
-<p>Indicadores assistenciais ILPI</p>
-</div>
-
-<button class="btn-save" onclick="exportarParaCSV()">📊 Exportar CSV</button>
-</header>
-
-<!-- INDICADORES -->
-<div class="grid" style="margin-top:30px;">
-
-<div class="stat-card">
-<label>Total Residentes</label>
-<p id="statTotal">0</p>
-</div>
-
-<div class="stat-card">
-<label>Alto Risco Clínico</label>
-<p id="statAlto">0</p>
-</div>
-
-<div class="stat-card">
-<label>Risco Moderado</label>
-<p id="statModerado">0</p>
-</div>
-
-<div class="stat-card">
-<label>Média IMC</label>
-<p id="statIMC">0</p>
-</div>
-
-</div>
-
-<!-- GRÁFICOS -->
-<section style="margin-top:40px;">
-<h3>Distribuição de Risco</h3>
-<canvas id="graficoRisco"></canvas>
-</section>
+<h1>Painel Epidemiológico</h1>
 
 <section style="margin-top:40px;">
-<h3>Distribuição IMC</h3>
-<canvas id="graficoIMC"></canvas>
-</section>
-
-<!-- HISTÓRICO -->
-<section style="margin-top:50px;">
-<h3>Histórico das Últimas Avaliações</h3>
-
-<table>
-<thead>
-<tr>
-<th>Residente</th>
-<th>Data</th>
-<th>IMC</th>
-<th>ICN</th>
-<th>Classificação</th>
-</tr>
-</thead>
-
-<tbody id="corpoTabela"></tbody>
-</table>
-
+<h3>Top 5 Comorbidades</h3>
+<canvas id="graficoComorb"></canvas>
 </section>
 
 </div>
-
-<script src="app.js"></script>
 
 <script>
 
-let chartRisco = null;
-let chartIMC = null;
+function renderizarDashboard(){
 
-function renderizarDashboard() {
+const banco = JSON.parse(localStorage.getItem("bancoILPI")) || {};
+let contagem={};
 
-    const banco = obterBanco();
+Object.keys(banco).forEach(nome=>{
+(banco[nome].comorbidades||[]).forEach(c=>{
+contagem[c]=(contagem[c]||0)+1;
+});
+});
 
-    let total = 0;
-    let alto = 0;
-    let moderado = 0;
-    let somaIMC = 0;
-    let baixoPeso = 0;
+const top=Object.entries(contagem)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,5);
 
-    const corpo = document.getElementById("corpoTabela");
-    corpo.innerHTML = "";
-
-    const nomes = Object.keys(banco).sort();
-    if (nomes.length === 0) return;
-
-    nomes.forEach(nome => {
-
-        if (!banco[nome].avaliacoes || banco[nome].avaliacoes.length === 0) return;
-
-        total++;
-
-        const ultima = banco[nome].avaliacoes.slice(-1)[0];
-
-        const imc = parseFloat(ultima.imc) || 0;
-        somaIMC += imc;
-
-        if (imc < 22) baixoPeso++;
-
-        if (ultima.classificacaoICN === "Alto Risco Clínico") alto++;
-        else if (ultima.classificacaoICN === "Risco Moderado") moderado++;
-
-        corpo.innerHTML += `
-            <tr>
-                <td><strong>${nome}</strong></td>
-                <td>${ultima.data || "-"}</td>
-                <td>${ultima.imc || "-"}</td>
-                <td>${ultima.icn || "-"}</td>
-                <td>${ultima.classificacaoICN || "-"}</td>
-            </tr>`;
-    });
-
-    document.getElementById("statTotal").innerText = total;
-    document.getElementById("statAlto").innerText = alto;
-    document.getElementById("statModerado").innerText = moderado;
-    document.getElementById("statIMC").innerText =
-        total > 0 ? (somaIMC / total).toFixed(1) : 0;
-
-    atualizarGraficos(alto, moderado, total, baixoPeso);
+new Chart(document.getElementById("graficoComorb"),{
+type:"bar",
+data:{
+labels:top.map(i=>i[0]),
+datasets:[{
+label:"Nº de Residentes",
+data:top.map(i=>i[1])
+}]
 }
-
-function atualizarGraficos(alto, moderado, total, baixoPeso) {
-
-    if (chartRisco) chartRisco.destroy();
-    if (chartIMC) chartIMC.destroy();
-
-    chartRisco = new Chart(document.getElementById("graficoRisco"), {
-        type: "doughnut",
-        data: {
-            labels: ["Alto Risco", "Risco Moderado", "Baixo Risco"],
-            datasets: [{
-                data: [alto, moderado, total - alto - moderado]
-            }]
-        }
-    });
-
-    chartIMC = new Chart(document.getElementById("graficoIMC"), {
-        type: "bar",
-        data: {
-            labels: ["IMC < 22", "IMC ≥ 22"],
-            datasets: [{
-                data: [baixoPeso, total - baixoPeso]
-            }]
-        }
-    });
+});
 }
 
 </script>
-
 </body>
 </html>
