@@ -13,37 +13,31 @@
     margin-top: 20px;
     font-size: 0.85rem;
 }
-
 .tabela-exames th,
 .tabela-exames td {
     border: 1px solid #e0e0e0;
     padding: 8px;
     vertical-align: top;
 }
-
 .tabela-exames th {
     background: #f0f4f2;
     font-weight: bold;
 }
-
 .resultado-normal {
     background: #e8f8f5;
     color: #1e8449;
     font-weight: bold;
 }
-
 .resultado-alto {
     background: #fdecea;
     color: #c0392b;
     font-weight: bold;
 }
-
 .resultado-baixo {
     background: #fff4e6;
     color: #d35400;
     font-weight: bold;
 }
-
 textarea {
     width: 100%;
     margin-top: 25px;
@@ -86,7 +80,7 @@ textarea {
 </table>
 
 <h3>Relevância Clínica e Nutricional Automática</h3>
-<textarea id="relatorioAutomatico" rows="6"
+<textarea id="relatorioAutomatico" rows="8"
 placeholder="O parecer clínico será gerado automaticamente conforme os resultados.">
 </textarea>
 
@@ -109,7 +103,7 @@ const exames = [
 {nome:"Ureia", ref:[10,50], alto:"Insuficiência renal ou dieta hiperproteica.", baixo:"Dieta hipoproteica ou doença hepática."},
 {nome:"Creatinina", ref:[0.6,1.3], alto:"Disfunção renal.", baixo:"Baixa massa muscular (sarcopenia)."},
 {nome:"Colesterol Total", ref:[0,190], alto:"Risco cardiovascular.", baixo:"Má absorção ou hipertireoidismo."},
-{nome:"HDL", ref:[40,999], alto:"Fator protetor cardiovascular.", baixo:"Risco cardiovascular aumentado."},
+{nome:"HDL", ref:[40,Infinity], alto:"Fator protetor cardiovascular.", baixo:"Risco cardiovascular aumentado."},
 {nome:"LDL", ref:[0,130], alto:"Risco aterosclerótico.", baixo:"Desnutrição."},
 {nome:"Triglicerídeos", ref:[0,150], alto:"Risco pancreatite.", baixo:"Má absorção."},
 {nome:"Vitamina D", ref:[20,999], alto:"Toxicidade rara.", baixo:"Deficiência óssea."},
@@ -137,7 +131,6 @@ tbody.innerHTML += `
 });
 
 function analisarLinha(i){
-
 const ex = exames[i];
 const val = parseFloat(document.getElementById("res_"+i).value);
 const status = document.getElementById("status_"+i);
@@ -188,7 +181,6 @@ let sistemas = 0;
 let iri = 0;
 
 /* ===== ÍNDICE INFLAMATÓRIO ===== */
-
 if(r["PCR"]==="↑"){ iri+=2; }
 if(r["Ferritina"]==="↑"){ iri+=1; }
 if(r["Neutrófilos"]==="↑"){ iri+=1; }
@@ -200,7 +192,6 @@ if(iri>=4) iriClass="Alto";
 else if(iri>=2) iriClass="Moderado";
 
 /* ===== HEMATOLÓGICO ===== */
-
 let anemia = false;
 
 if(r["Hemoglobina"]==="↓" && r["Ferro Sérico"]==="↓"){
@@ -209,14 +200,7 @@ anemia = true;
 sistemas++;
 }
 
-if(r["Hemoglobina"]==="↓" && r["VCM"]==="↑" && r["Vitamina B12"]==="↓"){
-texto += "Anemia megaloblástica por deficiência de B12.\n\n";
-anemia = true;
-sistemas++;
-}
-
 /* ===== INFLAMATÓRIO ===== */
-
 if(r["PCR"]==="↑" && r["Neutrófilos"]==="↑"){
 texto += "Processo infeccioso bacteriano provável.\n\n";
 sistemas++;
@@ -228,68 +212,46 @@ sistemas++;
 }
 
 /* ===== RENAL ===== */
-
 if(r["Ureia"]==="↑" && r["Creatinina"]==="↑"){
 texto += "Comprometimento da função renal.\n\n";
 sistemas++;
 }
 
-/* ===== METABÓLICO ===== */
-
-if(r["Glicemia Jejum"]==="↑" && r["HbA1c"]==="↑"){
-texto += "Descontrole glicêmico crônico.\n\n";
-sistemas++;
-}
-
-/* ===== CARDIOVASCULAR ===== */
-
-if(r["LDL"]==="↑" && r["HDL"]==="↓"){
-texto += "Risco cardiovascular elevado.\n\n";
-sistemas++;
-}
-
 /* ===== NUTRICIONAL ===== */
-
 if(r["Albumina"]==="↓"){
 texto += "Risco de desnutrição proteico-calórica.\n\n";
 sistemas++;
 }
 
+if(texto===""){
+texto="Alterações isoladas sem padrão fisiopatológico cruzado relevante.\n\n";
+}
+
 /* ===== SCORE GLOBAL ===== */
+let gravidade="Baixa";
+if(sistemas>=2 || alteracoes>=5){ gravidade="Moderada"; }
+if(iri>=4 || sistemas>=3){ gravidade="Alta"; }
 
-let gravidade = "Baixa";
-
-if(sistemas>=2 || alteracoes>=5){
-gravidade="Moderada";
-}
-
-if(
-(iri>=4) ||
-(r["Ureia"]==="↑" && r["Creatinina"]==="↑") ||
-(anemia && iri>=2) ||
-sistemas>=3
-){
-gravidade="Alta";
-}
-
-/* ===== DIAGNÓSTICO PES ===== */
-
-let pes = "";
+/* ===== PES ACUMULATIVO ===== */
+let pesList = [];
 
 if(r["Albumina"]==="↓"){
-pes = "Desnutrição proteico-calórica relacionada a processo inflamatório sistêmico evidenciada por hipoalbuminemia.";
+pesList.push("Desnutrição proteico-calórica relacionada a processo inflamatório evidenciada por hipoalbuminemia.");
 }
 
 if(anemia){
-pes = "Anemia relacionada à deficiência de micronutrientes evidenciada por hemoglobina reduzida.";
+pesList.push("Anemia relacionada à deficiência de micronutrientes evidenciada por hemoglobina reduzida.");
 }
 
 if(r["Glicemia Jejum"]==="↑"){
-pes = "Descontrole glicêmico relacionado à resistência insulínica evidenciado por hiperglicemia.";
+pesList.push("Descontrole glicêmico relacionado à resistência insulínica evidenciado por hiperglicemia.");
 }
 
-/* ===== LAUDO FINAL ===== */
+let pes = pesList.length > 0 
+? pesList.join("\n\n") 
+: "Sem diagnóstico nutricional laboratorial estabelecido.";
 
+/* ===== LAUDO FINAL ===== */
 let laudo = "LAUDO CLÍNICO NUTRICIONAL\n\n";
 laudo += "1. Análise Laboratorial Integrada:\n";
 laudo += texto + "\n";
@@ -299,8 +261,7 @@ laudo += "4. Diagnóstico Nutricional (PES):\n" + pes + "\n\n";
 laudo += "5. Recomendações:\n";
 
 if(gravidade==="Alta"){
-laudo += "- Monitorização clínica intensiva.\n";
-laudo += "- Reavaliação laboratorial em curto prazo.\n";
+laudo += "- Monitorização clínica intensiva.\n- Reavaliação laboratorial em curto prazo.\n";
 }
 else if(gravidade==="Moderada"){
 laudo += "- Ajustes nutricionais direcionados.\n";
@@ -312,6 +273,7 @@ laudo += "- Manutenção e acompanhamento periódico.\n";
 document.getElementById("relatorioAutomatico").value = laudo;
 
 }
+
 </script>
 
 </body>
