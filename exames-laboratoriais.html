@@ -5,15 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exames Laboratoriais - ILPI</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+.tabela-exames {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabela-exames th,
+.tabela-exames td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+.tabela-exames th {
+    background: #f0f4f2;
+    text-align: left;
+}
+
+.resultado-alterado {
+    background-color: #ffe6e6;
+    font-weight: bold;
+    color: #c0392b;
+}
+
+.resultado-normal {
+    background-color: #e8f8f5;
+    color: #27ae60;
+}
+</style>
 </head>
 
-<body onload="carregarResidentesExame()">
+<body>
 
-<!-- NAVBAR -->
 <div class="navbar">
     <div class="nav-container">
         <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
-
         <div class="nav-links">
             <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
             <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
@@ -21,150 +50,114 @@
             <a href="exames-laboratoriais.html" class="nav-link home-btn">🧪 Exames</a>
             <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
             <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
         </div>
     </div>
 </div>
 
 <div class="container">
 
-<header>
-<h1>Registo de Exames Laboratoriais</h1>
-<p>Monitorização bioquímica institucional</p>
-</header>
+<h1>Painel Laboratorial Estruturado</h1>
 
 <section>
 <h3>Identificação</h3>
 <div class="grid">
-<select id="selectResidente">
-<option value="">Selecionar residente...</option>
+<select id="sexo">
+<option value="F">Feminino</option>
+<option value="M">Masculino</option>
 </select>
-
 <input type="date" id="dataExame">
 </div>
 </section>
 
-<section>
-<h3>Bioquímica Básica</h3>
-<div class="grid">
-<input type="number" id="glicemia" placeholder="Glicemia (mg/dL)">
-<input type="number" id="albumina" placeholder="Albumina (g/dL)">
-<input type="number" id="hemoglobina" placeholder="Hemoglobina (g/dL)">
-<input type="number" id="creatinina" placeholder="Creatinina (mg/dL)">
-<input type="number" id="ureia" placeholder="Ureia (mg/dL)">
-</div>
-</section>
+<h3>Hemograma Completo</h3>
 
-<section>
-<h3>Perfil Lipídico</h3>
-<div class="grid">
-<input type="number" id="colTotal" placeholder="Colesterol Total">
-<input type="number" id="hdl" placeholder="HDL">
-<input type="number" id="ldl" placeholder="LDL">
-<input type="number" id="triglicerideos" placeholder="Triglicerídeos">
-</div>
-</section>
+<table class="tabela-exames">
+<thead>
+<tr>
+<th>Exame</th>
+<th>Resultado</th>
+<th>Valor de Referência</th>
+<th>Alteração</th>
+</tr>
+</thead>
+<tbody id="corpoExames"></tbody>
+</table>
 
-<section>
-<h3>Micronutrientes</h3>
-<div class="grid">
-<input type="number" id="vitD" placeholder="Vitamina D">
-<input type="number" id="vitB12" placeholder="Vitamina B12">
-<input type="number" id="ferro" placeholder="Ferro sérico">
-<input type="number" id="ferritina" placeholder="Ferritina">
-</div>
+<section style="margin-top:40px;">
+<h3>Importância Clínica / Nutricional</h3>
+<textarea id="interpretacao"
+rows="5"
+placeholder="Descreva a importância clínica desses marcadores para a condição do residente (ex: anemia ferropriva, DRC, inflamação crônica, desnutrição proteico-calórica, risco cardiovascular...).">
+</textarea>
 </section>
 
 <div style="margin-top:30px;">
-<button class="btn-save" onclick="salvarExames()">💾 Guardar Exames</button>
+<button class="btn-save" onclick="analisarExames()">🔎 Analisar Alterações</button>
 </div>
 
 </div>
-
-<script src="app.js"></script>
 
 <script>
+const exames = [
+{nome:"Hemoglobina", refM:[13.5,17.5], refF:[12.0,15.5], unidade:"g/dL"},
+{nome:"Hematócrito", refM:[41,53], refF:[36,46], unidade:"%"},
+{nome:"Leucócitos Totais", ref:[4000,11000], unidade:"/mm³"},
+{nome:"Plaquetas", ref:[150000,450000], unidade:"/mm³"},
+{nome:"Albumina", ref:[3.5,5.0], unidade:"g/dL"},
+{nome:"Glicemia Jejum", ref:[70,99], unidade:"mg/dL"},
+{nome:"Ureia", ref:[10,50], unidade:"mg/dL"},
+{nome:"Creatinina (M)", refM:[0.7,1.3], unidade:"mg/dL"},
+{nome:"Creatinina (F)", refF:[0.6,1.1], unidade:"mg/dL"},
+{nome:"Colesterol Total", ref:[0,190], unidade:"mg/dL"},
+{nome:"HDL", ref:[40,999], unidade:"mg/dL"},
+{nome:"LDL", ref:[0,130], unidade:"mg/dL"},
+{nome:"Triglicerídeos", ref:[0,150], unidade:"mg/dL"},
+{nome:"Vitamina D", ref:[20,999], unidade:"ng/mL"},
+{nome:"Vitamina B12", ref:[200,900], unidade:"pg/mL"},
+{nome:"Ferritina (M)", refM:[30,400], unidade:"ng/mL"},
+{nome:"Ferritina (F)", refF:[13,150], unidade:"ng/mL"},
+{nome:"Sódio", ref:[135,145], unidade:"mEq/L"},
+{nome:"Potássio", ref:[3.5,5.1], unidade:"mEq/L"},
+{nome:"Cálcio", ref:[8.5,10.2], unidade:"mg/dL"},
+{nome:"TSH", ref:[0.45,4.5], unidade:"mIU/L"}
+];
 
-/* ============================= */
-/* CARREGAR RESIDENTES */
-/* ============================= */
+const tbody = document.getElementById("corpoExames");
 
-function carregarResidentesExame() {
+exames.forEach((ex,i)=>{
+tbody.innerHTML += `
+<tr>
+<td>${ex.nome}</td>
+<td><input type="number" step="any" id="res_${i}"></td>
+<td>${ex.refM? (ex.refM[0]+" - "+ex.refM[1])+" (M) | "+(ex.refF[0]+" - "+ex.refF[1])+" (F)" : ex.ref[0]+" - "+ex.ref[1]} ${ex.unidade}</td>
+<td id="alt_${i}">-</td>
+</tr>`;
+});
 
-    const banco = obterBanco();
-    const select = document.getElementById("selectResidente");
+function analisarExames(){
+const sexo = document.getElementById("sexo").value;
 
-    select.innerHTML = '<option value="">Selecionar residente...</option>';
+exames.forEach((ex,i)=>{
+const valor = parseFloat(document.getElementById("res_"+i).value);
+if(!valor) return;
 
-    const nomes = Object.keys(banco).sort();
-    if (nomes.length === 0) return;
+let min,max;
 
-    nomes.forEach(nome => {
-        select.innerHTML += `<option value="${nome}">${nome}</option>`;
-    });
+if(ex.refM && sexo==="M"){ min=ex.refM[0]; max=ex.refM[1]; }
+else if(ex.refF && sexo==="F"){ min=ex.refF[0]; max=ex.refF[1]; }
+else if(ex.ref){ min=ex.ref[0]; max=ex.ref[1]; }
+
+const cel = document.getElementById("alt_"+i);
+
+if(valor<min || valor>max){
+cel.innerText="Alterado";
+cel.className="resultado-alterado";
+}else{
+cel.innerText="Normal";
+cel.className="resultado-normal";
 }
-
-/* ============================= */
-/* SALVAR EXAMES */
-/* ============================= */
-
-function salvarExames() {
-
-    const nome = document.getElementById("selectResidente").value;
-    const data = document.getElementById("dataExame").value;
-
-    if (!nome || !data) {
-        alert("Selecione residente e data.");
-        return;
-    }
-
-    const banco = obterBanco();
-
-    if (!banco[nome]) {
-        banco[nome] = { avaliacoes: [], exames: [], comorbidades: [] };
-    }
-
-    if (!banco[nome].exames) {
-        banco[nome].exames = [];
-    }
-
-    banco[nome].exames.push({
-        data: data,
-        glicemia: getNum("glicemia"),
-        albumina: getNum("albumina"),
-        hemoglobina: getNum("hemoglobina"),
-        creatinina: getNum("creatinina"),
-        ureia: getNum("ureia"),
-        colTotal: getNum("colTotal"),
-        hdl: getNum("hdl"),
-        ldl: getNum("ldl"),
-        triglicerideos: getNum("triglicerideos"),
-        vitD: getNum("vitD"),
-        vitB12: getNum("vitB12"),
-        ferro: getNum("ferro"),
-        ferritina: getNum("ferritina")
-    });
-
-    salvarBanco(banco);
-
-    alert("Exames guardados com sucesso!");
-
-    limparCampos();
+});
 }
-
-/* ============================= */
-/* LIMPAR FORMULÁRIO */
-/* ============================= */
-
-function limparCampos() {
-
-    document.querySelectorAll("input[type='number']").forEach(input => {
-        input.value = "";
-    });
-
-    document.getElementById("dataExame").value = "";
-}
-
 </script>
 
 </body>
