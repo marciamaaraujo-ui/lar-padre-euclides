@@ -1,1 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha Clínica - ILPI</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@media print { .no-print { display: none !important; } }
+</style>
+</head>
 
+<body onload="carregarResidentes()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="ficha-completa.html" class="nav-link home-btn">📂 Ficha Clínica</a>
+            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
+            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
+            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
+            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<header class="no-print">
+<h1>Ficha Clínica Individual</h1>
+
+<div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
+<select id="selectResidente" onchange="gerarFicha()">
+<option value="">Selecionar residente...</option>
+</select>
+
+<button class="btn-save" onclick="window.print()">🖨️ Imprimir</button>
+<button class="btn-save" onclick="gerarPDFSelecionado()">📄 Gerar PDF</button>
+</div>
+</header>
+
+<div id="conteudoFicha" style="display:none; margin-top:40px;">
+
+<h2 id="print_nome" style="text-align:center; border-bottom:2px solid var(--primary-color); padding-bottom:10px;"></h2>
+
+<section>
+<h3>Dados da Última Avaliação</h3>
+<p><strong>Data:</strong> <span id="f_data"></span></p>
+<p><strong>IMC:</strong> <span id="f_imc"></span></p>
+<p><strong>ICN:</strong> <span id="f_icn"></span></p>
+<p><strong>Classificação ICN:</strong> <span id="f_class"></span></p>
+</section>
+
+<section>
+<h3>Diagnóstico Nutricional (PES)</h3>
+<div id="f_pes" style="background:#f4f7f6; padding:15px; border-radius:8px;"></div>
+</section>
+
+<section>
+<h3>Histórico Completo</h3>
+
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>IMC</th>
+<th>ICN</th>
+<th>Classificação</th>
+</tr>
+</thead>
+
+<tbody id="tabelaHistorico"></tbody>
+</table>
+
+</section>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+/* ============================= */
+/* CARREGAR RESIDENTES */
+/* ============================= */
+
+function carregarResidentes() {
+
+    const banco = obterBanco();
+    const select = document.getElementById("selectResidente");
+
+    select.innerHTML = '<option value="">Selecionar residente...</option>';
+
+    const nomes = Object.keys(banco).sort();
+
+    if (nomes.length === 0) return;
+
+    nomes.forEach(nome => {
+        select.innerHTML += `<option value="${nome}">${nome}</option>`;
+    });
+}
+
+/* ============================= */
+/* GERAR FICHA */
+/* ============================= */
+
+function gerarFicha() {
+
+    const nome = document.getElementById("selectResidente").value;
+    if (!nome) return;
+
+    const banco = obterBanco();
+
+    if (!banco[nome] || !banco[nome].avaliacoes || banco[nome].avaliacoes.length === 0) {
+        alert("Este residente ainda não possui avaliação.");
+        return;
+    }
+
+    document.getElementById("conteudoFicha").style.display = "block";
+
+    const avs = banco[nome].avaliacoes;
+    const ultima = avs[avs.length - 1];
+
+    document.getElementById("print_nome").innerText = nome;
+    document.getElementById("f_data").innerText = ultima.data || "-";
+    document.getElementById("f_imc").innerText = ultima.imc || "-";
+    document.getElementById("f_icn").innerText = ultima.icn || "-";
+    document.getElementById("f_class").innerText = ultima.classificacaoICN || "-";
+    document.getElementById("f_pes").innerText = ultima.parecerPES || "-";
+
+    const tabela = document.getElementById("tabelaHistorico");
+    tabela.innerHTML = "";
+
+    avs.forEach(av => {
+        tabela.innerHTML += `
+        <tr>
+            <td>${av.data || "-"}</td>
+            <td>${av.imc || "-"}</td>
+            <td>${av.icn || "-"}</td>
+            <td>${av.classificacaoICN || "-"}</td>
+        </tr>`;
+    });
+}
+
+/* ============================= */
+/* GERAR PDF */
+/* ============================= */
+
+function gerarPDFSelecionado() {
+
+    const nome = document.getElementById("selectResidente").value;
+
+    if (!nome) {
+        alert("Selecione um residente.");
+        return;
+    }
+
+    gerarPDFResidente(nome);
+}
+
+</script>
+
+</body>
+</html>
