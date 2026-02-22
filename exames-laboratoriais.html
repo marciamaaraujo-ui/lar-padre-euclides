@@ -11,13 +11,13 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 0.85rem;
 }
 
 .tabela-exames th,
 .tabela-exames td {
     border: 1px solid #e0e0e0;
     padding: 8px;
-    font-size: 0.85rem;
     vertical-align: top;
 }
 
@@ -43,9 +43,11 @@
     color: #d35400;
     font-weight: bold;
 }
+
 textarea {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 25px;
+    padding: 12px;
 }
 </style>
 </head>
@@ -70,14 +72,12 @@ textarea {
 
 <h1>Painel Laboratorial Institucional</h1>
 
-<button class="btn-save" onclick="analisar()">🔎 Analisar Alterações</button>
-
 <table class="tabela-exames">
 <thead>
 <tr>
 <th>Marcador</th>
 <th>Resultado</th>
-<th>Valor Referência</th>
+<th>Referência</th>
 <th>Alteração</th>
 <th>Interpretação Clínica</th>
 </tr>
@@ -85,24 +85,26 @@ textarea {
 <tbody id="corpoTabela"></tbody>
 </table>
 
-<h3>Observação Clínica / Nutricional Individualizada</h3>
-<textarea rows="5" placeholder="Descrever relação dos exames com condição clínica, dieta específica, risco nutricional ou plano terapêutico."></textarea>
+<h3>Interpretação Nutricional / Condição Clínica</h3>
+<textarea rows="5"
+placeholder="Descrever relevância clínica e nutricional (ex: anemia ferropriva, DRC, desnutrição proteico-calórica, risco cardiovascular, inflamação crônica...).">
+</textarea>
 
 </div>
 
 <script>
 
 const exames = [
-{nome:"Hemoglobina", ref:[12,17.5], unidade:"g/dL", alto:"Policitemia, desidratação.", baixo:"Anemia, perda de sangue."},
+{nome:"Hemoglobina", ref:[12,17.5], unidade:"g/dL", alto:"Policitemia ou desidratação.", baixo:"Anemia ou perda de sangue."},
 {nome:"VCM", ref:[80,100], unidade:"fL", alto:"Anemia macrocítica (B12/Folato).", baixo:"Anemia microcítica (Ferro)."},
 {nome:"RDW", ref:[11.5,14.5], unidade:"%", alto:"Anisocitose.", baixo:"Sem significado isolado."},
 {nome:"Leucócitos", ref:[4000,11000], unidade:"/mm³", alto:"Infecção ou inflamação.", baixo:"Imunossupressão."},
 {nome:"Neutrófilos", ref:[45,70], unidade:"%", alto:"Infecção bacteriana.", baixo:"Risco infeccioso."},
-{nome:"Eosinófilos", ref:[1,4], unidade:"%", alto:"Alergia/parasitoses.", baixo:"Estresse agudo."},
-{nome:"Plaquetas", ref:[150000,450000], unidade:"/mm³", alto:"Inflamação.", baixo:"Risco de sangramento."},
-{nome:"Glicemia Jejum", ref:[70,99], unidade:"mg/dL", alto:"Diabetes/resistência insulina.", baixo:"Hipoglicemia."},
+{nome:"Eosinófilos", ref:[1,4], unidade:"%", alto:"Alergia ou parasitose.", baixo:"Estresse agudo."},
+{nome:"Plaquetas", ref:[150000,450000], unidade:"/mm³", alto:"Inflamação.", baixo:"Risco de hemorragia."},
+{nome:"Glicemia Jejum", ref:[70,99], unidade:"mg/dL", alto:"Diabetes ou resistência insulina.", baixo:"Hipoglicemia."},
 {nome:"HbA1c", ref:[0,5.7], unidade:"%", alto:"Controle glicêmico inadequado.", baixo:"Anemias hemolíticas."},
-{nome:"Albumina", ref:[3.5,5.0], unidade:"g/dL", alto:"Desidratação.", baixo:"Desnutrição/inflamação."},
+{nome:"Albumina", ref:[3.5,5.0], unidade:"g/dL", alto:"Desidratação.", baixo:"Desnutrição ou inflamação."},
 {nome:"PCR", ref:[0,0.3], unidade:"mg/dL", alto:"Inflamação aguda.", baixo:"Normal."},
 {nome:"Ureia", ref:[10,50], unidade:"mg/dL", alto:"Insuficiência renal.", baixo:"Dieta hipoproteica."},
 {nome:"Creatinina", ref:[0.6,1.3], unidade:"mg/dL", alto:"Disfunção renal.", baixo:"Sarcopenia."},
@@ -127,20 +129,27 @@ exames.forEach((ex,i)=>{
 tbody.innerHTML += `
 <tr>
 <td>${ex.nome}</td>
-<td><input type="number" step="any" id="res_${i}"></td>
+<td><input type="number" step="any" id="res_${i}" oninput="analisarLinha(${i})"></td>
 <td>${ex.ref[0]} - ${ex.ref[1]} ${ex.unidade}</td>
 <td id="status_${i}">-</td>
 <td id="interp_${i}">-</td>
 </tr>`;
 });
 
-function analisar(){
-exames.forEach((ex,i)=>{
+function analisarLinha(i){
+
+const ex = exames[i];
 const val = parseFloat(document.getElementById("res_"+i).value);
-if(!val) return;
 
 const status = document.getElementById("status_"+i);
 const interp = document.getElementById("interp_"+i);
+
+if(isNaN(val)){
+status.innerText="-";
+interp.innerText="-";
+status.className="";
+return;
+}
 
 if(val > ex.ref[1]){
 status.innerText="↑ Alto";
@@ -157,7 +166,7 @@ status.innerText="Normal";
 status.className="resultado-normal";
 interp.innerText="Dentro da normalidade.";
 }
-});
+
 }
 
 </script>
