@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exames Laboratoriais - ILPI</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
+<body onload="carregarResidentesExame()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
+            <a href="exames-laboratoriais.html" class="nav-link home-btn">🧪 Exames</a>
+            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
+            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
+            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<header>
+<h1>Registo de Exames Laboratoriais</h1>
+<p>Monitorização bioquímica institucional</p>
+</header>
+
+<section>
+<h3>Identificação</h3>
+<div class="grid">
+<select id="selectResidente">
+<option value="">Selecionar residente...</option>
+</select>
+
+<input type="date" id="dataExame">
+</div>
+</section>
+
+<section>
+<h3>Bioquímica Básica</h3>
+<div class="grid">
+<input type="number" id="glicemia" placeholder="Glicemia (mg/dL)">
+<input type="number" id="albumina" placeholder="Albumina (g/dL)">
+<input type="number" id="hemoglobina" placeholder="Hemoglobina (g/dL)">
+<input type="number" id="creatinina" placeholder="Creatinina (mg/dL)">
+<input type="number" id="ureia" placeholder="Ureia (mg/dL)">
+</div>
+</section>
+
+<section>
+<h3>Perfil Lipídico</h3>
+<div class="grid">
+<input type="number" id="colTotal" placeholder="Colesterol Total">
+<input type="number" id="hdl" placeholder="HDL">
+<input type="number" id="ldl" placeholder="LDL">
+<input type="number" id="triglicerideos" placeholder="Triglicerídeos">
+</div>
+</section>
+
+<section>
+<h3>Micronutrientes</h3>
+<div class="grid">
+<input type="number" id="vitD" placeholder="Vitamina D">
+<input type="number" id="vitB12" placeholder="Vitamina B12">
+<input type="number" id="ferro" placeholder="Ferro sérico">
+<input type="number" id="ferritina" placeholder="Ferritina">
+</div>
+</section>
+
+<div style="margin-top:30px;">
+<button class="btn-save" onclick="salvarExames()">💾 Guardar Exames</button>
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+/* ============================= */
+/* CARREGAR RESIDENTES */
+/* ============================= */
+
+function carregarResidentesExame() {
+
+    const banco = obterBanco();
+    const select = document.getElementById("selectResidente");
+
+    select.innerHTML = '<option value="">Selecionar residente...</option>';
+
+    const nomes = Object.keys(banco).sort();
+    if (nomes.length === 0) return;
+
+    nomes.forEach(nome => {
+        select.innerHTML += `<option value="${nome}">${nome}</option>`;
+    });
+}
+
+/* ============================= */
+/* SALVAR EXAMES */
+/* ============================= */
+
+function salvarExames() {
+
+    const nome = document.getElementById("selectResidente").value;
+    const data = document.getElementById("dataExame").value;
+
+    if (!nome || !data) {
+        alert("Selecione residente e data.");
+        return;
+    }
+
+    const banco = obterBanco();
+
+    if (!banco[nome]) {
+        banco[nome] = { avaliacoes: [], exames: [], comorbidades: [] };
+    }
+
+    if (!banco[nome].exames) {
+        banco[nome].exames = [];
+    }
+
+    banco[nome].exames.push({
+        data: data,
+        glicemia: getNum("glicemia"),
+        albumina: getNum("albumina"),
+        hemoglobina: getNum("hemoglobina"),
+        creatinina: getNum("creatinina"),
+        ureia: getNum("ureia"),
+        colTotal: getNum("colTotal"),
+        hdl: getNum("hdl"),
+        ldl: getNum("ldl"),
+        triglicerideos: getNum("triglicerideos"),
+        vitD: getNum("vitD"),
+        vitB12: getNum("vitB12"),
+        ferro: getNum("ferro"),
+        ferritina: getNum("ferritina")
+    });
+
+    salvarBanco(banco);
+
+    alert("Exames guardados com sucesso!");
+
+    limparCampos();
+}
+
+/* ============================= */
+/* LIMPAR FORMULÁRIO */
+/* ============================= */
+
+function limparCampos() {
+
+    document.querySelectorAll("input[type='number']").forEach(input => {
+        input.value = "";
+    });
+
+    document.getElementById("dataExame").value = "";
+}
+
+</script>
+
+</body>
+</html>
