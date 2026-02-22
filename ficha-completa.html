@@ -3,167 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ficha Clínica - ILPI</title>
+<title>Avaliação Nutricional Completa - ILPI</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-@media print { .no-print { display: none !important; } }
+.form-group{
+margin-bottom:20px;
+display:flex;
+flex-direction:column;
+}
+
+label{
+font-weight:bold;
+margin-bottom:5px;
+}
+
+input, select{
+padding:8px;
+font-size:0.9rem;
+}
+
+.secao{
+background:#f9fbfa;
+padding:20px;
+border-radius:8px;
+margin-bottom:30px;
+border:1px solid #e0e0e0;
+}
+
+.resultado-box{
+margin-top:10px;
+padding:10px;
+background:#eef6f2;
+font-weight:bold;
+}
 </style>
 </head>
 
-<body onload="carregarResidentes()">
-
-<!-- NAVBAR -->
-<div class="navbar">
-    <div class="nav-container">
-        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
-
-        <div class="nav-links">
-            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
-            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-            <a href="ficha-completa.html" class="nav-link home-btn">📂 Ficha Clínica</a>
-            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
-            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
-            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
-        </div>
-    </div>
-</div>
+<body>
 
 <div class="container">
 
-<header class="no-print">
-<h1>Ficha Clínica Individual</h1>
+<h1>Avaliação Nutricional Completa</h1>
 
-<div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
-<select id="selectResidente" onchange="gerarFicha()">
-<option value="">Selecionar residente...</option>
+<div class="secao">
+<h2>Dados Gerais</h2>
+
+<div class="form-group">
+<label>Nome do Residente</label>
+<input type="text" id="nome">
+</div>
+
+<div class="form-group">
+<label>Sexo</label>
+<select id="sexo" onchange="calcularTudo()">
+<option value="">Selecionar</option>
+<option value="F">Feminino</option>
+<option value="M">Masculino</option>
 </select>
-
-<button class="btn-save" onclick="window.print()">🖨️ Imprimir</button>
-<button class="btn-save" onclick="gerarPDFSelecionado()">📄 Gerar PDF</button>
-</div>
-</header>
-
-<div id="conteudoFicha" style="display:none; margin-top:40px;">
-
-<h2 id="print_nome" style="text-align:center; border-bottom:2px solid var(--primary-color); padding-bottom:10px;"></h2>
-
-<section>
-<h3>Dados da Última Avaliação</h3>
-<p><strong>Data:</strong> <span id="f_data"></span></p>
-<p><strong>IMC:</strong> <span id="f_imc"></span></p>
-<p><strong>ICN:</strong> <span id="f_icn"></span></p>
-<p><strong>Classificação ICN:</strong> <span id="f_class"></span></p>
-</section>
-
-<section>
-<h3>Diagnóstico Nutricional (PES)</h3>
-<div id="f_pes" style="background:#f4f7f6; padding:15px; border-radius:8px;"></div>
-</section>
-
-<section>
-<h3>Histórico Completo</h3>
-
-<table>
-<thead>
-<tr>
-<th>Data</th>
-<th>IMC</th>
-<th>ICN</th>
-<th>Classificação</th>
-</tr>
-</thead>
-
-<tbody id="tabelaHistorico"></tbody>
-</table>
-
-</section>
-
 </div>
 
+<div class="form-group">
+<label>Data de Admissão</label>
+<input type="date" id="dataAdmissao">
+</div>
 </div>
 
-<script src="app.js"></script>
+<div class="secao">
+<h2>Antropometria</h2>
+
+<div class="form-group">
+<label>Peso (kg)</label>
+<input type="number" id="peso" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>Altura (m)</label>
+<input type="number" id="altura" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>IMC (kg/m²)</label>
+<input type="text" id="imc" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação IMC (Lipschitz 1994)</label>
+<input type="text" id="classImc" readonly>
+</div>
+
+<div class="form-group">
+<label>Circunferência do Braço (cm)</label>
+<input type="number" id="cb" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>Adequação da Circunferência do Braço (%)</label>
+<input type="text" id="adequacaoCB" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação CB</label>
+<input type="text" id="classCB" readonly>
+</div>
+
+<div class="form-group">
+<label>Circunferência da Panturrilha (cm)</label>
+<input type="number" id="cp" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>Classificação CP (ajustada pelo IMC)</label>
+<input type="text" id="classCP" readonly>
+</div>
+
+</div>
+
+</div>
 
 <script>
 
-/* ============================= */
-/* CARREGAR RESIDENTES */
-/* ============================= */
+function calcularTudo(){
 
-function carregarResidentes() {
+let peso=parseFloat(document.getElementById("peso").value);
+let altura=parseFloat(document.getElementById("altura").value);
+let sexo=document.getElementById("sexo").value;
+let cb=parseFloat(document.getElementById("cb").value);
+let cp=parseFloat(document.getElementById("cp").value);
 
-    const banco = obterBanco();
-    const select = document.getElementById("selectResidente");
+/* ===== IMC ===== */
 
-    select.innerHTML = '<option value="">Selecionar residente...</option>';
+if(!isNaN(peso) && !isNaN(altura)){
+let imc=(peso/(altura*altura)).toFixed(2);
+document.getElementById("imc").value=imc;
 
-    const nomes = Object.keys(banco).sort();
-
-    if (nomes.length === 0) return;
-
-    nomes.forEach(nome => {
-        select.innerHTML += `<option value="${nome}">${nome}</option>`;
-    });
+if(imc<22){
+document.getElementById("classImc").value="Baixo Peso (Desnutrição)";
+}
+else if(imc<=27){
+document.getElementById("classImc").value="Eutrofia";
+}
+else{
+document.getElementById("classImc").value="Sobrepeso";
+}
 }
 
-/* ============================= */
-/* GERAR FICHA */
-/* ============================= */
+/* ===== CB ===== */
 
-function gerarFicha() {
+if(!isNaN(cb)){
+let referencia= sexo==="F" ? 28 : 29; // média clínica para idosos
+let adequacao=((cb/referencia)*100).toFixed(1);
+document.getElementById("adequacaoCB").value=adequacao+" %";
 
-    const nome = document.getElementById("selectResidente").value;
-    if (!nome) return;
-
-    const banco = obterBanco();
-
-    if (!banco[nome] || !banco[nome].avaliacoes || banco[nome].avaliacoes.length === 0) {
-        alert("Este residente ainda não possui avaliação.");
-        return;
-    }
-
-    document.getElementById("conteudoFicha").style.display = "block";
-
-    const avs = banco[nome].avaliacoes;
-    const ultima = avs[avs.length - 1];
-
-    document.getElementById("print_nome").innerText = nome;
-    document.getElementById("f_data").innerText = ultima.data || "-";
-    document.getElementById("f_imc").innerText = ultima.imc || "-";
-    document.getElementById("f_icn").innerText = ultima.icn || "-";
-    document.getElementById("f_class").innerText = ultima.classificacaoICN || "-";
-    document.getElementById("f_pes").innerText = ultima.parecerPES || "-";
-
-    const tabela = document.getElementById("tabelaHistorico");
-    tabela.innerHTML = "";
-
-    avs.forEach(av => {
-        tabela.innerHTML += `
-        <tr>
-            <td>${av.data || "-"}</td>
-            <td>${av.imc || "-"}</td>
-            <td>${av.icn || "-"}</td>
-            <td>${av.classificacaoICN || "-"}</td>
-        </tr>`;
-    });
+if(adequacao<80){
+document.getElementById("classCB").value="Desnutrição Grave";
+}
+else if(adequacao<90){
+document.getElementById("classCB").value="Desnutrição Moderada";
+}
+else if(adequacao<100){
+document.getElementById("classCB").value="Desnutrição Leve";
+}
+else{
+document.getElementById("classCB").value="Adequado";
+}
 }
 
-/* ============================= */
-/* GERAR PDF */
-/* ============================= */
+/* ===== CP AJUSTADA PELO IMC ===== */
 
-function gerarPDFSelecionado() {
+if(!isNaN(cp) && !isNaN(peso) && !isNaN(altura)){
 
-    const nome = document.getElementById("selectResidente").value;
+let imc=(peso/(altura*altura));
+let corteBase= sexo==="F" ? 33 : 34;
 
-    if (!nome) {
-        alert("Selecione um residente.");
-        return;
-    }
+let ajuste=0;
 
-    gerarPDFResidente(nome);
+if(imc>=25 && imc<30) ajuste=3;
+if(imc>=30 && imc<40) ajuste=7;
+if(imc>=40) ajuste=12;
+
+let corteAjustado=corteBase-ajuste;
+
+if(cp<corteAjustado){
+document.getElementById("classCP").value="Risco de Baixa Massa Muscular";
+}
+else{
+document.getElementById("classCP").value="Adequado";
+}
+}
+
 }
 
 </script>
