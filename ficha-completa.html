@@ -7,35 +7,50 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
+.container{max-width:1000px;margin:auto;padding:20px;}
+.secao{
+background:#f9fbfa;
+padding:25px;
+border-radius:10px;
+margin-bottom:35px;
+border:1px solid #e0e0e0;
+}
 .form-group{
-margin-bottom:20px;
 display:flex;
 flex-direction:column;
+margin-bottom:18px;
 }
-
 label{
-font-weight:bold;
-margin-bottom:5px;
+font-weight:600;
+margin-bottom:6px;
 }
-
 input, select{
 padding:8px;
 font-size:0.9rem;
+border:1px solid #ccc;
+border-radius:6px;
 }
-
-.secao{
-background:#f9fbfa;
-padding:20px;
-border-radius:8px;
-margin-bottom:30px;
-border:1px solid #e0e0e0;
+textarea{
+width:100%;
+padding:12px;
+font-size:0.9rem;
+border-radius:6px;
+margin-top:20px;
 }
-
-.resultado-box{
-margin-top:10px;
-padding:10px;
-background:#eef6f2;
-font-weight:bold;
+.botao{
+margin-top:15px;
+padding:10px 20px;
+background:#2c7a7b;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+.botao:hover{
+background:#285e61;
+}
+.alerta-alto{
+border:6px solid red !important;
 }
 </style>
 </head>
@@ -98,7 +113,7 @@ font-weight:bold;
 </div>
 
 <div class="form-group">
-<label>Adequação da Circunferência do Braço (%)</label>
+<label>Adequação CB (%)</label>
 <input type="text" id="adequacaoCB" readonly>
 </div>
 
@@ -119,63 +134,99 @@ font-weight:bold;
 
 </div>
 
+<div class="secao">
+<h2>Marcadores Inflamatórios</h2>
+
+<div class="form-group">
+<label>Albumina (g/dL)</label>
+<input type="number" id="albumina" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>PCR (mg/dL)</label>
+<input type="number" id="pcr" step="any" oninput="calcularTudo()">
+</div>
+</div>
+
+<h2>Relatório Nutricional Institucional</h2>
+<textarea id="relatorioAutomatico" rows="16"></textarea>
+
+<button class="botao" onclick="gerarPDF()">Gerar PDF Institucional</button>
+
 </div>
 
 <script>
 
 function calcularTudo(){
 
+document.body.classList.remove("alerta-alto");
+
 let peso=parseFloat(document.getElementById("peso").value);
 let altura=parseFloat(document.getElementById("altura").value);
 let sexo=document.getElementById("sexo").value;
 let cb=parseFloat(document.getElementById("cb").value);
 let cp=parseFloat(document.getElementById("cp").value);
+let albumina=parseFloat(document.getElementById("albumina").value);
+let pcr=parseFloat(document.getElementById("pcr").value);
+
+let imc=null;
+let classIMC="";
+let classCB="";
+let classCP="";
+let sarcScore=0;
+let inflamacao=false;
 
 /* ===== IMC ===== */
 
 if(!isNaN(peso) && !isNaN(altura)){
-let imc=(peso/(altura*altura)).toFixed(2);
-document.getElementById("imc").value=imc;
+imc=(peso/(altura*altura));
+document.getElementById("imc").value=imc.toFixed(2);
 
 if(imc<22){
-document.getElementById("classImc").value="Baixo Peso (Desnutrição)";
+classIMC="Baixo Peso (Desnutrição)";
+sarcScore+=1;
 }
 else if(imc<=27){
-document.getElementById("classImc").value="Eutrofia";
+classIMC="Eutrofia";
 }
 else{
-document.getElementById("classImc").value="Sobrepeso";
+classIMC="Sobrepeso";
 }
+
+document.getElementById("classImc").value=classIMC;
 }
 
 /* ===== CB ===== */
 
 if(!isNaN(cb)){
-let referencia= sexo==="F" ? 28 : 29; // média clínica para idosos
-let adequacao=((cb/referencia)*100).toFixed(1);
-document.getElementById("adequacaoCB").value=adequacao+" %";
+let referencia= sexo==="F" ? 28 : 29;
+let adequacao=(cb/referencia)*100;
+
+document.getElementById("adequacaoCB").value=adequacao.toFixed(1)+" %";
 
 if(adequacao<80){
-document.getElementById("classCB").value="Desnutrição Grave";
+classCB="Desnutrição Grave";
+sarcScore+=2;
 }
 else if(adequacao<90){
-document.getElementById("classCB").value="Desnutrição Moderada";
+classCB="Desnutrição Moderada";
+sarcScore+=1;
 }
 else if(adequacao<100){
-document.getElementById("classCB").value="Desnutrição Leve";
+classCB="Desnutrição Leve";
 }
 else{
-document.getElementById("classCB").value="Adequado";
+classCB="Adequado";
 }
+
+document.getElementById("classCB").value=classCB;
 }
 
-/* ===== CP AJUSTADA PELO IMC ===== */
+/* ===== CP AJUSTADA ===== */
 
-if(!isNaN(cp) && !isNaN(peso) && !isNaN(altura)){
+if(!isNaN(cp) && imc!=null){
 
-let imc=(peso/(altura*altura));
 let corteBase= sexo==="F" ? 33 : 34;
-
 let ajuste=0;
 
 if(imc>=25 && imc<30) ajuste=3;
@@ -185,12 +236,91 @@ if(imc>=40) ajuste=12;
 let corteAjustado=corteBase-ajuste;
 
 if(cp<corteAjustado){
-document.getElementById("classCP").value="Risco de Baixa Massa Muscular";
+classCP="Risco de Baixa Massa Muscular";
+sarcScore+=2;
 }
 else{
-document.getElementById("classCP").value="Adequado";
+classCP="Adequado";
 }
+
+document.getElementById("classCP").value=classCP;
 }
+
+/* ===== INFLAMAÇÃO ===== */
+
+if(!isNaN(albumina) && albumina<3.5){
+inflamacao=true;
+sarcScore+=1;
+}
+
+if(!isNaN(pcr) && pcr>0.3){
+inflamacao=true;
+sarcScore+=1;
+}
+
+/* ===== CLASSIFICAÇÃO FINAL ===== */
+
+let risco="Baixo";
+
+if(sarcScore>=4){
+risco="Alto";
+document.body.classList.add("alerta-alto");
+}
+else if(sarcScore>=2){
+risco="Moderado";
+}
+
+/* ===== DIAGNÓSTICO ===== */
+
+let diagnostico="";
+
+if(risco==="Alto" && inflamacao){
+diagnostico="Desnutrição proteico-calórica grave associada a inflamação sistêmica ativa e alto risco de sarcopenia.";
+}
+else if(risco==="Alto"){
+diagnostico="Sarcopenia estabelecida com comprometimento importante de massa muscular.";
+}
+else if(risco==="Moderado"){
+diagnostico="Risco de sarcopenia e possível desnutrição.";
+}
+else{
+diagnostico="Estado nutricional estável sem evidências de sarcopenia significativa.";
+}
+
+/* ===== RELATÓRIO ===== */
+
+let relatorio=`
+RELATÓRIO NUTRICIONAL INSTITUCIONAL
+
+Nome: ${document.getElementById("nome").value}
+Data de Admissão: ${document.getElementById("dataAdmissao").value}
+
+IMC: ${imc?imc.toFixed(2):"-"} (${classIMC})
+CB: ${classCB}
+CP: ${classCP}
+
+Albumina: ${albumina||"-"}
+PCR: ${pcr||"-"}
+
+Score de Sarcopenia: ${risco}
+
+Diagnóstico Nutricional:
+${diagnostico}
+`;
+
+document.getElementById("relatorioAutomatico").value=relatorio;
+
+}
+
+/* ===== PDF ===== */
+
+function gerarPDF(){
+
+let conteudo=document.getElementById("relatorioAutomatico").value;
+let janela=window.open('','','width=800,height=600');
+janela.document.write('<pre>'+conteudo+'</pre>');
+janela.print();
+janela.close();
 
 }
 
