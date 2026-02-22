@@ -157,9 +157,15 @@ border:6px solid red !important;
 
 <script>
 
+<script>
+
 function calcularTudo(){
 
+/* ===== RESET VISUAL ===== */
+
 document.body.classList.remove("alerta-alto");
+
+/* ===== CAPTURA DE DADOS ===== */
 
 let peso=parseFloat(document.getElementById("peso").value);
 let altura=parseFloat(document.getElementById("altura").value);
@@ -170,15 +176,17 @@ let albumina=parseFloat(document.getElementById("albumina").value);
 let pcr=parseFloat(document.getElementById("pcr").value);
 
 let imc=null;
-let classIMC="";
-let classCB="";
-let classCP="";
+let classIMC="-";
+let classCB="-";
+let classCP="-";
+let adequacaoCB="-";
 let sarcScore=0;
 let inflamacao=false;
 
-/* ===== IMC ===== */
+/* ================= IMC ================= */
 
-if(!isNaN(peso) && !isNaN(altura)){
+if(!isNaN(peso) && !isNaN(altura) && altura>0){
+
 imc=(peso/(altura*altura));
 document.getElementById("imc").value=imc.toFixed(2);
 
@@ -194,25 +202,30 @@ classIMC="Sobrepeso";
 }
 
 document.getElementById("classImc").value=classIMC;
+
+}else{
+document.getElementById("imc").value="";
+document.getElementById("classImc").value="";
 }
 
-/* ===== CB ===== */
+/* ================= CB ================= */
 
-if(!isNaN(cb)){
+if(!isNaN(cb) && sexo){
+
 let referencia= sexo==="F" ? 28 : 29;
-let adequacao=(cb/referencia)*100;
+adequacaoCB=((cb/referencia)*100);
 
-document.getElementById("adequacaoCB").value=adequacao.toFixed(1)+" %";
+document.getElementById("adequacaoCB").value=adequacaoCB.toFixed(1)+" %";
 
-if(adequacao<80){
+if(adequacaoCB<80){
 classCB="Desnutrição Grave";
 sarcScore+=2;
 }
-else if(adequacao<90){
+else if(adequacaoCB<90){
 classCB="Desnutrição Moderada";
 sarcScore+=1;
 }
-else if(adequacao<100){
+else if(adequacaoCB<100){
 classCB="Desnutrição Leve";
 }
 else{
@@ -220,11 +233,17 @@ classCB="Adequado";
 }
 
 document.getElementById("classCB").value=classCB;
+
+}else{
+document.getElementById("adequacaoCB").value="";
+document.getElementById("classCB").value="";
 }
 
-/* ===== CP AJUSTADA ===== */
+/* ================= CP AJUSTADA ================= */
 
-if(!isNaN(cp) && imc!=null){
+let corteAjustado=null;
+
+if(!isNaN(cp) && imc!==null && sexo){
 
 let corteBase= sexo==="F" ? 33 : 34;
 let ajuste=0;
@@ -233,7 +252,7 @@ if(imc>=25 && imc<30) ajuste=3;
 if(imc>=30 && imc<40) ajuste=7;
 if(imc>=40) ajuste=12;
 
-let corteAjustado=corteBase-ajuste;
+corteAjustado=corteBase-ajuste;
 
 if(cp<corteAjustado){
 classCP="Risco de Baixa Massa Muscular";
@@ -244,9 +263,12 @@ classCP="Adequado";
 }
 
 document.getElementById("classCP").value=classCP;
+
+}else{
+document.getElementById("classCP").value="";
 }
 
-/* ===== INFLAMAÇÃO ===== */
+/* ================= INFLAMAÇÃO ================= */
 
 if(!isNaN(albumina) && albumina<3.5){
 inflamacao=true;
@@ -258,51 +280,52 @@ inflamacao=true;
 sarcScore+=1;
 }
 
-/* ===== CLASSIFICAÇÃO FINAL ===== */
+/* ================= SCORE FINAL ================= */
 
 let risco="Baixo";
 
-if(sarcScore>=4){
+if(sarcScore>=5){
 risco="Alto";
 document.body.classList.add("alerta-alto");
 }
-else if(sarcScore>=2){
+else if(sarcScore>=3){
 risco="Moderado";
 }
 
-/* ===== DIAGNÓSTICO ===== */
+/* ================= DIAGNÓSTICO ================= */
 
 let diagnostico="";
 
 if(risco==="Alto" && inflamacao){
-diagnostico="Desnutrição proteico-calórica grave associada a inflamação sistêmica ativa e alto risco de sarcopenia.";
+diagnostico="Desnutrição proteico-calórica grave associada a inflamação sistêmica ativa e sarcopenia estabelecida.";
 }
 else if(risco==="Alto"){
-diagnostico="Sarcopenia estabelecida com comprometimento importante de massa muscular.";
+diagnostico="Sarcopenia estabelecida com perda significativa de massa muscular.";
 }
 else if(risco==="Moderado"){
-diagnostico="Risco de sarcopenia e possível desnutrição.";
+diagnostico="Risco de sarcopenia com possível comprometimento nutricional.";
 }
 else{
-diagnostico="Estado nutricional estável sem evidências de sarcopenia significativa.";
+diagnostico="Sem evidências clínicas relevantes de sarcopenia.";
 }
 
-/* ===== RELATÓRIO ===== */
+/* ================= RELATÓRIO ================= */
 
 let relatorio=`
 RELATÓRIO NUTRICIONAL INSTITUCIONAL
 
-Nome: ${document.getElementById("nome").value}
-Data de Admissão: ${document.getElementById("dataAdmissao").value}
+Nome: ${document.getElementById("nome").value || "-"}
+Data de Admissão: ${document.getElementById("dataAdmissao").value || "-"}
 
 IMC: ${imc?imc.toFixed(2):"-"} (${classIMC})
-CB: ${classCB}
-CP: ${classCP}
+Circunferência do Braço: ${classCB} (${adequacaoCB?adequacaoCB.toFixed(1)+" %":"-"})
+Circunferência da Panturrilha: ${classCP} ${corteAjustado?`(Corte ajustado: ${corteAjustado} cm)`:""}
 
 Albumina: ${albumina||"-"}
 PCR: ${pcr||"-"}
 
-Score de Sarcopenia: ${risco}
+Score Numérico de Sarcopenia: ${sarcScore}
+Classificação Final: ${risco}
 
 Diagnóstico Nutricional:
 ${diagnostico}
@@ -312,15 +335,30 @@ document.getElementById("relatorioAutomatico").value=relatorio;
 
 }
 
-/* ===== PDF ===== */
+/* ================= PDF MELHORADO ================= */
 
 function gerarPDF(){
 
 let conteudo=document.getElementById("relatorioAutomatico").value;
-let janela=window.open('','','width=800,height=600');
-janela.document.write('<pre>'+conteudo+'</pre>');
-janela.print();
-janela.close();
+
+let win=window.open('');
+win.document.write(`
+<html>
+<head>
+<title>Relatório Nutricional</title>
+<style>
+body{font-family:Arial;padding:40px;}
+h1{color:#2c7a7b;}
+</style>
+</head>
+<body>
+<h1>Relatório Nutricional Institucional</h1>
+<pre>${conteudo}</pre>
+</body>
+</html>
+`);
+win.print();
+win.close();
 
 }
 
