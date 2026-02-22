@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comorbidades - ILPI</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
+<body onload="carregarResidentesComorb()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
+            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
+            <a href="comorbidades.html" class="nav-link home-btn">🏥 Comorbidades</a>
+            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
+            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<header>
+<h1>Mapeamento de Comorbidades</h1>
+<p>Registo clínico estruturado institucional</p>
+</header>
+
+<section>
+<h3>Selecionar Residente</h3>
+<select id="selectResidente" onchange="carregarComorbidadesSalvas()">
+<option value="">Selecionar residente...</option>
+</select>
+</section>
+
+<form id="formComorbidades">
+
+<section>
+<h3>Cardiovasculares</h3>
+<label><input type="checkbox" value="Hipertensão Arterial Sistêmica"> Hipertensão Arterial Sistêmica</label><br>
+<label><input type="checkbox" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label><br>
+<label><input type="checkbox" value="Acidente Vascular Cerebral"> Acidente Vascular Cerebral</label><br>
+<label><input type="checkbox" value="Dislipidemia"> Dislipidemia</label>
+</section>
+
+<section>
+<h3>Metabólicas / Endócrinas</h3>
+<label><input type="checkbox" value="Diabetes Mellitus"> Diabetes Mellitus</label><br>
+<label><input type="checkbox" value="Hipotireoidismo"> Hipotireoidismo</label><br>
+<label><input type="checkbox" value="Osteoporose"> Osteoporose</label>
+</section>
+
+<section>
+<h3>Renais / Gastrointestinais</h3>
+<label><input type="checkbox" value="Doença Renal Crônica"> Doença Renal Crônica</label><br>
+<label><input type="checkbox" value="Constipação Crônica"> Constipação Crônica</label>
+</section>
+
+<section>
+<h3>Condições Geriátricas</h3>
+<label><input type="checkbox" value="Fragilidade"> Fragilidade</label><br>
+<label><input type="checkbox" value="Sarcopenia"> Sarcopenia</label><br>
+<label><input type="checkbox" value="Disfagia"> Disfagia</label><br>
+<label><input type="checkbox" value="Quedas Recorrentes"> Quedas Recorrentes</label>
+</section>
+
+<div style="margin-top:30px;">
+<button type="button" class="btn-save" onclick="salvarComorbidades()">💾 Guardar Comorbidades</button>
+</div>
+
+</form>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+/* ============================= */
+/* CARREGAR RESIDENTES */
+/* ============================= */
+
+function carregarResidentesComorb() {
+
+    const banco = obterBanco();
+    const select = document.getElementById("selectResidente");
+
+    select.innerHTML = '<option value="">Selecionar residente...</option>';
+
+    const nomes = Object.keys(banco).sort();
+    if (nomes.length === 0) return;
+
+    nomes.forEach(nome => {
+        select.innerHTML += `<option value="${nome}">${nome}</option>`;
+    });
+}
+
+/* ============================= */
+/* CARREGAR COMORBIDADES SALVAS */
+/* ============================= */
+
+function carregarComorbidadesSalvas() {
+
+    const nome = document.getElementById("selectResidente").value;
+    if (!nome) return;
+
+    const banco = obterBanco();
+
+    if (!banco[nome]) return;
+
+    const salvas = banco[nome].comorbidades || [];
+
+    document.querySelectorAll("#formComorbidades input[type='checkbox']")
+    .forEach(cb => cb.checked = salvas.includes(cb.value));
+}
+
+/* ============================= */
+/* SALVAR */
+/* ============================= */
+
+function salvarComorbidades() {
+
+    const nome = document.getElementById("selectResidente").value;
+
+    if (!nome) {
+        alert("Selecione um residente.");
+        return;
+    }
+
+    const selecionadas = [];
+
+    document.querySelectorAll("#formComorbidades input[type='checkbox']:checked')
+    .forEach(cb => selecionadas.push(cb.value));
+
+    const banco = obterBanco();
+
+    if (!banco[nome]) {
+        banco[nome] = {
+            avaliacoes: [],
+            exames: [],
+            comorbidades: []
+        };
+    }
+
+    banco[nome].comorbidades = selecionadas;
+
+    salvarBanco(banco);
+
+    alert("Comorbidades atualizadas com sucesso!");
+}
+
+</script>
+
+</body>
+</html>
