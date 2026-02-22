@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Avaliação - ILPI</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link home-btn">🏠 Nova Avaliação</a>
+            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
+            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
+            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
+            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
+            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<header>
+    <h1>Avaliação Nutricional Completa</h1>
+    <p>Sistema Institucional – ILPI</p>
+</header>
+
+<form id="formAvaliacao" autocomplete="off">
+
+<!-- ================= DADOS DO RESIDENTE ================= -->
+<section>
+<h3>Dados do Residente</h3>
+<div class="grid">
+    <input type="text" id="nome" placeholder="Nome Completo" required>
+    <input type="date" id="data" required>
+    <input type="number" id="idade" placeholder="Idade" min="0" oninput="calcularTudo()" required>
+</div>
+</section>
+
+<!-- ================= ANTROPOMETRIA ================= -->
+<section>
+<h3>Antropometria</h3>
+
+<div class="grid">
+    <input type="text" id="peso" placeholder="Peso Atual (kg)" oninput="calcularTudo()">
+    <input type="text" id="altura" placeholder="Altura (m)" oninput="calcularTudo()">
+    <input type="text" id="pesoHab" placeholder="Peso Habitual (kg)" oninput="calcularTudo()">
+</div>
+
+<div class="grid">
+    <input type="text" id="imc" placeholder="IMC" readonly>
+    <input type="text" id="classImc" placeholder="Classificação IMC" readonly>
+    <input type="text" id="perda" placeholder="% Perda Peso" readonly>
+</div>
+</section>
+
+<!-- ================= TRIAGENS ================= -->
+<section>
+<h3>Triagens</h3>
+
+<div class="grid">
+    <input type="number" id="mnaTriagem" placeholder="MNA Triagem" min="0" oninput="calcularTudo()">
+    <input type="number" id="mnaGlobal" placeholder="MNA Global" min="0" oninput="calcularTudo()">
+    <input type="text" id="mnaTotal" placeholder="MNA Total" readonly>
+
+    <input type="number" id="nrsNutri" placeholder="NRS Nutricional" min="0" oninput="calcularTudo()">
+    <input type="number" id="nrsGrav" placeholder="NRS Gravidade" min="0" oninput="calcularTudo()">
+    <input type="text" id="nrsTotal" placeholder="NRS Total" readonly>
+</div>
+
+</section>
+
+<!-- ================= ICN ================= -->
+<section>
+<h3>Índice de Condição Nutricional (ICN)</h3>
+
+<div class="grid">
+    <input type="text" id="icn" placeholder="ICN" readonly>
+    <input type="text" id="classICN" placeholder="Classificação ICN" readonly>
+</div>
+
+</section>
+
+<!-- ================= PES ================= -->
+<section>
+<h3>Diagnóstico Nutricional (PES)</h3>
+<textarea id="parecer" rows="4" readonly></textarea>
+</section>
+
+<!-- ================= BOTÃO ================= -->
+<div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:20px;">
+    <button type="button" class="btn-save" onclick="salvarRegistro()">💾 Salvar Avaliação</button>
+</div>
+
+</form>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
