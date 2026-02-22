@@ -34,9 +34,10 @@ textarea { width:100%; margin-top:25px; padding:12px; font-size:0.9rem;}
 </div>
 
 <div class="container">
-<h1>Painel Laboratorial Institucional</h1>
 
-<select id="selectResidente" style="margin-bottom:20px;"></select>
+<h1>Painel Laboratorial Integrado</h1>
+
+<select id="selectResidente" onchange="analisar()" style="margin-bottom:20px;"></select>
 
 <table class="tabela-exames">
 <thead>
@@ -44,61 +45,52 @@ textarea { width:100%; margin-top:25px; padding:12px; font-size:0.9rem;}
 <th>Marcador</th>
 <th>Resultado</th>
 <th>Referência</th>
-<th>Alteração</th>
+<th>Status</th>
 <th>Interpretação</th>
 </tr>
 </thead>
 <tbody id="corpoTabela"></tbody>
 </table>
 
-<h3>Laudo Clínico Integrado</h3>
-<textarea id="relatorioAutomatico" rows="14"></textarea>
+<h3>Laudo Clínico Nutricional Integrado</h3>
+<textarea id="relatorioAutomatico" rows="16"></textarea>
 
 </div>
 
 <script>
 
-/* ================== BASE COMPLETA DE EXAMES ================== */
+/* ================= BASE COMPLETA ================= */
 
 const exames = [
-
 {nome:"Hemoglobina", ref:[12,17.5], alto:"Policitemia.", baixo:"Anemia."},
-{nome:"VCM", ref:[80,100], alto:"Anemia macrocítica.", baixo:"Anemia microcítica."},
+{nome:"VCM", ref:[80,100], alto:"Macrocitose.", baixo:"Microcitose."},
 {nome:"RDW", ref:[11.5,14.5], alto:"Anisocitose.", baixo:"Sem relevância isolada."},
-{nome:"Leucócitos", ref:[4000,11000], alto:"Infecção ou inflamação.", baixo:"Imunossupressão."},
+{nome:"Leucócitos", ref:[4000,11000], alto:"Infecção/inflamação.", baixo:"Imunossupressão."},
 {nome:"Neutrófilos", ref:[45,70], alto:"Infecção bacteriana.", baixo:"Risco infeccioso."},
-{nome:"Eosinófilos", ref:[1,4], alto:"Alergia ou parasitose.", baixo:"Estresse agudo."},
+{nome:"Eosinófilos", ref:[1,4], alto:"Alergia/parasitose.", baixo:"Estresse agudo."},
 {nome:"Plaquetas", ref:[150000,450000], alto:"Inflamação ativa.", baixo:"Risco hemorrágico."},
-
 {nome:"Glicemia Jejum", ref:[70,99], alto:"Hiperglicemia.", baixo:"Hipoglicemia."},
-{nome:"HbA1c", ref:[0,5.7], alto:"Descontrole glicêmico.", baixo:"Possível interferência hematológica."},
-
-{nome:"Albumina", ref:[3.5,5.0], alto:"Desidratação.", baixo:"Desnutrição ou inflamação."},
+{nome:"HbA1c", ref:[0,5.7], alto:"Descontrole glicêmico.", baixo:"Possível interferência."},
+{nome:"Albumina", ref:[3.5,5.0], alto:"Desidratação.", baixo:"Desnutrição/inflamação."},
 {nome:"PCR", ref:[0,0.3], alto:"Inflamação sistêmica.", baixo:"Normal."},
-
-{nome:"Ureia", ref:[10,50], alto:"Disfunção renal ou hiperproteica.", baixo:"Hipoproteica."},
+{nome:"Ureia", ref:[10,50], alto:"Disfunção renal.", baixo:"Hipoproteica."},
 {nome:"Creatinina", ref:[0.6,1.3], alto:"Disfunção renal.", baixo:"Sarcopenia."},
-
 {nome:"Colesterol Total", ref:[0,190], alto:"Risco cardiovascular.", baixo:"Má absorção."},
-{nome:"HDL", ref:[40,999], alto:"Protetor cardiovascular.", baixo:"Risco cardiovascular aumentado."},
+{nome:"HDL", ref:[40,999], alto:"Protetor.", baixo:"Risco CV."},
 {nome:"LDL", ref:[0,130], alto:"Risco aterosclerótico.", baixo:"Desnutrição."},
 {nome:"Triglicerídeos", ref:[0,150], alto:"Risco pancreatite.", baixo:"Má absorção."},
-
 {nome:"Vitamina D", ref:[20,999], alto:"Toxicidade rara.", baixo:"Deficiência óssea."},
-{nome:"Vitamina B12", ref:[200,900], alto:"Suplementação excessiva.", baixo:"Deficiência."},
-{nome:"Ferritina", ref:[13,400], alto:"Inflamação (fase aguda).", baixo:"Deficiência de ferro."},
-{nome:"Ferro Sérico", ref:[60,170], alto:"Sobrecarga de ferro.", baixo:"Anemia ferropriva."},
-{nome:"Zinco", ref:[70,120], alto:"Excesso de suplementação.", baixo:"Baixa imunidade."},
-
-{nome:"Potássio", ref:[3.5,5.1], alto:"Risco cardíaco.", baixo:"Perdas gastrointestinais."},
-{nome:"Cálcio", ref:[8.5,10.2], alto:"Hiperparatireoidismo.", baixo:"Deficiência de Vit D."},
-
-{nome:"TGO/TGP", ref:[0,40], alto:"Lesão hepática.", baixo:"Sem relevância clínica."},
+{nome:"Vitamina B12", ref:[200,900], alto:"Excesso suplementar.", baixo:"Deficiência."},
+{nome:"Ferritina", ref:[13,400], alto:"Inflamação fase aguda.", baixo:"Deficiência ferro."},
+{nome:"Ferro Sérico", ref:[60,170], alto:"Sobrecarga ferro.", baixo:"Anemia ferropriva."},
+{nome:"Zinco", ref:[70,120], alto:"Excesso suplementar.", baixo:"Baixa imunidade."},
+{nome:"Potássio", ref:[3.5,5.1], alto:"Risco cardíaco.", baixo:"Perdas GI."},
+{nome:"Cálcio", ref:[8.5,10.2], alto:"Hiperparatireoidismo.", baixo:"Deficiência Vit D."},
+{nome:"TGO/TGP", ref:[0,40], alto:"Lesão hepática.", baixo:"Sem relevância."},
 {nome:"TSH", ref:[0.45,4.5], alto:"Hipotireoidismo.", baixo:"Hipertireoidismo."}
-
 ];
 
-/* ================== MONTAR TABELA ================== */
+/* ================= MONTAR TABELA ================= */
 
 const tbody = document.getElementById("corpoTabela");
 
@@ -106,94 +98,14 @@ exames.forEach((ex,i)=>{
 tbody.innerHTML += `
 <tr>
 <td>${ex.nome}</td>
-<td><input type="number" step="any" id="res_${i}" oninput="analisarLinha(${i})"></td>
+<td><input type="number" step="any" id="res_${i}" oninput="analisar()"></td>
 <td>${ex.ref[0]} - ${ex.ref[1]}</td>
 <td id="status_${i}">-</td>
 <td id="interp_${i}">-</td>
 </tr>`;
 });
 
-/* ================== ANÁLISE INDIVIDUAL ================== */
-
-function analisarLinha(i){
-
-const ex = exames[i];
-const val = parseFloat(document.getElementById("res_"+i).value);
-const status = document.getElementById("status_"+i);
-const interp = document.getElementById("interp_"+i);
-
-if(isNaN(val)){
-status.innerText="-";
-interp.innerText="-";
-status.className="";
-gerarLaudo();
-return;
-}
-
-if(val > ex.ref[1]){
-status.innerText="↑";
-status.className="resultado-alto";
-interp.innerText=ex.alto;
-}
-else if(val < ex.ref[0]){
-status.innerText="↓";
-status.className="resultado-baixo";
-interp.innerText=ex.baixo;
-}
-else{
-status.innerText="Normal";
-status.className="resultado-normal";
-interp.innerText="Dentro da normalidade.";
-}
-
-gerarLaudo();
-}
-
-/* ================== GERAÇÃO DE LAUDO ================== */
-
-function gerarLaudo(){
-
-let alteracoes = [];
-let iri = 0;
-
-exames.forEach((ex,i)=>{
-let status = document.getElementById("status_"+i).innerText;
-if(status==="↑" || status==="↓"){
-alteracoes.push(ex.nome + " " + status);
-}
-});
-
-/* Índice Inflamatório */
-if(document.getElementById("status_9")?.innerText==="↑") iri+=2; // PCR
-if(document.getElementById("status_10")?.innerText==="↓") iri+=1; // Albumina
-if(document.getElementById("status_4")?.innerText==="↑") iri+=1; // Neutrófilos
-
-let iriClass="Baixo";
-if(iri>=3) iriClass="Alto";
-else if(iri>=2) iriClass="Moderado";
-
-/* Score Gravidade */
-let gravidade="Baixa";
-if(alteracoes.length>=5) gravidade="Moderada";
-if(alteracoes.length>=8) gravidade="Alta";
-
-/* Laudo */
-let laudo="LAUDO LABORATORIAL INTEGRADO\n\n";
-
-if(alteracoes.length===0){
-laudo+="Sem alterações laboratoriais significativas.\n\n";
-}else{
-laudo+="Alterações detectadas:\n";
-alteracoes.forEach(a=> laudo+="- "+a+"\n");
-}
-
-laudo+="\nÍndice Inflamatório: "+iriClass;
-laudo+="\nScore Global de Gravidade: "+gravidade;
-
-document.getElementById("relatorioAutomatico").value=laudo;
-}
-
-/* ================== RESIDENTES ================== */
+/* ================= CARREGAR RESIDENTES ================= */
 
 function carregarResidentes(){
 const banco = JSON.parse(localStorage.getItem("bancoILPI")) || {};
@@ -205,6 +117,137 @@ select.innerHTML+=`<option value="${nome}">${nome}</option>`;
 }
 carregarResidentes();
 
+/* ================= FUNÇÃO PRINCIPAL ================= */
+
+function analisar(){
+
+let r = {};
+let alteracoes = 0;
+let iri = 0;
+let sistemas = 0;
+
+const banco = JSON.parse(localStorage.getItem("bancoILPI")) || {};
+const residente = document.getElementById("selectResidente").value;
+let comorb = [];
+
+if(residente && banco[residente]?.comorbidades){
+comorb = banco[residente].comorbidades;
+}
+
+/* ==== Análise individual ==== */
+
+exames.forEach((ex,i)=>{
+
+const val=parseFloat(document.getElementById("res_"+i).value);
+const status=document.getElementById("status_"+i);
+const interp=document.getElementById("interp_"+i);
+
+if(isNaN(val)){
+status.innerText="-";
+interp.innerText="-";
+status.className="";
+return;
+}
+
+if(val>ex.ref[1]){
+status.innerText="↑";
+status.className="resultado-alto";
+interp.innerText=ex.alto;
+r[ex.nome]="↑";
+alteracoes++;
+}
+else if(val<ex.ref[0]){
+status.innerText="↓";
+status.className="resultado-baixo";
+interp.innerText=ex.baixo;
+r[ex.nome]="↓";
+alteracoes++;
+}
+else{
+status.innerText="Normal";
+status.className="resultado-normal";
+interp.innerText="Dentro da normalidade.";
+}
+
+});
+
+/* ==== Índice Inflamatório ==== */
+
+if(r["PCR"]==="↑") iri+=2;
+if(r["Ferritina"]==="↑") iri+=1;
+if(r["Neutrófilos"]==="↑") iri+=1;
+if(r["Albumina"]==="↓") iri+=1;
+if(r["Plaquetas"]==="↑") iri+=1;
+
+let iriClass="Baixo";
+if(iri>=4) iriClass="Alto";
+else if(iri>=2) iriClass="Moderado";
+
+/* ==== Cruzamento com comorbidades ==== */
+
+let texto="";
+
+if(comorb.includes("Hipertensão Arterial (HAS)") && r["LDL"]==="↑"){
+texto+="HAS associada a LDL elevado → Alto risco cardiovascular.\n";
+sistemas++;
+}
+
+if(comorb.includes("Diabetes Mellitus") && r["HbA1c"]==="↑"){
+texto+="Diabetes descompensado (HbA1c elevado).\n";
+sistemas++;
+}
+
+if(comorb.includes("Doença Renal Crônica") && (r["Ureia"]==="↑" || r["Creatinina"]==="↑")){
+texto+="Comprometimento renal ativo.\n";
+sistemas++;
+}
+
+if(comorb.includes("Obesidade") && r["Triglicerídeos"]==="↑"){
+texto+="Obesidade associada a hipertrigliceridemia.\n";
+sistemas++;
+}
+
+/* ==== Score Global ==== */
+
+let gravidade="Baixa";
+if(alteracoes>=5 || sistemas>=2) gravidade="Moderada";
+if(alteracoes>=8 || sistemas>=3 || iri>=4) gravidade="Alta";
+
+/* ==== Diagnóstico PES ==== */
+
+let pes="Sem diagnóstico nutricional relevante.";
+
+if(r["Albumina"]==="↓"){
+pes="Desnutrição proteico-calórica relacionada a processo inflamatório evidenciada por hipoalbuminemia.";
+}
+
+if(r["Hemoglobina"]==="↓"){
+pes="Anemia relacionada a deficiência de micronutrientes evidenciada por hemoglobina reduzida.";
+}
+
+if(r["Glicemia Jejum"]==="↑"){
+pes="Descontrole glicêmico relacionado à resistência insulínica evidenciado por hiperglicemia.";
+}
+
+/* ==== LAUDO FINAL ==== */
+
+let laudo="LAUDO CLÍNICO NUTRICIONAL INTEGRADO\n\n";
+
+if(texto===""){
+laudo+="Sem cruzamentos relevantes entre exames e comorbidades.\n\n";
+}else{
+laudo+=texto+"\n";
+}
+
+laudo+="Índice Inflamatório: "+iriClass+" (Score "+iri+")\n";
+laudo+="Gravidade Global: "+gravidade+"\n\n";
+laudo+="Diagnóstico Nutricional (PES):\n"+pes;
+
+document.getElementById("relatorioAutomatico").value=laudo;
+
+}
+
 </script>
+
 </body>
 </html>
