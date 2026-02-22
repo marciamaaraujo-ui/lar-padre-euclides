@@ -157,15 +157,9 @@ border:6px solid red !important;
 
 <script>
 
-<script>
-
 function calcularTudo(){
 
-/* ===== RESET VISUAL ===== */
-
 document.body.classList.remove("alerta-alto");
-
-/* ===== CAPTURA DE DADOS ===== */
 
 let peso=parseFloat(document.getElementById("peso").value);
 let altura=parseFloat(document.getElementById("altura").value);
@@ -179,11 +173,11 @@ let imc=null;
 let classIMC="-";
 let classCB="-";
 let classCP="-";
-let adequacaoCB="-";
+let adequacaoCB=null;
 let sarcScore=0;
 let inflamacao=false;
 
-/* ================= IMC ================= */
+/* ===== IMC ===== */
 
 if(!isNaN(peso) && !isNaN(altura) && altura>0){
 
@@ -208,12 +202,12 @@ document.getElementById("imc").value="";
 document.getElementById("classImc").value="";
 }
 
-/* ================= CB ================= */
+/* ===== CB ===== */
 
 if(!isNaN(cb) && sexo){
 
 let referencia= sexo==="F" ? 28 : 29;
-adequacaoCB=((cb/referencia)*100);
+adequacaoCB=(cb/referencia)*100;
 
 document.getElementById("adequacaoCB").value=adequacaoCB.toFixed(1)+" %";
 
@@ -239,7 +233,7 @@ document.getElementById("adequacaoCB").value="";
 document.getElementById("classCB").value="";
 }
 
-/* ================= CP AJUSTADA ================= */
+/* ===== CP AJUSTADA ===== */
 
 let corteAjustado=null;
 
@@ -268,7 +262,7 @@ document.getElementById("classCP").value=classCP;
 document.getElementById("classCP").value="";
 }
 
-/* ================= INFLAMAÇÃO ================= */
+/* ===== INFLAMAÇÃO ===== */
 
 if(!isNaN(albumina) && albumina<3.5){
 inflamacao=true;
@@ -280,7 +274,7 @@ inflamacao=true;
 sarcScore+=1;
 }
 
-/* ================= SCORE FINAL ================= */
+/* ===== CLASSIFICAÇÃO FINAL ===== */
 
 let risco="Baixo";
 
@@ -292,7 +286,7 @@ else if(sarcScore>=3){
 risco="Moderado";
 }
 
-/* ================= DIAGNÓSTICO ================= */
+/* ===== DIAGNÓSTICO ===== */
 
 let diagnostico="";
 
@@ -309,7 +303,7 @@ else{
 diagnostico="Sem evidências clínicas relevantes de sarcopenia.";
 }
 
-/* ================= RELATÓRIO ================= */
+/* ===== RELATÓRIO ===== */
 
 let relatorio=`
 RELATÓRIO NUTRICIONAL INSTITUCIONAL
@@ -318,7 +312,7 @@ Nome: ${document.getElementById("nome").value || "-"}
 Data de Admissão: ${document.getElementById("dataAdmissao").value || "-"}
 
 IMC: ${imc?imc.toFixed(2):"-"} (${classIMC})
-Circunferência do Braço: ${classCB} (${adequacaoCB?adequacaoCB.toFixed(1)+" %":"-"})
+Circunferência do Braço: ${classCB} ${adequacaoCB?`(${adequacaoCB.toFixed(1)} %)`:""}
 Circunferência da Panturrilha: ${classCP} ${corteAjustado?`(Corte ajustado: ${corteAjustado} cm)`:""}
 
 Albumina: ${albumina||"-"}
@@ -335,7 +329,7 @@ document.getElementById("relatorioAutomatico").value=relatorio;
 
 }
 
-/* ================= PDF MELHORADO ================= */
+/* ===== PDF ===== */
 
 function gerarPDF(){
 
