@@ -173,130 +173,145 @@ gerarRelatorioAutomatico();
 function gerarRelatorioAutomatico(){
 
 let r = {};
+let alteracoes = 0;
 
 exames.forEach((ex,i)=>{
 let status = document.getElementById("status_"+i).innerText;
 if(status==="↑" || status==="↓"){
 r[ex.nome] = status;
+alteracoes++;
 }
 });
 
 let texto = "";
+let sistemas = 0;
+let iri = 0;
+
+/* ===== ÍNDICE INFLAMATÓRIO ===== */
+
+if(r["PCR"]==="↑"){ iri+=2; }
+if(r["Ferritina"]==="↑"){ iri+=1; }
+if(r["Neutrófilos"]==="↑"){ iri+=1; }
+if(r["Albumina"]==="↓"){ iri+=1; }
+if(r["Plaquetas"]==="↑"){ iri+=1; }
+
+let iriClass = "Baixo";
+if(iri>=4) iriClass="Alto";
+else if(iri>=2) iriClass="Moderado";
 
 /* ===== HEMATOLÓGICO ===== */
 
-if(r["Hemoglobina"]==="↓" && r["Ferro Sérico"]==="↓"){
-texto += "Conjunto compatível com anemia ferropriva.\n\n";
-}
+let anemia = false;
 
-if(r["Hemoglobina"]==="↓" && r["VCM"]==="↓"){
-texto += "Perfil sugestivo de anemia microcítica.\n\n";
+if(r["Hemoglobina"]==="↓" && r["Ferro Sérico"]==="↓"){
+texto += "Anemia ferropriva estabelecida.\n\n";
+anemia = true;
+sistemas++;
 }
 
 if(r["Hemoglobina"]==="↓" && r["VCM"]==="↑" && r["Vitamina B12"]==="↓"){
-texto += "Achados compatíveis com anemia megaloblástica por deficiência de B12.\n\n";
-}
-
-if(r["RDW"]==="↑" && r["VCM"]==="↓"){
-texto += "Anisocitose associada a deficiência inicial de ferro.\n\n";
-}
-
-if(r["Plaquetas"]==="↑" && r["PCR"]==="↑"){
-texto += "Plaquetose reativa associada a inflamação ativa.\n\n";
+texto += "Anemia megaloblástica por deficiência de B12.\n\n";
+anemia = true;
+sistemas++;
 }
 
 /* ===== INFLAMATÓRIO ===== */
 
 if(r["PCR"]==="↑" && r["Neutrófilos"]==="↑"){
 texto += "Processo infeccioso bacteriano provável.\n\n";
+sistemas++;
 }
 
 if(r["PCR"]==="↑" && r["Albumina"]==="↓"){
-texto += "Resposta inflamatória sistêmica com possível estado catabólico.\n\n";
-}
-
-if(r["Ferritina"]==="↑" && r["PCR"]==="↑"){
-texto += "Elevação de proteína de fase aguda compatível com inflamação ativa.\n\n";
+texto += "Inflamação sistêmica com repercussão nutricional.\n\n";
+sistemas++;
 }
 
 /* ===== RENAL ===== */
 
 if(r["Ureia"]==="↑" && r["Creatinina"]==="↑"){
-texto += "Perfil compatível com comprometimento da função renal.\n\n";
-}
-
-if(r["Ureia"]==="↑" && !r["Creatinina"]){
-texto += "Ureia elevada possivelmente relacionada a ingestão proteica aumentada.\n\n";
-}
-
-if(r["Creatinina"]==="↓"){
-texto += "Creatinina reduzida sugere possível sarcopenia.\n\n";
-}
-
-if(r["Potássio"]==="↑" && r["Creatinina"]==="↑"){
-texto += "Risco cardíaco associado à disfunção renal.\n\n";
+texto += "Comprometimento da função renal.\n\n";
+sistemas++;
 }
 
 /* ===== METABÓLICO ===== */
 
 if(r["Glicemia Jejum"]==="↑" && r["HbA1c"]==="↑"){
-texto += "Descontrole glicêmico crônico compatível com diabetes mal controlado.\n\n";
-}
-
-if(r["Glicemia Jejum"]==="↓"){
-texto += "Hipoglicemia detectada.\n\n";
+texto += "Descontrole glicêmico crônico.\n\n";
+sistemas++;
 }
 
 /* ===== CARDIOVASCULAR ===== */
 
 if(r["LDL"]==="↑" && r["HDL"]==="↓"){
-texto += "Alto risco aterosclerótico devido a perfil lipídico desfavorável.\n\n";
+texto += "Risco cardiovascular elevado.\n\n";
+sistemas++;
 }
 
-if(r["Colesterol Total"]==="↑" && r["Triglicerídeos"]==="↑"){
-texto += "Dislipidemia combinada com risco cardiovascular aumentado.\n\n";
+/* ===== NUTRICIONAL ===== */
+
+if(r["Albumina"]==="↓"){
+texto += "Risco de desnutrição proteico-calórica.\n\n";
+sistemas++;
 }
 
-/* ===== HEPÁTICO ===== */
+/* ===== SCORE GLOBAL ===== */
 
-if(r["TGO/TGP"]==="↑"){
-texto += "Marcadores hepáticos elevados sugerem lesão hepática.\n\n";
+let gravidade = "Baixa";
+
+if(sistemas>=2 || alteracoes>=5){
+gravidade="Moderada";
 }
 
-if(r["TGO/TGP"]==="↑" && r["Triglicerídeos"]==="↑"){
-texto += "Possível esteatose hepática associada a dislipidemia.\n\n";
+if(
+(iri>=4) ||
+(r["Ureia"]==="↑" && r["Creatinina"]==="↑") ||
+(anemia && iri>=2) ||
+sistemas>=3
+){
+gravidade="Alta";
 }
 
-/* ===== MINERAL ===== */
+/* ===== DIAGNÓSTICO PES ===== */
 
-if(r["Cálcio"]==="↓" && r["Vitamina D"]==="↓"){
-texto += "Risco osteometabólico associado à deficiência de vitamina D.\n\n";
+let pes = "";
+
+if(r["Albumina"]==="↓"){
+pes = "Desnutrição proteico-calórica relacionada a processo inflamatório sistêmico evidenciada por hipoalbuminemia.";
 }
 
-if(r["Cálcio"]==="↓"){
-texto += "Hipocalcemia detectada.\n\n";
+if(anemia){
+pes = "Anemia relacionada à deficiência de micronutrientes evidenciada por hemoglobina reduzida.";
 }
 
-/* ===== IMUNOLÓGICO ===== */
-
-if(r["Zinco"]==="↓" && r["Albumina"]==="↓"){
-texto += "Imunidade potencialmente comprometida por deficiência nutricional.\n\n";
+if(r["Glicemia Jejum"]==="↑"){
+pes = "Descontrole glicêmico relacionado à resistência insulínica evidenciado por hiperglicemia.";
 }
 
-if(r["Leucócitos"]==="↓" && r["Neutrófilos"]==="↓"){
-texto += "Possível imunossupressão.\n\n";
+/* ===== LAUDO FINAL ===== */
+
+let laudo = "LAUDO CLÍNICO NUTRICIONAL\n\n";
+laudo += "1. Análise Laboratorial Integrada:\n";
+laudo += texto + "\n";
+laudo += "2. Índice de Risco Inflamatório: " + iriClass + " (Score: "+iri+")\n\n";
+laudo += "3. Score Global de Gravidade: " + gravidade + "\n\n";
+laudo += "4. Diagnóstico Nutricional (PES):\n" + pes + "\n\n";
+laudo += "5. Recomendações:\n";
+
+if(gravidade==="Alta"){
+laudo += "- Monitorização clínica intensiva.\n";
+laudo += "- Reavaliação laboratorial em curto prazo.\n";
+}
+else if(gravidade==="Moderada"){
+laudo += "- Ajustes nutricionais direcionados.\n";
+}
+else{
+laudo += "- Manutenção e acompanhamento periódico.\n";
 }
 
-/* ===== SE NADA CRUZAR ===== */
-
-if(texto===""){
-texto="Alterações laboratoriais presentes, porém sem padrão cruzado relevante detectado.";
-}
-
-document.getElementById("relatorioAutomatico").value = texto;
+document.getElementById("relatorioAutomatico").value = laudo;
 
 }
-
 </script>
 
 </body>
