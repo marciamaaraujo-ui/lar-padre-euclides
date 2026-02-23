@@ -231,26 +231,6 @@ function calcularICN(mna, nrs, imc) {
 
     if (getEl("icn")) getEl("icn").value = icn.toFixed(2);
     if (getEl("classICN")) getEl("classICN").value = classificacao;
-
-    return classificacao;
-}
-const indicador = getEl("indicadorRisco");
-
-if (indicador) {
-    indicador.className = "indicador-risco"; // reset
-
-    if (classificacao === "Alto Risco Clínico") {
-        indicador.classList.add("alto");
-        indicador.innerText = "ICN: Alto";
-    }
-    else if (classificacao === "Risco Moderado") {
-        indicador.classList.add("moderado");
-        indicador.innerText = "ICN: Moderado";
-    }
-    else {
-        indicador.classList.add("baixo");
-        indicador.innerText = "ICN: Baixo";
-    }
 }
 
 /* ================= PES ================= */
