@@ -3,148 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova Avaliação - ILPI</title>
+<title>Ficha de Monitoramento Nutricional Integrado - Lar Padre Euclides</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
+
 <div class="navbar">
     <div class="nav-container">
         <img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
-
         <div class="nav-links">
-            <a href="index.html" class="nav-link home-btn">🏠 Nova Avaliação</a>
-            <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-            <a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
-            <a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
-            <a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
-            <a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-            <a href="relatorio-executivo.html" class="nav-link">📑 Relatório</a>
+            <a href="index.html">🏠 Início</a>
+            <a href="ficha-completa.html">📋 Avaliação Completa</a>
+            <a href="dashboard.html">📊 Dashboard</a>
         </div>
     </div>
 </div>
 
+<!-- ================= CONTAINER ================= -->
+
 <div class="container">
 
 <header>
-    <h1>Avaliação Nutricional Completa</h1>
-    <p>Sistema Institucional – ILPI</p>
+    <h1>Ficha de Monitoramento Nutricional Integrado</h1>
+    <p>Lar Padre Euclides</p>
 </header>
 
-<form id="formAvaliacao" autocomplete="off">
+<form autocomplete="off">
 
 <!-- ================= DADOS DO RESIDENTE ================= -->
-<section>
-<h3>Dados do Residente</h3>
+
+<section class="secao">
+
+<h2>Dados do Residente</h2>
 
 <div class="grid">
 
-<div class="form-group">
-<label>Nome Completo</label>
-<input type="text" id="nome" required>
-</div>
+    <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" id="nome">
+    </div>
 
-<div class="form-group">
-<label>Data de Nascimento</label>
-<input type="date" id="dataNascimento" onchange="calcularIdade()" required>
-</div>
+    <div class="form-group">
+        <label>Data de Nascimento</label>
+        <input type="date" id="dataNascimento" onchange="calcularIdade()">
+    </div>
 
-<div class="form-group">
-<label>Idade (automático)</label>
-<input type="text" id="idade" class="auto" readonly>
-</div>
+    <div class="form-group">
+        <label>Idade (automático)</label>
+        <input type="text" id="idade" class="auto" readonly>
+    </div>
 
-<div class="form-group">
-<label>Data da Admissão</label>
-<input type="date" id="dataAdmissao">
-</div>
+    <div class="form-group">
+        <label>Data da Admissão</label>
+        <input type="date" id="dataAdmissao">
+    </div>
 
-<div class="form-group">
-<label>Foto do Residente</label>
-<input type="file" id="foto" accept="image/*">
-</div>
+    <div class="form-group">
+        <label>Foto do Residente</label>
+        <input type="file" id="foto" accept="image/*">
+    </div>
 
-</div>
-</section>
-
-<!-- ================= ANTROPOMETRIA ================= -->
-<section>
-<h3>Antropometria</h3>
-
-<div class="grid">
-
-<div class="form-group">
-<label>Peso Atual (kg)</label>
-<input type="number" id="peso" step="any" oninput="calcularTudo()">
-</div>
-
-<div class="form-group">
-<label>Altura (m)</label>
-<input type="number" id="altura" step="any" oninput="calcularTudo()">
-</div>
-
-<div class="form-group">
-<label>Peso Habitual (kg)</label>
-<input type="number" id="pesoHab" step="any" oninput="calcularTudo()">
-</div>
-
-<div class="form-group">
-<label>IMC (automático)</label>
-<input type="text" id="imc" class="auto" readonly>
-</div>
-
-<div class="form-group">
-<label>Classificação IMC</label>
-<input type="text" id="classImc" class="auto" readonly>
-</div>
-
-<div class="form-group">
-<label>% Perda de Peso</label>
-<input type="text" id="perda" class="auto" readonly>
-</div>
-
-</div>
-</section>
-
-<!-- ================= TRIAGENS ================= -->
-<section>
-<h3>Triagens</h3>
-
-<div class="grid">
-    <input type="number" id="mnaTriagem" placeholder="MNA Triagem" min="0" oninput="calcularTudo()">
-    <input type="number" id="mnaGlobal" placeholder="MNA Global" min="0" oninput="calcularTudo()">
-    <input type="text" id="mnaTotal" placeholder="MNA Total" readonly>
-
-    <input type="number" id="nrsNutri" placeholder="NRS Nutricional" min="0" oninput="calcularTudo()">
-    <input type="number" id="nrsGrav" placeholder="NRS Gravidade" min="0" oninput="calcularTudo()">
-    <input type="text" id="nrsTotal" placeholder="NRS Total" readonly>
 </div>
 
 </section>
 
-<!-- ================= ICN ================= -->
-<section>
-<h3>Índice de Condição Nutricional (ICN)</h3>
+<!-- ================= INFORMAÇÕES CLÍNICAS ================= -->
 
-<div class="grid">
-    <input type="text" id="icn" placeholder="ICN" readonly>
-    <input type="text" id="classICN" placeholder="Classificação ICN" readonly>
+<section class="secao">
+
+<h2>Informações Clínicas</h2>
+
+<div class="form-group">
+    <label>Alergias</label>
+    <input type="text" id="alergias">
+</div>
+
+<div class="form-group">
+    <label>Convênio</label>
+    <input type="text" id="convenio">
+</div>
+
+<div class="form-group">
+    <label>Hygia</label>
+    <input type="text" id="hygia">
+</div>
+
+<div class="form-group">
+    <label>Diagnósticos Médicos</label>
+    <textarea id="diagnosticos" rows="3"></textarea>
+</div>
+
+<div class="form-group">
+    <label>Uso de Prótese</label>
+    <select id="protese">
+        <option value="">Selecionar</option>
+        <option value="Não utiliza">Não utiliza</option>
+        <option value="Prótese dentária">Prótese dentária</option>
+        <option value="Prótese ortopédica">Prótese ortopédica</option>
+        <option value="Ambas">Ambas</option>
+    </select>
 </div>
 
 </section>
 
-<!-- ================= PES ================= -->
-<section>
-<h3>Diagnóstico Nutricional (PES)</h3>
-<textarea id="parecer" rows="4" readonly></textarea>
-</section>
+<!-- ================= ESCALA DE KATZ ================= -->
 
-<!-- ================= BOTÃO ================= -->
-<div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:20px;">
-    <button type="button" class="btn-save" onclick="salvarRegistro()">💾 Salvar Avaliação</button>
+<section class="secao">
+
+<h2>Escala de Katz – Avaliação Funcional</h2>
+
+<div class="form-group">
+    <label>1. Banho</label>
+    <select id="katzBanho" onchange="calcularKatz()">
+        <option value="1">Independente</option>
+        <option value="0">Dependente</option>
+    </select>
 </div>
+
+<div class="form-group">
+    <label>2. Vestir-se</label>
+    <select id="katzVestir" onchange="calcularKatz()">
+        <option value="1">Independente</option>
+        <option value="0">Dependente</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>3. Higiene Pessoal</label>
+    <select id="katzHigiene" onchange="calcularKatz()">
+        <option value="1">Independente</option>
+        <option value="0">Dependente</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>4. Transferência</label>
+    <select id="katzTransferencia" onchange="calcularKatz()">
+        <option value="1">Independente</option>
+        <option value="0">Dependente</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>5. Continência</label>
+    <select id="katzContinencia" onchange="calcularKatz()">
+        <option value="1">Continente</option>
+        <option value="0">Incontinente</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>6. Alimentação</label>
+    <select id="katzAlimentacao" onchange="calcularKatz()">
+        <option value="1">Independente</option>
+        <option value="0">Dependente</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label>Pontuação Total (0–6)</label>
+    <input type="text" id="katzTotal" class="auto" readonly>
+</div>
+
+<div class="form-group">
+    <label>Classificação Funcional</label>
+    <textarea id="katzClassificacao" class="auto" readonly rows="3"></textarea>
+</div>
+
+</section>
 
 </form>
 
