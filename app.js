@@ -111,12 +111,11 @@ function calcularAntropometria() {
 
     }
 
-    if (peso > 0 && pesoHab > 0 && getEl("perda")) {
-        const perda = ((pesoHab - peso) / pesoHab) * 100;
-        getEl("perda").value = perda.toFixed(1) + "%";
-    }
-
-    return imc;
+  if (peso > 0 && pesoHab > 0 && getEl("perda")) {
+    const perda = ((pesoHab - peso) / pesoHab) * 100;
+    getEl("perda").value = perda.toFixed(1) + "%";
+} else {
+    if (getEl("perda")) getEl("perda").value = "";
 }
 
 
