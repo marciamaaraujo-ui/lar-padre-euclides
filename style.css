@@ -36,13 +36,13 @@ body {
 /* ================= NAVBAR ================= */
 
 .navbar{
-width:100%;
-background:linear-gradient(90deg, #66BB6A, #4CAF50);
-padding:12px 0;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-position:sticky;
-top:0;
-z-index:1000;
+  width:100%;
+  background:#f2f2f2;   /* cinza claro */
+  padding:14px 0;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  position:sticky;
+  top:0;
+  z-index:1000;
 }
 
 .nav-container{
@@ -61,7 +61,7 @@ z-index:1000;
 }
 
 .nav-logo{
-  height:45px;
+  height:70px;
   width:auto;
 }
 
@@ -72,14 +72,17 @@ z-index:1000;
 }
 
 .nav-links a{
-  color:white;
+  color:#2c3e50;
   text-decoration:none;
   margin-left:20px;
-  font-size:0.9rem;
-  font-weight:500;
+  font-size:0.95rem;
+  font-weight:600;
   transition:0.3s;
 }
 
+.nav-links a:hover{
+  color:#4CAF50;
+}
 .nav-links a:hover{
   opacity:0.8;
   text-decoration:underline;
