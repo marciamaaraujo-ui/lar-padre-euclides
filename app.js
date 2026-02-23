@@ -1,17 +1,17 @@
-/* ============================= */
-/* BANCO DE DADOS LOCAL */
-/* ============================= */
+/* ===================================================== */
+/* SISTEMA NUTRICIONAL ILPI – VERSÃO DEFINITIVA */
+/* ===================================================== */
 
-function obterBanco() {
-    return JSON.parse(localStorage.getItem("bancoILPI")) || {};
-}
 
-function salvarBanco(banco) {
-    localStorage.setItem("bancoILPI", JSON.stringify(banco));
-}
+/* ================= UTILITÁRIOS ================= */
 
 function getEl(id) {
     return document.getElementById(id);
+}
+
+function getVal(id) {
+    const el = getEl(id);
+    return el ? el.value : "";
 }
 
 function getNum(id) {
@@ -20,16 +20,10 @@ function getNum(id) {
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
 
-function getVal(id) {
-    const el = getEl(id);
-    return el ? el.value : "";
-}
 
-/* ============================= */
-/* CÁLCULOS PRINCIPAIS */
-/* ============================= */
+/* ================= IDADE AUTOMÁTICA ================= */
 
-function calcularIdadeAutomatica() {
+function calcularIdade() {
 
     const dataNasc = getVal("dataNascimento");
     if (!dataNasc) return 0;
@@ -50,93 +44,123 @@ function calcularIdadeAutomatica() {
 
     return idade;
 }
-function calcularTudo() {
+
+
+/* ================= ANTROPOMETRIA ================= */
+
+function calcularAntropometria() {
 
     const peso = getNum("peso");
     const altura = getNum("altura");
     const pesoHab = getNum("pesoHab");
-    const idade = calcularIdadeAutomatica();
-    /* ================= IMC ================= */
 
     let imc = 0;
 
     if (peso > 0 && altura > 0) {
         imc = peso / (altura * altura);
 
-        if (getEl("imc")) {
-            getEl("imc").value = imc.toFixed(2);
-        }
+        if (getEl("imc")) getEl("imc").value = imc.toFixed(2);
 
         let classIMC = "Sobrepeso";
-
         if (imc < 22) classIMC = "Baixo Peso";
         else if (imc <= 27) classIMC = "Eutrofia";
 
-        if (getEl("classImc")) {
-            getEl("classImc").value = classIMC;
-        }
+        if (getEl("classImc")) getEl("classImc").value = classIMC;
     }
 
-    /* ================= PERDA DE PESO ================= */
-
-    let perda = 0;
-
-    if (peso > 0 && pesoHab > 0) {
-        perda = ((pesoHab - peso) / pesoHab) * 100;
-
-        if (getEl("perda")) {
-            getEl("perda").value = perda.toFixed(1) + "%";
-        }
+    if (peso > 0 && pesoHab > 0 && getEl("perda")) {
+        const perda = ((pesoHab - peso) / pesoHab) * 100;
+        getEl("perda").value = perda.toFixed(1) + "%";
     }
 
-    /* ================= MNA ================= */
-
-    const mnaTri = getNum("mnaTriagem");
-    const mnaGlob = getNum("mnaGlobal");
-    const mnaTotal = mnaTri + mnaGlob;
-
-    if (getEl("mnaTotal")) {
-        getEl("mnaTotal").value = mnaTotal;
-    }
-
-    /* ================= NRS ================= */
-
-    const nrsNutri = getNum("nrsNutri");
-    const nrsGrav = getNum("nrsGrav");
-
-    let nrsTotal = nrsNutri + nrsGrav;
-
-    if (idade >= 70) {
-        nrsTotal += 1;
-    }
-
-    if (getEl("nrsTotal")) {
-        getEl("nrsTotal").value = nrsTotal;
-    }
-
-    /* ================= ICN ================= */
-
-    const icnData = calcularICN(mnaTotal, nrsTotal, imc);
-
-    if (getEl("icn")) {
-        getEl("icn").value = icnData.icn;
-    }
-
-    if (getEl("classICN")) {
-        getEl("classICN").value = icnData.classificacao;
-    }
-
-    gerarPES(icnData.classificacao);
+    return imc;
 }
 
-/* ============================= */
-/* CÁLCULO DO ICN */
-/* ============================= */
+
+/* ================= MNA COMPLETO ================= */
+
+function calcularMNA(imc) {
+
+    let total = 0;
+
+    // Itens A–E
+    total += getNum("mnaA");
+    total += getNum("mnaB");
+    total += getNum("mnaC");
+    total += getNum("mnaD");
+    total += getNum("mnaE");
+
+    // F – IMC automático
+    let scoreIMC = 0;
+
+    if (imc < 19) scoreIMC = 0;
+    else if (imc < 21) scoreIMC = 1;
+    else if (imc < 23) scoreIMC = 2;
+    else scoreIMC = 3;
+
+    total += scoreIMC;
+
+    if (getEl("mnaF")) getEl("mnaF").value = scoreIMC;
+
+    // Itens G–R
+    total += getNum("mnaG");
+    total += getNum("mnaH");
+    total += getNum("mnaI");
+    total += getNum("mnaJ");
+    total += getNum("mnaK");
+    total += getNum("mnaL");
+    total += getNum("mnaM");
+    total += getNum("mnaN");
+    total += getNum("mnaO");
+    total += getNum("mnaP");
+    total += getNum("mnaQ");
+    total += getNum("mnaR");
+
+    if (getEl("mnaTotal")) {
+        getEl("mnaTotal").value = total.toFixed(1);
+    }
+
+    if (getEl("classMNA")) {
+        let classif = "Estado Nutricional Normal";
+        if (total < 17) classif = "Desnutrido";
+        else if (total < 24) classif = "Risco de Desnutrição";
+
+        getEl("classMNA").value = classif;
+    }
+
+    return total;
+}
+
+
+/* ================= NRS 2002 ================= */
+
+function calcularNRS(imc, idade) {
+
+    let nutricao = getNum("nrsNutri");      // 0–3
+    let gravidade = getNum("nrsGrav");      // 0–3
+
+    let total = nutricao + gravidade;
+
+    if (idade >= 70) {
+        total += 1;
+        if (getEl("nrsIdade")) getEl("nrsIdade").value = "+1";
+    }
+
+    if (getEl("nrsTotal")) getEl("nrsTotal").value = total;
+
+    if (getEl("classNRS")) {
+        getEl("classNRS").value = total >= 3 ? "Iniciar suporte nutricional" : "Sem indicação imediata";
+    }
+
+    return total;
+}
+
+
+/* ================= ICN ================= */
 
 function calcularICN(mna, nrs, imc) {
 
     let scoreIMC = 0;
-
     if (imc < 22) scoreIMC = 0;
     else if (imc <= 27) scoreIMC = 1;
     else scoreIMC = 2;
@@ -144,23 +168,23 @@ function calcularICN(mna, nrs, imc) {
     const icn = (mna * 0.4) + (nrs * 0.4) + (scoreIMC * 2);
 
     let classificacao = "Baixo Risco";
-
     if (icn < 8) classificacao = "Alto Risco Clínico";
     else if (icn < 13) classificacao = "Risco Moderado";
 
-    return {
-        icn: icn.toFixed(2),
-        classificacao
-    };
+    if (getEl("icn")) getEl("icn").value = icn.toFixed(2);
+    if (getEl("classICN")) getEl("classICN").value = classificacao;
+
+    return classificacao;
 }
 
-/* ============================= */
-/* DIAGNÓSTICO PES */
-/* ============================= */
+
+/* ================= PES ================= */
 
 function gerarPES(classificacao) {
 
-    let texto = "";
+    if (!getEl("parecer")) return;
+
+    let texto = "Estado nutricional preservado.";
 
     if (classificacao === "Alto Risco Clínico") {
         texto = "Desnutrição relacionada à ingestão insuficiente evidenciada por risco clínico elevado.";
@@ -168,32 +192,41 @@ function gerarPES(classificacao) {
     else if (classificacao === "Risco Moderado") {
         texto = "Risco nutricional relacionado à condição clínica atual.";
     }
-    else {
-        texto = "Estado nutricional preservado.";
-    }
 
-    if (getEl("parecer")) {
-        getEl("parecer").value = texto;
-    }
+    getEl("parecer").value = texto;
 }
 
-/* ============================= */
-/* SALVAR REGISTRO */
-/* ============================= */
+
+/* ================= ENGINE PRINCIPAL ================= */
+
+function calcularTudo() {
+
+    const idade = calcularIdade();
+    const imc = calcularAntropometria();
+    const mna = calcularMNA(imc);
+    const nrs = calcularNRS(imc, idade);
+    const classificacao = calcularICN(mna, nrs, imc);
+
+    gerarPES(classificacao);
+}
+
+
+/* ================= BANCO LOCAL ================= */
+
+function obterBanco() {
+    return JSON.parse(localStorage.getItem("bancoILPI")) || {};
+}
+
+function salvarBanco(banco) {
+    localStorage.setItem("bancoILPI", JSON.stringify(banco));
+}
 
 function salvarRegistro() {
 
-    const nomeRaw = getVal("nome");
-
-    if (!nomeRaw.trim()) {
+    const nome = getVal("nome").trim().toUpperCase();
+    if (!nome) {
         alert("Nome obrigatório.");
         return;
-    }
-
-    const nome = nomeRaw.trim().toUpperCase();
-    const dataAvaliacao = new Date().toISOString().split("T")[0];
-    const dataAdmissao = getVal("dataAdmissao");
-    
     }
 
     const banco = obterBanco();
@@ -205,26 +238,19 @@ function salvarRegistro() {
         };
     }
 
-   const novaAvaliacao = {
-    dataAvaliacao,
-    dataAdmissao,
-    idade: getVal("idade"),
-    peso: getVal("peso"),
-    altura: getVal("altura"),
-    imc: getVal("imc"),
-    classificacaoIMC: getVal("classImc"),
-    perdaPeso: getVal("perda"),
-    mnaTotal: getVal("mnaTotal"),
-    nrsTotal: getVal("nrsTotal"),
-    icn: getVal("icn"),
-    classificacaoICN: getVal("classICN"),
-    parecerPES: getVal("parecer"),
-    registradoEm: new Date().toISOString()
-};
+    const nova = {
+        data: new Date().toISOString(),
+        idade: getVal("idade"),
+        imc: getVal("imc"),
+        mna: getVal("mnaTotal"),
+        nrs: getVal("nrsTotal"),
+        icn: getVal("icn"),
+        classificacao: getVal("classICN"),
+        parecer: getVal("parecer")
+    };
 
-    banco[nome].avaliacoes.push(novaAvaliacao);
-
+    banco[nome].avaliacoes.push(nova);
     salvarBanco(banco);
 
-    alert("Avaliação salva com sucesso!");
+    alert("Avaliação salva com sucesso.");
 }
