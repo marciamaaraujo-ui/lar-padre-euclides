@@ -29,6 +29,27 @@ function getVal(id) {
 /* CÁLCULOS PRINCIPAIS */
 /* ============================= */
 
+function calcularIdadeAutomatica() {
+
+    const dataNasc = getVal("dataNascimento");
+    if (!dataNasc) return 0;
+
+    const nascimento = new Date(dataNasc);
+    const hoje = new Date();
+
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const m = hoje.getMonth() - nascimento.getMonth();
+
+    if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+    }
+
+    if (getEl("idade")) {
+        getEl("idade").value = idade;
+    }
+
+    return idade;
+}
 function calcularTudo() {
 
     const peso = getNum("peso");
