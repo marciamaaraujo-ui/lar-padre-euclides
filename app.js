@@ -23,26 +23,62 @@ function getNum(id) {
 
 /* ================= IDADE AUTOMÁTICA ================= */
 
-function calcularIdade() {
+function calcularIdade(){
 
-    const dataNasc = getVal("dataNascimento");
-    if (!dataNasc) return 0;
+    const dataNascimento = getVal("dataNascimento");
+    if(!dataNascimento) return 0;
 
-    const nascimento = new Date(dataNasc);
     const hoje = new Date();
+    const nascimento = new Date(dataNascimento);
 
     let idade = hoje.getFullYear() - nascimento.getFullYear();
-    const m = hoje.getMonth() - nascimento.getMonth();
+    const mes = hoje.getMonth() - nascimento.getMonth();
 
-    if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+    if(mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())){
         idade--;
     }
 
-    if (getEl("idade")) {
+    if(getEl("idade")){
         getEl("idade").value = idade;
     }
 
-    return idade;
+    return idade; // 🔥 ESSENCIAL
+}
+
+/* ================= ESCALA DE KATZ ================= */
+
+function calcularKatz(){
+
+    const total =
+        getNum("katzBanho") +
+        getNum("katzVestir") +
+        getNum("katzHigiene") +
+        getNum("katzTransferencia") +
+        getNum("katzContinencia") +
+        getNum("katzAlimentacao");
+
+    if(getEl("katzTotal")){
+        getEl("katzTotal").value = total;
+    }
+
+    let classificacao = "";
+
+    if(total === 6){
+        classificacao = "6 pontos – Independência Total: Realiza todas as atividades sem auxílio.";
+    }
+    else if(total === 5){
+        classificacao = "5 pontos – Dependência Ligeira: Necessita auxílio pontual.";
+    }
+    else if(total === 4){
+        classificacao = "4 pontos – Dependência Moderada: Limitações funcionais evidentes.";
+    }
+    else{
+        classificacao = "0–3 pontos – Dependência Grave: Necessita assistência na maioria das atividades.";
+    }
+
+    if(getEl("katzClassificacao")){
+        getEl("katzClassificacao").value = classificacao;
+    }
 }
 
 
@@ -57,6 +93,7 @@ function calcularAntropometria() {
     let imc = 0;
 
     if (peso > 0 && altura > 0) {
+
         imc = peso / (altura * altura);
 
         if (getEl("imc")) getEl("imc").value = imc.toFixed(2);
@@ -66,6 +103,12 @@ function calcularAntropometria() {
         else if (imc <= 27) classIMC = "Eutrofia";
 
         if (getEl("classImc")) getEl("classImc").value = classIMC;
+
+    } else {
+
+        if (getEl("imc")) getEl("imc").value = "";
+        if (getEl("classImc")) getEl("classImc").value = "";
+
     }
 
     if (peso > 0 && pesoHab > 0 && getEl("perda")) {
@@ -136,25 +179,27 @@ function calcularMNA(imc) {
 
 function calcularNRS(imc, idade) {
 
-    let nutricao = getNum("nrsNutri");      // 0–3
-    let gravidade = getNum("nrsGrav");      // 0–3
+    let nutricao = getNum("nrsNutri");
+    let gravidade = getNum("nrsGrav");
 
     let total = nutricao + gravidade;
 
     if (idade >= 70) {
         total += 1;
         if (getEl("nrsIdade")) getEl("nrsIdade").value = "+1";
+    } else {
+        if (getEl("nrsIdade")) getEl("nrsIdade").value = "0";
     }
 
     if (getEl("nrsTotal")) getEl("nrsTotal").value = total;
 
     if (getEl("classNRS")) {
-        getEl("classNRS").value = total >= 3 ? "Iniciar suporte nutricional" : "Sem indicação imediata";
+        getEl("classNRS").value =
+            total >= 3 ? "Iniciar suporte nutricional" : "Sem indicação imediata";
     }
 
     return total;
 }
-
 
 /* ================= ICN ================= */
 
