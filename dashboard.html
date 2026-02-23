@@ -4,13 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard ILPI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body onload="renderizarDashboard()">
 
-    <!-- NAVBAR INSTITUCIONAL -->
+<!-- NAVBAR INSTITUCIONAL -->
 <div class="navbar">
     <div class="nav-container">
 
@@ -22,6 +25,7 @@
             <a href="index.html">🏠 Início</a>
             <a href="ficha-completa.html">📋 Avaliação Completa</a>
             <a href="dashboard.html">📊 Dashboard</a>
+            <a href="comorbidades.html">🏥 Comorbidades</a>
 
             <div id="indicadorRisco" class="indicador-risco neutro">
                 ICN: —
@@ -32,23 +36,10 @@
 
     </div>
 </div>
-  
-<div class="container">
-<div class="navbar">
-<div class="nav-container">
-<img src="assets/logo.png" class="nav-logo">
-<div class="nav-links">
-<a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
-<a href="dashboard.html" class="nav-link home-btn">📊 Dashboard</a>
-<a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
-<a href="exames-laboratoriais.html" class="nav-link">🧪 Exames</a>
-<a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
-<a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-</div>
-</div>
-</div>
 
+<!-- CONTEÚDO -->
 <div class="container">
+
 <h1>Painel Epidemiológico</h1>
 
 <section style="margin-top:40px;">
@@ -58,6 +49,7 @@
 
 </div>
 
+<!-- SCRIPT DASHBOARD -->
 <script>
 
 function renderizarDashboard(){
@@ -81,12 +73,17 @@ data:{
 labels:top.map(i=>i[0]),
 datasets:[{
 label:"Nº de Residentes",
-data:top.map(i=>i[1])
+data:top.map(i=>i[1]),
+backgroundColor:"#4CAF50"
 }]
 }
 });
 }
 
 </script>
+
+<!-- APP PRINCIPAL -->
+<script src="app.js"></script>
+
 </body>
 </html>
