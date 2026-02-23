@@ -38,10 +38,34 @@
 <!-- ================= DADOS DO RESIDENTE ================= -->
 <section>
 <h3>Dados do Residente</h3>
+
 <div class="grid">
-    <input type="text" id="nome" placeholder="Nome Completo" required>
-    <input type="date" id="data" required>
-    <input type="number" id="idade" placeholder="Idade" min="0" oninput="calcularTudo()" required>
+
+<div class="form-group">
+<label>Nome Completo</label>
+<input type="text" id="nome" required>
+</div>
+
+<div class="form-group">
+<label>Data de Nascimento</label>
+<input type="date" id="dataNascimento" onchange="calcularIdade()" required>
+</div>
+
+<div class="form-group">
+<label>Idade (automático)</label>
+<input type="text" id="idade" class="auto" readonly>
+</div>
+
+<div class="form-group">
+<label>Data da Admissão</label>
+<input type="date" id="dataAdmissao">
+</div>
+
+<div class="form-group">
+<label>Foto do Residente</label>
+<input type="file" id="foto" accept="image/*">
+</div>
+
 </div>
 </section>
 
@@ -50,15 +74,37 @@
 <h3>Antropometria</h3>
 
 <div class="grid">
-    <input type="text" id="peso" placeholder="Peso Atual (kg)" oninput="calcularTudo()">
-    <input type="text" id="altura" placeholder="Altura (m)" oninput="calcularTudo()">
-    <input type="text" id="pesoHab" placeholder="Peso Habitual (kg)" oninput="calcularTudo()">
+
+<div class="form-group">
+<label>Peso Atual (kg)</label>
+<input type="number" id="peso" step="any" oninput="calcularTudo()">
 </div>
 
-<div class="grid">
-    <input type="text" id="imc" placeholder="IMC" readonly>
-    <input type="text" id="classImc" placeholder="Classificação IMC" readonly>
-    <input type="text" id="perda" placeholder="% Perda Peso" readonly>
+<div class="form-group">
+<label>Altura (m)</label>
+<input type="number" id="altura" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>Peso Habitual (kg)</label>
+<input type="number" id="pesoHab" step="any" oninput="calcularTudo()">
+</div>
+
+<div class="form-group">
+<label>IMC (automático)</label>
+<input type="text" id="imc" class="auto" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação IMC</label>
+<input type="text" id="classImc" class="auto" readonly>
+</div>
+
+<div class="form-group">
+<label>% Perda de Peso</label>
+<input type="text" id="perda" class="auto" readonly>
+</div>
+
 </div>
 </section>
 
