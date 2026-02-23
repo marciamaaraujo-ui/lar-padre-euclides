@@ -27,12 +27,11 @@
 /* ============================= */
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: var(--bg-light);
     color: var(--text-color);
-    line-height: 1.5;
+    line-height: 1.6;
 }
-
 /* ================= NAVBAR ================= */
 
 .navbar{
@@ -82,8 +81,6 @@ body {
 
 .nav-links a:hover{
   color:#4CAF50;
-}
-.nav-links a:hover{
   opacity:0.8;
   text-decoration:underline;
 }
@@ -281,4 +278,73 @@ color:#004d40;
     border:4px solid #2c7a7b;
     box-shadow:0 8px 20px rgba(0,0,0,0.15);
     display:none;
+}
+.btn-navbar{
+  background:#2c7a7b;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  font-size:0.85rem;
+  font-weight:600;
+  cursor:pointer;
+  margin-left:15px;
+  transition:0.3s;
+}
+
+.btn-navbar:hover{
+  background:#1f5f60;
+}
+
+.indicador-risco{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:0.8rem;
+  font-weight:600;
+  margin-left:20px;
+  color:white;
+}
+
+.indicador-risco.neutro{
+  background:#95a5a6;
+}
+
+.indicador-risco.baixo{
+  background:#2ecc71;
+}
+
+.indicador-risco.moderado{
+  background:#f39c12;
+}
+
+.indicador-risco.alto{
+  background:#e74c3c;
+}
+
+.secao{
+  margin-bottom:40px;
+  padding-bottom:20px;
+  border-bottom:1px solid #ecf0f1;
+}
+
+.secao h2{
+  margin-bottom:20px;
+  font-size:1.3rem;
+  font-weight:700;
+  color:#2c3e50;
+}
+
+header{
+  margin-bottom:40px;
+}
+
+header h1{
+  font-size:1.8rem;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+header p{
+  font-size:1rem;
+  color:#7f8c8d;
 }
