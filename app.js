@@ -55,8 +55,7 @@ function calcularTudo() {
     const peso = getNum("peso");
     const altura = getNum("altura");
     const pesoHab = getNum("pesoHab");
-    const idade = parseInt(getVal("idade")) || 0;
-
+    const idade = calcularIdadeAutomatica();
     /* ================= IMC ================= */
 
     let imc = 0;
