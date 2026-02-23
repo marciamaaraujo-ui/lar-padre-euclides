@@ -4,22 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exames Laboratoriais - ILPI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
 <style>
-.tabela-exames { width:100%; border-collapse:collapse; margin-top:20px; font-size:0.85rem;}
-.tabela-exames th, .tabela-exames td { border:1px solid #e0e0e0; padding:8px; vertical-align:top;}
-.tabela-exames th { background:#f0f4f2; font-weight:bold;}
-.resultado-normal { background:#e8f8f5; color:#1e8449; font-weight:bold;}
-.resultado-alto { background:#fdecea; color:#c0392b; font-weight:bold;}
-.resultado-baixo { background:#fff4e6; color:#d35400; font-weight:bold;}
-textarea { width:100%; margin-top:25px; padding:12px; font-size:0.9rem;}
+/* (mantém seu CSS interno aqui sem alterar) */
 </style>
+
 </head>
 
 <body>
 
-    <!-- NAVBAR INSTITUCIONAL -->
+<!-- NAVBAR INSTITUCIONAL -->
 <div class="navbar">
     <div class="nav-container">
 
@@ -31,6 +28,7 @@ textarea { width:100%; margin-top:25px; padding:12px; font-size:0.9rem;}
             <a href="index.html">🏠 Início</a>
             <a href="ficha-completa.html">📋 Avaliação Completa</a>
             <a href="dashboard.html">📊 Dashboard</a>
+            <a href="comorbidades.html">🏥 Comorbidades</a>
 
             <div id="indicadorRisco" class="indicador-risco neutro">
                 ICN: —
@@ -40,21 +38,6 @@ textarea { width:100%; margin-top:25px; padding:12px; font-size:0.9rem;}
         </div>
 
     </div>
-</div>
-  
-<div class="container">
-<div class="navbar">
-<div class="nav-container">
-<img src="assets/logo.png" class="nav-logo">
-<div class="nav-links">
-<a href="index.html" class="nav-link">🏠 Nova Avaliação</a>
-<a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-<a href="ficha-completa.html" class="nav-link">📂 Ficha Clínica</a>
-<a href="exames-laboratoriais.html" class="nav-link home-btn">🧪 Exames</a>
-<a href="comorbidades.html" class="nav-link">🏥 Comorbidades</a>
-<a href="metodologia.html" class="nav-link">📘 Metodologia</a>
-</div>
-</div>
 </div>
 
 <div class="container">
@@ -273,5 +256,7 @@ document.getElementById("relatorioAutomatico").value=laudo;
 
 </script>
 
+    <script src="app.js"></script>
+    
 </body>
 </html>
