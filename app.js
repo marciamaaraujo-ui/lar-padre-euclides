@@ -312,3 +312,21 @@ function salvarRegistro() {
 
     alert("Avaliação salva com sucesso.");
 }
+/* ================= FOTO PREVIEW ================= */
+
+function carregarFoto(event){
+
+    const input = event.target;
+    const preview = getEl("fotoPreview");
+
+    if (!input.files || !input.files[0]) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(input.files[0]);
+}
