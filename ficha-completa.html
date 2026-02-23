@@ -75,80 +75,242 @@
 <!-- ================= MNA ================= -->
 
 <section class="secao">
-<h2>MNA – Mini Nutritional Assessment</h2>
 
-<h3>Triagem (A–F)</h3>
+    <h2>MNA – Mini Nutritional Assessment</h2>
 
-<div class="form-group"><label>A – Ingesta alimentar (0–2)</label><input type="number" id="mnaA" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>B – Perda peso 3 meses (0–3)</label><input type="number" id="mnaB" min="0" max="3" oninput="calcularTudo()"></div>
-<div class="form-group"><label>C – Mobilidade (0–2)</label><input type="number" id="mnaC" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>D – Doença aguda/stress (0–2)</label><input type="number" id="mnaD" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>E – Problemas neuropsicológicos (0–2)</label><input type="number" id="mnaE" min="0" max="2" oninput="calcularTudo()"></div>
+    <h3>Triagem (A–F)</h3>
 
-<div class="form-group">
-<label>F – IMC (automático)</label>
-<input type="text" id="mnaF" class="auto" readonly>
-</div>
+    <!-- A -->
+    <div class="form-group">
+        <label>A – Ingesta alimentar</label>
+        <select id="mnaA" onchange="calcularTudo()">
+            <option value="0">Diminuição grave da ingesta</option>
+            <option value="1">Diminuição moderada da ingesta</option>
+            <option value="2">Sem diminuição da ingesta</option>
+        </select>
+    </div>
 
-<h3>Avaliação Global (G–R)</h3>
+    <!-- B -->
+    <div class="form-group">
+        <label>B – Perda de peso nos últimos 3 meses</label>
+        <select id="mnaB" onchange="calcularTudo()">
+            <option value="0">Perda > 3 kg</option>
+            <option value="1">Não sabe informar</option>
+            <option value="2">Perda 1–3 kg</option>
+            <option value="3">Sem perda</option>
+        </select>
+    </div>
 
-<div class="form-group"><label>G – Vive em casa (0–1)</label><input type="number" id="mnaG" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>H – >3 medicamentos/dia (0–1)</label><input type="number" id="mnaH" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>I – Lesões de pele (0–1)</label><input type="number" id="mnaI" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>J – Nº refeições (0–2)</label><input type="number" id="mnaJ" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>K – Consumo proteico (0–1)</label><input type="number" id="mnaK" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>L – Frutas/verduras (0–1)</label><input type="number" id="mnaL" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>M – Líquidos (0–1)</label><input type="number" id="mnaM" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>N – Alimenta-se sozinho (0–2)</label><input type="number" id="mnaN" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>O – Autopercepção nutricional (0–2)</label><input type="number" id="mnaO" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>P – Autopercepção saúde (0–2)</label><input type="number" id="mnaP" min="0" max="2" oninput="calcularTudo()"></div>
-<div class="form-group"><label>Q – Perímetro braquial (0–1)</label><input type="number" id="mnaQ" min="0" max="1" oninput="calcularTudo()"></div>
-<div class="form-group"><label>R – Perímetro panturrilha (0–1)</label><input type="number" id="mnaR" min="0" max="1" oninput="calcularTudo()"></div>
+    <!-- C -->
+    <div class="form-group">
+        <label>C – Mobilidade</label>
+        <select id="mnaC" onchange="calcularTudo()">
+            <option value="0">Restrito ao leito</option>
+            <option value="1">Deambula sem sair de casa</option>
+            <option value="2">Normal</option>
+        </select>
+    </div>
 
-<div class="form-group">
-<label>Total MNA (automático)</label>
-<input type="text" id="mnaTotal" class="auto" readonly>
-</div>
+    <!-- D -->
+    <div class="form-group">
+        <label>D – Doença aguda ou stress nos últimos 3 meses</label>
+        <select id="mnaD" onchange="calcularTudo()">
+            <option value="0">Sim</option>
+            <option value="2">Não</option>
+        </select>
+    </div>
 
-<div class="form-group">
-<label>Classificação MNA</label>
-<input type="text" id="classMNA" class="auto" readonly>
-</div>
+    <!-- E -->
+    <div class="form-group">
+        <label>E – Problemas neuropsicológicos</label>
+        <select id="mnaE" onchange="calcularTudo()">
+            <option value="0">Demência ou depressão grave</option>
+            <option value="1">Demência leve</option>
+            <option value="2">Sem problemas psicológicos</option>
+        </select>
+    </div>
+
+    <!-- F -->
+    <div class="form-group">
+        <label>F – IMC (pontuação automática)</label>
+        <input type="text" id="mnaF" class="auto" readonly>
+    </div>
+
+    <h3>Avaliação Global (G–R)</h3>
+
+    <!-- G -->
+    <div class="form-group">
+        <label>G – Vive em casa (não institucionalizado)</label>
+        <select id="mnaG" onchange="calcularTudo()">
+            <option value="1">Sim</option>
+            <option value="0">Não</option>
+        </select>
+    </div>
+
+    <!-- H -->
+    <div class="form-group">
+        <label>H – Utiliza mais de 3 medicamentos/dia</label>
+        <select id="mnaH" onchange="calcularTudo()">
+            <option value="0">Sim</option>
+            <option value="1">Não</option>
+        </select>
+    </div>
+
+    <!-- I -->
+    <div class="form-group">
+        <label>I – Lesões de pele ou escaras</label>
+        <select id="mnaI" onchange="calcularTudo()">
+            <option value="0">Sim</option>
+            <option value="1">Não</option>
+        </select>
+    </div>
+
+    <!-- J -->
+    <div class="form-group">
+        <label>J – Número de refeições por dia</label>
+        <select id="mnaJ" onchange="calcularTudo()">
+            <option value="0">1 refeição</option>
+            <option value="1">2 refeições</option>
+            <option value="2">3 refeições</option>
+        </select>
+    </div>
+
+    <!-- K -->
+    <div class="form-group">
+        <label>K – Consumo proteico adequado</label>
+        <select id="mnaK" onchange="calcularTudo()">
+            <option value="0">0–1 resposta positiva</option>
+            <option value="0.5">2 respostas positivas</option>
+            <option value="1">3 respostas positivas</option>
+        </select>
+    </div>
+
+    <!-- L -->
+    <div class="form-group">
+        <label>L – ≥2 porções de frutas/vegetais/dia</label>
+        <select id="mnaL" onchange="calcularTudo()">
+            <option value="0">Não</option>
+            <option value="1">Sim</option>
+        </select>
+    </div>
+
+    <!-- M -->
+    <div class="form-group">
+        <label>M – Ingesta de líquidos</label>
+        <select id="mnaM" onchange="calcularTudo()">
+            <option value="0">Menos de 3 copos/dia</option>
+            <option value="0.5">3–5 copos/dia</option>
+            <option value="1">Mais de 5 copos/dia</option>
+        </select>
+    </div>
+
+    <!-- N -->
+    <div class="form-group">
+        <label>N – Modo de alimentação</label>
+        <select id="mnaN" onchange="calcularTudo()">
+            <option value="0">Não se alimenta sozinho</option>
+            <option value="1">Com dificuldade</option>
+            <option value="2">Sem dificuldade</option>
+        </select>
+    </div>
+
+    <!-- O -->
+    <div class="form-group">
+        <label>O – Percepção de problema nutricional</label>
+        <select id="mnaO" onchange="calcularTudo()">
+            <option value="0">Acredita estar desnutrido</option>
+            <option value="1">Não sabe</option>
+            <option value="2">Acredita não ter problema</option>
+        </select>
+    </div>
+
+    <!-- P -->
+    <div class="form-group">
+        <label>P – Comparação com mesma idade</label>
+        <select id="mnaP" onchange="calcularTudo()">
+            <option value="0">Pior</option>
+            <option value="0.5">Não sabe</option>
+            <option value="1">Igual</option>
+            <option value="2">Melhor</option>
+        </select>
+    </div>
+
+    <!-- Q -->
+    <div class="form-group">
+        <label>Q – Perímetro braquial</label>
+        <select id="mnaQ" onchange="calcularTudo()">
+            <option value="0">PB &lt; 21 cm</option>
+            <option value="0.5">21–22 cm</option>
+            <option value="1">&gt; 22 cm</option>
+        </select>
+    </div>
+
+    <!-- R -->
+    <div class="form-group">
+        <label>R – Perímetro panturrilha</label>
+        <select id="mnaR" onchange="calcularTudo()">
+            <option value="0">PP &lt; 31 cm</option>
+            <option value="1">PP ≥ 31 cm</option>
+        </select>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="form-group">
+        <label>Total MNA (automático)</label>
+        <input type="text" id="mnaTotal" class="auto" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>Classificação MNA</label>
+        <input type="text" id="classMNA" class="auto" readonly>
+    </div>
 
 </section>
+
+
 
 <!-- ================= NRS ================= -->
 
 <section class="secao">
-<h2>NRS 2002</h2>
 
-<div class="form-group">
-<label>Deterioração do estado nutricional (0–3)</label>
-<input type="number" id="nrsNutri" min="0" max="3" oninput="calcularTudo()">
-</div>
+    <h2>NRS 2002</h2>
 
-<div class="form-group">
-<label>Gravidade da doença (0–3)</label>
-<input type="number" id="nrsGrav" min="0" max="3" oninput="calcularTudo()">
-</div>
+    <div class="form-group">
+        <label>Deterioração do estado nutricional</label>
+        <select id="nrsNutri" onchange="calcularTudo()">
+            <option value="0">Estado nutricional normal</option>
+            <option value="1">Perda &gt;5% em 3 meses</option>
+            <option value="2">Perda &gt;5% em 2 meses / IMC 18,5–20,5</option>
+            <option value="3">Perda &gt;5% em 1 mês / IMC &lt;18,5</option>
+        </select>
+    </div>
 
-<div class="form-group">
-<label>Ajuste Idade ≥ 70 (automático)</label>
-<input type="text" id="nrsIdade" class="auto" readonly>
-</div>
+    <div class="form-group">
+        <label>Gravidade da doença</label>
+        <select id="nrsGrav" onchange="calcularTudo()">
+            <option value="0">Sem estresse metabólico</option>
+            <option value="1">Doença crônica com complicação</option>
+            <option value="2">Cirurgia grande porte / AVC</option>
+            <option value="3">Paciente crítico</option>
+        </select>
+    </div>
 
-<div class="form-group">
-<label>Total NRS</label>
-<input type="text" id="nrsTotal" class="auto" readonly>
-</div>
+    <div class="form-group">
+        <label>Ajuste Idade ≥ 70 (automático)</label>
+        <input type="text" id="nrsIdade" class="auto" readonly>
+    </div>
 
-<div class="form-group">
-<label>Conduta NRS</label>
-<input type="text" id="classNRS" class="auto" readonly>
-</div>
+    <div class="form-group">
+        <label>Total NRS</label>
+        <input type="text" id="nrsTotal" class="auto" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>Conduta NRS</label>
+        <input type="text" id="classNRS" class="auto" readonly>
+    </div>
 
 </section>
-
 <!-- ================= ICN ================= -->
 
 <section class="secao">
