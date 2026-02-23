@@ -111,14 +111,15 @@ function calcularAntropometria() {
 
     }
 
-  if (peso > 0 && pesoHab > 0 && getEl("perda")) {
+if (peso > 0 && pesoHab > 0 && getEl("perda")) {
     const perda = ((pesoHab - peso) / pesoHab) * 100;
     getEl("perda").value = perda.toFixed(1) + "%";
 } else {
     if (getEl("perda")) getEl("perda").value = "";
 }
 
-
+return imc;
+}
 /* ================= MNA COMPLETO ================= */
 
 function calcularMNA(imc) {
