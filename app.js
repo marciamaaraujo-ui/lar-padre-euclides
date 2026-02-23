@@ -139,7 +139,10 @@ let scoreIMC = 0;
 if (imc <= 0) {
 
     scoreIMC = 0;
-    if (getEl("mnaF")) getEl("mnaF").value = "";
+
+    if (getEl("mnaF")) {
+        getEl("mnaF").value = "";
+    }
 
 } else {
 
@@ -147,11 +150,13 @@ if (imc <= 0) {
     else if (imc < 21) scoreIMC = 1;
     else if (imc < 23) scoreIMC = 2;
     else scoreIMC = 3;
+
+    if (getEl("mnaF")) {
+        getEl("mnaF").value = scoreIMC;
+    }
 }
 
 total += scoreIMC;
-
-    if (getEl("mnaF")) getEl("mnaF").value = scoreIMC;
 
     // Itens G–R
     total += getNum("mnaG");
