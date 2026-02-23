@@ -191,11 +191,9 @@ function salvarRegistro() {
     }
 
     const nome = nomeRaw.trim().toUpperCase();
-    const data = getVal("data");
-
-    if (!data) {
-        alert("Data obrigatória.");
-        return;
+    const dataAvaliacao = new Date().toISOString().split("T")[0];
+    const dataAdmissao = getVal("dataAdmissao");
+    
     }
 
     const banco = obterBanco();
@@ -207,21 +205,22 @@ function salvarRegistro() {
         };
     }
 
-    const novaAvaliacao = {
-        data,
-        idade: getVal("idade"),
-        peso: getVal("peso"),
-        altura: getVal("altura"),
-        imc: getVal("imc"),
-        classificacaoIMC: getVal("classImc"),
-        perdaPeso: getVal("perda"),
-        mnaTotal: getVal("mnaTotal"),
-        nrsTotal: getVal("nrsTotal"),
-        icn: getVal("icn"),
-        classificacaoICN: getVal("classICN"),
-        parecerPES: getVal("parecer"),
-        registradoEm: new Date().toISOString()
-    };
+   const novaAvaliacao = {
+    dataAvaliacao,
+    dataAdmissao,
+    idade: getVal("idade"),
+    peso: getVal("peso"),
+    altura: getVal("altura"),
+    imc: getVal("imc"),
+    classificacaoIMC: getVal("classImc"),
+    perdaPeso: getVal("perda"),
+    mnaTotal: getVal("mnaTotal"),
+    nrsTotal: getVal("nrsTotal"),
+    icn: getVal("icn"),
+    classificacaoICN: getVal("classICN"),
+    parecerPES: getVal("parecer"),
+    registradoEm: new Date().toISOString()
+};
 
     banco[nome].avaliacoes.push(novaAvaliacao);
 
