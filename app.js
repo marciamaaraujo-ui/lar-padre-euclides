@@ -133,15 +133,23 @@ function calcularMNA(imc) {
     total += getNum("mnaD");
     total += getNum("mnaE");
 
-    // F – IMC automático
-    let scoreIMC = 0;
+   // F – IMC automático
+let scoreIMC = 0;
+
+if (imc <= 0) {
+
+    scoreIMC = 0;
+    if (getEl("mnaF")) getEl("mnaF").value = "";
+
+} else {
 
     if (imc < 19) scoreIMC = 0;
     else if (imc < 21) scoreIMC = 1;
     else if (imc < 23) scoreIMC = 2;
     else scoreIMC = 3;
+}
 
-    total += scoreIMC;
+total += scoreIMC;
 
     if (getEl("mnaF")) getEl("mnaF").value = scoreIMC;
 
