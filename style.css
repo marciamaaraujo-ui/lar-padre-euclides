@@ -237,3 +237,14 @@ th {
         padding: 25px;
     }
 }
+.form-group{
+display:flex;
+flex-direction:column;
+margin-bottom:15px;
+}
+
+.auto{
+background:#e6f4f1;
+font-weight:600;
+color:#004d40;
+}
