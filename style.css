@@ -32,59 +32,90 @@ body {
     color: var(--text-color);
     line-height: 1.6;
 }
-/* ================= NAVBAR ================= */
+/* ================= NAVBAR INSTITUCIONAL DEFINITIVA ================= */
 
 .navbar{
   width:100%;
-  background:#f2f2f2;   /* cinza claro */
-  padding:14px 0;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  background:#f8f9fa;
+  border-bottom:1px solid #e5e7eb;
   position:sticky;
   top:0;
   z-index:1000;
 }
 
 .nav-container{
-  width:95%;
-  max-width:1200px;
+  max-width:1300px;
   margin:auto;
+  padding:12px 30px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
 
 .nav-left{
   display:flex;
   align-items:center;
-  gap:12px;
 }
 
 .nav-logo{
-  height:70px;
+  height:60px;
   width:auto;
 }
 
-.nav-title{
-  color:white;
-  font-weight:600;
-  font-size:1.1rem;
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:25px;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:18px;
 }
 
 .nav-links a{
-  color:#2c3e50;
   text-decoration:none;
-  margin-left:20px;
-  font-size:0.95rem;
   font-weight:600;
-  transition:0.3s;
+  font-size:0.95rem;
+  color:#334155;
+  transition:0.2s;
 }
 
 .nav-links a:hover{
-  color:#4CAF50;
-  opacity:0.8;
-  text-decoration:underline;
+  color:#0f766e;
 }
 
+/* Indicador compacto */
+
+.indicador-risco{
+  font-size:0.8rem;
+  font-weight:600;
+  padding:6px 14px;
+  border-radius:999px;
+  color:white;
+  white-space:nowrap;
+}
+
+.indicador-risco.neutro{ background:#94a3b8; }
+.indicador-risco.baixo{ background:#22c55e; }
+.indicador-risco.moderado{ background:#f59e0b; }
+.indicador-risco.alto{ background:#ef4444; }
+
+.btn-navbar{
+  background:#0f766e;
+  color:white;
+  border:none;
+  padding:8px 18px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.btn-navbar:hover{
+  background:#0c5e58;
+}
 /* Responsivo */
 
 @media(max-width:900px){
