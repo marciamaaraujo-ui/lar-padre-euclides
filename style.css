@@ -56,8 +56,10 @@ body{
 }
 
 .nav-left{
-  display:flex;
-  align-items:center;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    white-space:nowrap;
 }
 
 .nav-logo{
@@ -73,11 +75,11 @@ body{
 
 /* ===== LINKS ===== */
 
+
 .nav-links{
-  display:flex;
-  align-items:center;
-  gap:22px;
-  flex-wrap:wrap;
+    display:flex;
+    align-items:center;
+    gap:20px;
 }
 
 .nav-links a{
@@ -96,21 +98,26 @@ body{
 /* ===== INDICADOR ICN ===== */
 
 .indicador-risco{
-  font-size:0.85rem;
-  font-weight:600;
-  padding:6px 16px;
-  border-radius:999px;
-  color:white;
-  white-space:nowrap;
-  min-width:90px;
-  text-align:center;
+    padding:8px 18px;
+    border-radius:25px;
+    font-weight:700;
+    font-size:0.9rem;
 }
 
-.indicador-risco.neutro{ background:#94a3b8; }
-.indicador-risco.baixo{ background:#22c55e; }
-.indicador-risco.moderado{ background:#f59e0b; }
-.indicador-risco.alto{ background:#ef4444; }
+.indicador-risco.alto{
+    background:#c62828;
+    color:#fff;
+}
 
+.indicador-risco.moderado{
+    background:#f9a825;
+    color:#000;
+}
+
+.indicador-risco.baixo{
+    background:#2e7d32;
+    color:#fff;
+}
 /* ===== BOTÃO SALVAR ===== */
 
 .btn-navbar{
@@ -328,10 +335,8 @@ header p{
   }
   
 .paciente-ativo{
-  font-size:0.95rem;
-  font-weight:600;
-  color:#0f766e;
-  margin-left:20px;
+    white-space:nowrap;
+    font-weight:600;
 }
   
 }
