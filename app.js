@@ -188,7 +188,8 @@ document.addEventListener("DOMContentLoaded", function(){
     const nome = obterPacienteAtivo();
     const banco = obterBanco();
 
-    // Carregar dados básicos se existir paciente ativo
+    /* ================= CARREGAR DADOS BÁSICOS ================= */
+
     if(nome && banco[nome] && banco[nome].dadosBasicos){
 
         const dados = banco[nome].dadosBasicos;
@@ -204,7 +205,18 @@ document.addEventListener("DOMContentLoaded", function(){
         if(getEl("protese")) getEl("protese").value = dados.protese || "";
     }
 
-    // MNA auto cálculo
+    /* ================= CARREGAR MNA ================= */
+
+    if(nome && banco[nome] && banco[nome].mna){
+
+        const mna = banco[nome].mna;
+
+        if(getEl("mnaTotal")) getEl("mnaTotal").value = mna.total || "";
+        if(getEl("classMNA")) getEl("classMNA").value = mna.classificacao || "";
+    }
+
+    /* ================= EVENTOS MNA ================= */
+
     const selects = document.querySelectorAll("[id^='mna']");
 
     selects.forEach(select => {
