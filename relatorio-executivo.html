@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Relatório Executivo - ILPI</title>
+
 <link rel="stylesheet" href="style.css">
 
 <style>
@@ -15,7 +16,6 @@
     height: 25px;
     margin-bottom: 20px;
     overflow: hidden;
-    position: relative;
 }
 
 .bar-fill {
@@ -46,17 +46,17 @@
 
 <body onload="gerarRelatorioExecutivo()">
 
-<!-- NAVBAR INSTITUCIONAL -->
+<!-- ================= NAVBAR ================= -->
 <div class="navbar">
   <div class="nav-container">
 
     <div class="nav-left">
-  <img src="assets/logo.png" class="nav-logo">
+      <img src="assets/logo.png" class="nav-logo">
 
-  <div id="pacienteAtivoInfo" class="paciente-ativo">
-    👤 Nenhum paciente selecionado
-  </div>
-</div>
+      <div id="pacienteAtivoInfo" class="paciente-ativo">
+        👤 Nenhum paciente selecionado
+      </div>
+    </div>
 
     <div class="nav-links">
       <a href="index.html">🏠 Início</a>
@@ -75,14 +75,16 @@
 
   </div>
 </div>
-    
+
+<!-- ================= CONTEÚDO ================= -->
 <div class="container">
-    
+
 <header style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid var(--primary-color); padding-bottom:20px; margin-bottom:40px;">
     <div>
         <h1 style="margin:0;">Relatório Executivo Nutricional</h1>
         <p style="margin:5px 0 0 0;">Análise Global da População Institucionalizada</p>
     </div>
+
     <button class="btn-save no-print"
             onclick="window.print()"
             style="width:auto; padding:10px 20px; font-size:0.9rem; background:var(--secondary-color);">
@@ -99,12 +101,12 @@
 
     <div class="stat-card">
         <label>Alto Risco Clínico</label>
-        <p id="totalAltoRisco" style="color:#e74c3c;">0</p>
+        <p id="totalAltoRisco" style="color:#ef4444;">0</p>
     </div>
 
     <div class="stat-card">
         <label>Risco Moderado</label>
-        <p id="totalModerado" style="color:#f39c12;">0</p>
+        <p id="totalModerado" style="color:#f59e0b;">0</p>
     </div>
 </div>
 
@@ -119,7 +121,7 @@
 <span id="percBaixo">0%</span>
 </div>
 <div class="bar-wrap">
-<div id="barBaixo" class="bar-fill" style="background:#27ae60; width:0%;"></div>
+<div id="barBaixo" class="bar-fill" style="background:#22c55e; width:0%;"></div>
 </div>
 
 <div class="label-group">
@@ -127,7 +129,7 @@
 <span id="percModerado">0%</span>
 </div>
 <div class="bar-wrap">
-<div id="barModerado" class="bar-fill" style="background:#f39c12; width:0%;"></div>
+<div id="barModerado" class="bar-fill" style="background:#f59e0b; width:0%;"></div>
 </div>
 
 <div class="label-group">
@@ -135,7 +137,7 @@
 <span id="percAlto">0%</span>
 </div>
 <div class="bar-wrap">
-<div id="barAlto" class="bar-fill" style="background:#e74c3c; width:0%;"></div>
+<div id="barAlto" class="bar-fill" style="background:#ef4444; width:0%;"></div>
 </div>
 
 </div>
@@ -166,38 +168,38 @@ Relatório gerado automaticamente em
 
 </div>
 
+<!-- ================= SCRIPT GLOBAL ================= -->
 <script src="app.js"></script>
 
+<!-- ================= SCRIPT DO RELATÓRIO ================= -->
 <script>
-
-function gerarRelatorioExecutivo() {
+function gerarRelatorioExecutivo(){
 
     const banco = obterBanco();
     const nomes = Object.keys(banco);
 
     let totalValidos = 0;
-    let icnCounts = { baixo: 0, moderado: 0, alto: 0 };
-    let imcCounts = { baixo: 0, eutrofia: 0, excesso: 0 };
+    let icnCounts = { baixo:0, moderado:0, alto:0 };
+    let imcCounts = { baixo:0, eutrofia:0, excesso:0 };
 
     nomes.forEach(nome => {
 
-        if (!banco[nome].avaliacoes || banco[nome].avaliacoes.length === 0) return;
+        if(!banco[nome].avaliacoes || banco[nome].avaliacoes.length === 0) return;
 
         totalValidos++;
 
         const ultima = banco[nome].avaliacoes.slice(-1)[0];
-
         const risco = ultima.classificacao;
 
-        if (risco === "Baixo Risco") icnCounts.baixo++;
-        else if (risco === "Risco Moderado") icnCounts.moderado++;
-        else if (risco === "Alto Risco Clínico") icnCounts.alto++;
+        if(risco === "Baixo Risco") icnCounts.baixo++;
+        else if(risco === "Risco Moderado") icnCounts.moderado++;
+        else if(risco === "Alto Risco Clínico") icnCounts.alto++;
 
         const imcVal = parseFloat(ultima.imc);
 
-        if (!isNaN(imcVal)) {
-            if (imcVal < 22) imcCounts.baixo++;
-            else if (imcVal <= 27) imcCounts.eutrofia++;
+        if(!isNaN(imcVal)){
+            if(imcVal < 22) imcCounts.baixo++;
+            else if(imcVal <= 27) imcCounts.eutrofia++;
             else imcCounts.excesso++;
         }
     });
@@ -209,46 +211,40 @@ function gerarRelatorioExecutivo() {
     document.getElementById("totalAltoRisco").innerText = icnCounts.alto;
     document.getElementById("totalModerado").innerText = icnCounts.moderado;
 
-    function atualizarBarra(idPerc, idBar, valor) {
-
-        const perc = totalValidos > 0 ? (valor / totalValidos) * 100 : 0;
-        const percFormatado = perc.toFixed(1);
-
-        document.getElementById(idPerc).innerText = percFormatado + "%";
-        document.getElementById(idBar).style.width = percFormatado + "%";
+    function atualizarBarra(idPerc,idBar,valor){
+        const perc = totalValidos>0 ? (valor/totalValidos)*100 : 0;
+        const p = perc.toFixed(1);
+        document.getElementById(idPerc).innerText = p+"%";
+        document.getElementById(idBar).style.width = p+"%";
     }
 
-    atualizarBarra("percBaixo", "barBaixo", icnCounts.baixo);
-    atualizarBarra("percModerado", "barModerado", icnCounts.moderado);
-    atualizarBarra("percAlto", "barAlto", icnCounts.alto);
+    atualizarBarra("percBaixo","barBaixo",icnCounts.baixo);
+    atualizarBarra("percModerado","barModerado",icnCounts.moderado);
+    atualizarBarra("percAlto","barAlto",icnCounts.alto);
 
     const tabela = document.getElementById("tabelaIMC");
 
     const dadosIMC = [
-        { label: "IMC < 22 (Baixo Peso)", qtd: imcCounts.baixo },
-        { label: "IMC 22–27 (Eutrofia)", qtd: imcCounts.eutrofia },
-        { label: "IMC > 27 (Excesso de Peso)", qtd: imcCounts.excesso }
+        {label:"IMC < 22 (Baixo Peso)", qtd:imcCounts.baixo},
+        {label:"IMC 22–27 (Eutrofia)", qtd:imcCounts.eutrofia},
+        {label:"IMC > 27 (Excesso de Peso)", qtd:imcCounts.excesso}
     ];
 
-    tabela.innerHTML = dadosIMC.map(item => {
-
-        const perc = totalValidos > 0
-            ? ((item.qtd / totalValidos) * 100).toFixed(1)
+    tabela.innerHTML = dadosIMC.map(item=>{
+        const perc = totalValidos>0
+            ? ((item.qtd/totalValidos)*100).toFixed(1)
             : "0.0";
 
         return `
-            <tr>
-                <td>${item.label}</td>
-                <td>${item.qtd}</td>
-                <td><strong>${perc}%</strong></td>
-            </tr>
+        <tr>
+            <td>${item.label}</td>
+            <td>${item.qtd}</td>
+            <td><strong>${perc}%</strong></td>
+        </tr>
         `;
-    }).join('');
+    }).join("");
 }
-
 </script>
 
-    <script src="app.js"></script>
-    
 </body>
 </html>
