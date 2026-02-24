@@ -1,5 +1,5 @@
 /* ===================================================== */
-/* SISTEMA NUTRICIONAL ILPI – VERSÃO DEFINITIVA FINAL */
+/* SISTEMA NUTRICIONAL ILPI – VERSÃO PROFISSIONAL FINAL */
 /* ===================================================== */
 
 /* ================= UTILITÁRIOS ================= */
@@ -22,7 +22,6 @@ function getNum(id){
 /* ================= IDADE ================= */
 
 function calcularIdade(){
-
     const dataNascimento = getVal("dataNascimento");
     if(!dataNascimento) return 0;
 
@@ -37,7 +36,6 @@ function calcularIdade(){
     }
 
     if(getEl("idade")) getEl("idade").value = idade;
-
     return idade;
 }
 
@@ -52,7 +50,6 @@ function calcularAntropometria(){
     let imc = 0;
 
     if(peso > 0 && altura > 0){
-
         imc = peso / (altura * altura);
 
         if(getEl("imc")) getEl("imc").value = imc.toFixed(2);
@@ -72,7 +69,7 @@ function calcularAntropometria(){
     return imc;
 }
 
-/* ================= CIRCUNFERÊNCIAS (≥65 ANOS) ================= */
+/* ================= CIRCUNFERÊNCIAS ================= */
 
 function calcularCircunferencias(imc, idade){
 
@@ -81,6 +78,8 @@ function calcularCircunferencias(imc, idade){
     const sexo = getVal("sexo");
     const braco = getNum("circBraco");
     const pant = getNum("circPanturrilha");
+
+    if(!sexo) return;
 
     /* ===== MUAC ===== */
 
@@ -105,24 +104,31 @@ function calcularCircunferencias(imc, idade){
 
     const campoBraco = getEl("adequacaoBraco");
 
-if(braco > 0 && campoBraco){
-    if(braco < cutoffMuitoBaixo)
-        campoBraco.value = "Muito Baixo (Alto risco)";
-    else if(braco < cutoffBaixo)
-        campoBraco.value = "Baixo (Risco)";
-    else
-        campoBraco.value = "Adequado";
-}
+    if(braco > 0 && campoBraco){
+        if(braco < cutoffMuitoBaixo)
+            campoBraco.value = "Muito Baixo (Alto risco)";
+        else if(braco < cutoffBaixo)
+            campoBraco.value = "Baixo (Risco)";
+        else
+            campoBraco.value = "Adequado";
+    }
 
     /* ===== PANTURRILHA ===== */
 
+    let cutoffPant = (sexo === "F") ? 33 : 34;
+
+    if(imc >=25 && imc <30) cutoffPant -=3;
+    else if(imc >=30 && imc <40) cutoffPant -=7;
+    else if(imc >=40) cutoffPant -=12;
+
     const campoPant = getEl("adequacaoPanturrilha");
 
-if(pant > 0 && campoPant){
-    if(pant < cutoffPant)
-        campoPant.value = "Baixa (Risco Sarcopenia)";
-    else
-        campoPant.value = "Adequada";
+    if(pant > 0 && campoPant){
+        if(pant < cutoffPant)
+            campoPant.value = "Baixa (Risco Sarcopenia)";
+        else
+            campoPant.value = "Adequada";
+    }
 }
 
 /* ================= SCORE SARCOPENIA ================= */
@@ -140,7 +146,6 @@ function calcularScoreSarcopenia(){
     if(cp.includes("Baixa")) score += 2;
 
     let classificacao = "Sem risco";
-
     if(score >= 3) classificacao = "Alto Risco Sarcopênico";
     else if(score >= 1) classificacao = "Risco Sarcopênico Leve";
 
@@ -156,11 +161,14 @@ function calcularMNA(imc){
 
     let total = 0;
 
-    total += getNum("mnaA");
-    total += getNum("mnaB");
-    total += getNum("mnaC");
-    total += getNum("mnaD");
-    total += getNum("mnaE");
+    const campos = [
+        "mnaA","mnaB","mnaC","mnaD","mnaE",
+        "mnaG","mnaH","mnaI","mnaJ","mnaK",
+        "mnaL","mnaM","mnaN","mnaO","mnaP",
+        "mnaQ","mnaR"
+    ];
+
+    campos.forEach(id => total += getNum(id));
 
     let scoreIMC = 0;
 
@@ -174,11 +182,6 @@ function calcularMNA(imc){
     if(getEl("mnaF")) getEl("mnaF").value = scoreIMC;
 
     total += scoreIMC;
-
-    total += getNum("mnaG") + getNum("mnaH") + getNum("mnaI") +
-             getNum("mnaJ") + getNum("mnaK") + getNum("mnaL") +
-             getNum("mnaM") + getNum("mnaN") + getNum("mnaO") +
-             getNum("mnaP") + getNum("mnaQ") + getNum("mnaR");
 
     if(getEl("mnaTotal")) getEl("mnaTotal").value = total.toFixed(1);
 
@@ -214,33 +217,21 @@ function calcularNRS(imc, idade){
     return total;
 }
 
-/* ================= ICN INTEGRADO ================= */
+/* ================= ICN ================= */
 
 function calcularICN(mna, nrs, imc){
 
-    /* ================= NORMALIZAÇÃO ================= */
+    const mnaNormalizado = mna > 0 ? (30 - mna) / 3 : 0;
 
-    // MNA invertido (quanto menor, maior risco)
-    const mnaNormalizado = (30 - mna) / 3;   // escala ~0–10
-
-    // NRS já representa risco direto
-    const nrsScore = nrs;                    // escala 0–7
-
-    // IMC como fator complementar
     let imcScore = 0;
     if(imc < 22) imcScore = 2;
     else if(imc > 30) imcScore = 1;
 
-    // Sarcopenia
-    const scoreSarc = calcularScoreSarcopenia();
-    const sarcScore = scoreSarc * 1.2;
+    const sarcScore = calcularScoreSarcopenia() * 1.2;
 
-    /* ================= ICN FINAL ================= */
-
-    const icnFinal = mnaNormalizado + nrsScore + imcScore + sarcScore;
+    const icnFinal = mnaNormalizado + nrs + imcScore + sarcScore;
 
     let classificacao = "Baixo Risco";
-
     if(icnFinal >= 15)
         classificacao = "Alto Risco Clínico";
     else if(icnFinal >= 8)
@@ -253,6 +244,7 @@ function calcularICN(mna, nrs, imc){
 
     return classificacao;
 }
+
 /* ================= NAVBAR ================= */
 
 function atualizarIndicadorNavbar(classificacao){
@@ -279,23 +271,18 @@ function atualizarIndicadorNavbar(classificacao){
 /* ================= ENGINE ================= */
 
 function calcularTudo(){
-
     const idade = calcularIdade();
     const imc = calcularAntropometria();
-
     calcularCircunferencias(imc, idade);
-
     const mna = calcularMNA(imc);
     const nrs = calcularNRS(imc, idade);
     const classificacao = calcularICN(mna, nrs, imc);
-
     gerarPES(classificacao);
 }
 
 /* ================= PES ================= */
 
 function gerarPES(classificacao){
-
     if(!getEl("parecer")) return;
 
     let texto = "Estado nutricional preservado.";
@@ -308,9 +295,7 @@ function gerarPES(classificacao){
     getEl("parecer").value = texto;
 }
 
-/* ===================================================== */
-/* BANCO DE DADOS LOCAL + PACIENTE ATIVO GLOBAL */
-/* ===================================================== */
+/* ================= BANCO LOCAL ================= */
 
 function obterBanco(){
     return JSON.parse(localStorage.getItem("bancoILPI")) || {};
@@ -323,7 +308,6 @@ function salvarBanco(banco){
 function salvarRegistro(){
 
     const nome = getVal("nome").trim().toUpperCase();
-
     if(!nome){
         alert("Nome obrigatório.");
         return;
@@ -341,24 +325,25 @@ function salvarRegistro(){
     const novaAvaliacao = {
         data: new Date().toISOString(),
         idade: getVal("idade"),
+        peso: getVal("peso"),
+        altura: getVal("altura"),
         imc: getVal("imc"),
         mna: getVal("mnaTotal"),
         nrs: getVal("nrsTotal"),
         icn: getVal("icn"),
         classificacao: getVal("classICN"),
+        katz: getVal("katzTotal"),
         parecer: getVal("parecer")
     };
 
     banco[nome].avaliacoes.push(novaAvaliacao);
 
     salvarBanco(banco);
-
-    /* DEFINIR COMO PACIENTE ATIVO */
     localStorage.setItem("pacienteAtivoILPI", nome);
 
     atualizarPacienteAtivoNavbar();
 
-    alert("Avaliação salva e definida como paciente ativo.");
+    alert("Avaliação salva com sucesso.");
 }
 
 /* ================= PACIENTE ATIVO ================= */
@@ -377,22 +362,15 @@ function atualizarPacienteAtivoNavbar(){
     }
 
     const ultima = banco[nome].avaliacoes.slice(-1)[0];
-
     info.innerText = `👤 ${nome} – ${ultima.idade} anos`;
 }
 
-/* ================= CARREGAMENTO AUTOMÁTICO ================= */
-
-document.addEventListener("DOMContentLoaded", function(){
-    atualizarPacienteAtivoNavbar();
-});
-
-/* ================= FOTO RESIDENTE ================= */
+/* ================= FOTO ================= */
 
 function carregarFoto(event){
 
     const input = event.target;
-    const preview = document.getElementById("fotoPreview");
+    const preview = getEl("fotoPreview");
 
     if(!input.files || !input.files[0]) return;
 
@@ -401,35 +379,29 @@ function carregarFoto(event){
     reader.onload = function(e){
         preview.src = e.target.result;
         preview.style.display = "block";
-
-        // opcional: salvar no localStorage
         localStorage.setItem("fotoTempILPI", e.target.result);
     };
 
     reader.readAsDataURL(input.files[0]);
 }
-/* ================= ESCALA DE KATZ ================= */
+
+/* ================= KATZ ================= */
 
 function calcularKatz(){
 
     const campos = [
-        "katzBanho",
-        "katzVestir",
-        "katzHigiene",
-        "katzTransferencia",
-        "katzContinencia",
-        "katzAlimentacao"
+        "katzBanho","katzVestir","katzHigiene",
+        "katzTransferencia","katzContinencia","katzAlimentacao"
     ];
 
     let total = 0;
 
     campos.forEach(id=>{
-        const el = document.getElementById(id);
+        const el = getEl(id);
         if(el) total += parseInt(el.value) || 0;
     });
 
-    const totalInput = document.getElementById("katzTotal");
-    if(totalInput) totalInput.value = total;
+    if(getEl("katzTotal")) getEl("katzTotal").value = total;
 
     let classificacao = "";
 
@@ -440,6 +412,20 @@ function calcularKatz(){
     else
         classificacao = "Dependência Importante";
 
-    const classInput = document.getElementById("katzClassificacao");
-    if(classInput) classInput.value = classificacao;
+    if(getEl("katzClassificacao"))
+        getEl("katzClassificacao").value = classificacao;
 }
+
+/* ================= LOAD ================= */
+
+document.addEventListener("DOMContentLoaded", function(){
+    atualizarPacienteAtivoNavbar();
+
+    const fotoSalva = localStorage.getItem("fotoTempILPI");
+    const preview = getEl("fotoPreview");
+
+    if(fotoSalva && preview){
+        preview.src = fotoSalva;
+        preview.style.display = "block";
+    }
+});
