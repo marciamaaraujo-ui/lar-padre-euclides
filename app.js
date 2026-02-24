@@ -302,11 +302,33 @@ function calcularICN(){
     if(sarc.includes("Risco")) score += 1;
 
     let classificacao = "Baixo Risco";
-    if(score >= 4) classificacao = "Alto Risco";
-    else if(score >= 2) classificacao = "Risco Moderado";
+    let classeCSS = "icn-baixo";
 
-    if(getEl("icn")) getEl("icn").value = score;
-    if(getEl("classICN")) getEl("classICN").value = classificacao;
+    if(score >= 4){
+        classificacao = "Alto Risco";
+        classeCSS = "icn-alto";
+    }
+    else if(score >= 2){
+        classificacao = "Risco Moderado";
+        classeCSS = "icn-moderado";
+    }
+
+    const campoICN = getEl("icn");
+    const campoClass = getEl("classICN");
+
+    if(campoICN) campoICN.value = score;
+
+    if(campoClass){
+        campoClass.value = classificacao;
+
+        campoClass.classList.remove(
+            "icn-baixo",
+            "icn-moderado",
+            "icn-alto"
+        );
+
+        campoClass.classList.add(classeCSS);
+    }
 
     banco[nome].icn = {
         score: score,
@@ -315,6 +337,13 @@ function calcularICN(){
     };
 
     salvarBanco(banco);
+
+    /* 🔴 ALERTA AUTOMÁTICO */
+    if(score >= 4){
+        alert("🚨 ICN indica ALTO RISCO NUTRICIONAL. Avaliar intervenção imediata.");
+    }
+
+    atualizarPainelAlertas();
 
     return score;
 }
