@@ -114,6 +114,70 @@ function atualizarPacienteAtivoNavbar(){
 
     info.innerText = `👤 ${nome}`;
 }
+/* ================= IMC ================= */
+
+function calcularIMC(){
+
+    const peso = getNum("peso");
+    const altura = getNum("altura");
+
+    if(peso <= 0 || altura <= 0) return;
+
+    const imc = peso / (altura * altura);
+
+    if(getEl("imc")) getEl("imc").value = imc.toFixed(2);
+
+    let classificacao = "";
+
+    if(imc < 18.5) classificacao = "Baixo Peso";
+    else if(imc < 25) classificacao = "Eutrofia";
+    else if(imc < 30) classificacao = "Sobrepeso";
+    else classificacao = "Obesidade";
+
+    if(getEl("classImc")) getEl("classImc").value = classificacao;
+
+    return imc;
+}
+
+/* ================= SARCOPENIA ================= */
+
+function calcularSarcopenia(){
+
+    const braco = getNum("circBraco");
+    const pant = getNum("circPanturrilha");
+
+    let classificacao = "Sem risco";
+
+    if(braco > 0 && braco < 22) classificacao = "Risco Sarcopênico";
+    if(pant > 0 && pant < 31) classificacao = "Risco Sarcopênico";
+
+    if(getEl("scoreSarcopenia"))
+        getEl("scoreSarcopenia").value = classificacao;
+
+    return classificacao;
+}
+
+/* ================= NRS ================= */
+
+function calcularNRS(){
+
+    const nutri = getNum("nrsNutri");
+    const grav = getNum("nrsGrav");
+    const idade = getNum("idade");
+
+    let adicionalIdade = idade >= 70 ? 1 : 0;
+
+    const total = nutri + grav + adicionalIdade;
+
+    if(getEl("nrsIdade")) getEl("nrsIdade").value = adicionalIdade;
+    if(getEl("nrsTotal")) getEl("nrsTotal").value = total;
+
+    let classificacao = total >= 3 ? "Risco Nutricional" : "Sem Risco";
+
+    if(getEl("classNRS")) getEl("classNRS").value = classificacao;
+
+    return total;
+}
 
 /* ================= MNA ================= */
 
@@ -178,6 +242,41 @@ function salvarMNA(){
     salvarBanco(banco);
 
     alert("MNA salva com sucesso.");
+}
+
+/* ================= ICN ================= */
+
+function calcularICN(){
+
+    const nome = obterPacienteAtivo();
+    const banco = obterBanco();
+
+    if(!nome || !banco[nome]) return;
+
+    let score = 0;
+
+    // MNA
+    const mna = banco[nome].mna?.total || 0;
+    if(mna < 17) score += 3;
+    else if(mna < 24) score += 2;
+
+    // NRS
+    const nrs = getNum("nrsTotal");
+    if(nrs >= 3) score += 2;
+
+    // Sarcopenia
+    const sarc = getVal("scoreSarcopenia");
+    if(sarc.includes("Risco")) score += 1;
+
+    let classificacao = "Baixo Risco";
+
+    if(score >= 4) classificacao = "Alto Risco";
+    else if(score >= 2) classificacao = "Risco Moderado";
+
+    if(getEl("icn")) getEl("icn").value = score;
+    if(getEl("classICN")) getEl("classICN").value = classificacao;
+
+    return score;
 }
 /* ================= LOAD ================= */
 
