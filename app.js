@@ -1,27 +1,25 @@
 /* ===================================================== */
-/* SISTEMA NUTRICIONAL ILPI – VERSÃO DEFINITIVA */
+/* SISTEMA NUTRICIONAL ILPI – VERSÃO DEFINITIVA FINAL */
 /* ===================================================== */
-
 
 /* ================= UTILITÁRIOS ================= */
 
-function getEl(id) {
+function getEl(id){
     return document.getElementById(id);
 }
 
-function getVal(id) {
+function getVal(id){
     const el = getEl(id);
     return el ? el.value : "";
 }
 
-function getNum(id) {
+function getNum(id){
     const el = getEl(id);
-    if (!el) return 0;
+    if(!el) return 0;
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
 
-
-/* ================= IDADE AUTOMÁTICA ================= */
+/* ================= IDADE ================= */
 
 function calcularIdade(){
 
@@ -38,53 +36,14 @@ function calcularIdade(){
         idade--;
     }
 
-    if(getEl("idade")){
-        getEl("idade").value = idade;
-    }
+    if(getEl("idade")) getEl("idade").value = idade;
 
-    return idade; // 🔥 ESSENCIAL
+    return idade;
 }
-
-/* ================= ESCALA DE KATZ ================= */
-
-function calcularKatz(){
-
-    const total =
-        getNum("katzBanho") +
-        getNum("katzVestir") +
-        getNum("katzHigiene") +
-        getNum("katzTransferencia") +
-        getNum("katzContinencia") +
-        getNum("katzAlimentacao");
-
-    if(getEl("katzTotal")){
-        getEl("katzTotal").value = total;
-    }
-
-    let classificacao = "";
-
-    if(total === 6){
-        classificacao = "6 pontos – Independência Total: Realiza todas as atividades sem auxílio.";
-    }
-    else if(total === 5){
-        classificacao = "5 pontos – Dependência Ligeira: Necessita auxílio pontual.";
-    }
-    else if(total === 4){
-        classificacao = "4 pontos – Dependência Moderada: Limitações funcionais evidentes.";
-    }
-    else{
-        classificacao = "0–3 pontos – Dependência Grave: Necessita assistência na maioria das atividades.";
-    }
-
-    if(getEl("katzClassificacao")){
-        getEl("katzClassificacao").value = classificacao;
-    }
-}
-
 
 /* ================= ANTROPOMETRIA ================= */
 
-function calcularAntropometria() {
+function calcularAntropometria(){
 
     const peso = getNum("peso");
     const altura = getNum("altura");
@@ -92,172 +51,226 @@ function calcularAntropometria() {
 
     let imc = 0;
 
-    if (peso > 0 && altura > 0) {
+    if(peso > 0 && altura > 0){
 
         imc = peso / (altura * altura);
 
-        if (getEl("imc")) getEl("imc").value = imc.toFixed(2);
+        if(getEl("imc")) getEl("imc").value = imc.toFixed(2);
 
         let classIMC = "Sobrepeso";
-        if (imc < 22) classIMC = "Baixo Peso";
-        else if (imc <= 27) classIMC = "Eutrofia";
+        if(imc < 22) classIMC = "Baixo Peso";
+        else if(imc <= 27) classIMC = "Eutrofia";
 
-        if (getEl("classImc")) getEl("classImc").value = classIMC;
-
-    } else {
-
-        if (getEl("imc")) getEl("imc").value = "";
-        if (getEl("classImc")) getEl("classImc").value = "";
-
+        if(getEl("classImc")) getEl("classImc").value = classIMC;
     }
 
-if (peso > 0 && pesoHab > 0 && getEl("perda")) {
-    const perda = ((pesoHab - peso) / pesoHab) * 100;
-    getEl("perda").value = perda.toFixed(1) + "%";
-} else {
-    if (getEl("perda")) getEl("perda").value = "";
+    if(peso > 0 && pesoHab > 0 && getEl("perda")){
+        const perda = ((pesoHab - peso) / pesoHab) * 100;
+        getEl("perda").value = perda.toFixed(1) + "%";
+    }
+
+    return imc;
 }
 
-return imc;
-}
-/* ================= MNA COMPLETO ================= */
+/* ================= CIRCUNFERÊNCIAS (≥65 ANOS) ================= */
 
-function calcularMNA(imc) {
+function calcularCircunferencias(imc, idade){
+
+    if(idade < 65) return;
+
+    const sexo = getVal("sexo");
+    const braco = getNum("circBraco");
+    const pant = getNum("circPanturrilha");
+
+    /* ===== MUAC ===== */
+
+    let cutoffBaixo = 0;
+    let cutoffMuitoBaixo = 0;
+
+    if(sexo === "F"){
+        cutoffBaixo = 25;
+        cutoffMuitoBaixo = 23;
+        if(imc >=25 && imc <30){ cutoffBaixo -=2; cutoffMuitoBaixo -=2; }
+        else if(imc >=30 && imc <40){ cutoffBaixo -=6; cutoffMuitoBaixo -=6; }
+        else if(imc >=40){ cutoffBaixo -=9; cutoffMuitoBaixo -=9; }
+    }
+
+    if(sexo === "M"){
+        cutoffBaixo = 28;
+        cutoffMuitoBaixo = 26;
+        if(imc >=25 && imc <30){ cutoffBaixo -=3; cutoffMuitoBaixo -=3; }
+        else if(imc >=30 && imc <40){ cutoffBaixo -=7; cutoffMuitoBaixo -=7; }
+        else if(imc >=40){ cutoffBaixo -=10; cutoffMuitoBaixo -=10; }
+    }
+
+    if(braco > 0){
+        if(braco < cutoffMuitoBaixo)
+            getEl("adequacaoBraco").value = "Muito Baixo (Alto risco)";
+        else if(braco < cutoffBaixo)
+            getEl("adequacaoBraco").value = "Baixo (Risco)";
+        else
+            getEl("adequacaoBraco").value = "Adequado";
+    }
+
+    /* ===== PANTURRILHA ===== */
+
+    let cutoffPant = (sexo === "F") ? 33 : 34;
+
+    if(imc >=25 && imc <30) cutoffPant -=3;
+    else if(imc >=30 && imc <40) cutoffPant -=7;
+    else if(imc >=40) cutoffPant -=12;
+
+    if(pant > 0){
+        if(pant < cutoffPant)
+            getEl("adequacaoPanturrilha").value = "Baixa (Risco Sarcopenia)";
+        else
+            getEl("adequacaoPanturrilha").value = "Adequada";
+    }
+}
+
+/* ================= SCORE SARCOPENIA ================= */
+
+function calcularScoreSarcopenia(){
+
+    const muac = getVal("adequacaoBraco");
+    const cp = getVal("adequacaoPanturrilha");
+
+    let score = 0;
+
+    if(muac.includes("Muito Baixo")) score += 2;
+    else if(muac.includes("Baixo")) score += 1;
+
+    if(cp.includes("Baixa")) score += 2;
+
+    let classificacao = "Sem risco";
+
+    if(score >= 3) classificacao = "Alto Risco Sarcopênico";
+    else if(score >= 1) classificacao = "Risco Sarcopênico Leve";
+
+    if(getEl("scoreSarcopenia"))
+        getEl("scoreSarcopenia").value = classificacao;
+
+    return score;
+}
+
+/* ================= MNA ================= */
+
+function calcularMNA(imc){
 
     let total = 0;
 
-    // Itens A–E
     total += getNum("mnaA");
     total += getNum("mnaB");
     total += getNum("mnaC");
     total += getNum("mnaD");
     total += getNum("mnaE");
 
-   // F – IMC automático
-let scoreIMC = 0;
+    let scoreIMC = 0;
 
-if (imc <= 0) {
-
-    scoreIMC = 0;
-
-    if (getEl("mnaF")) {
-        getEl("mnaF").value = "";
+    if(imc > 0){
+        if(imc < 19) scoreIMC = 0;
+        else if(imc < 21) scoreIMC = 1;
+        else if(imc < 23) scoreIMC = 2;
+        else scoreIMC = 3;
     }
 
-} else {
+    if(getEl("mnaF")) getEl("mnaF").value = scoreIMC;
 
-    if (imc < 19) scoreIMC = 0;
-    else if (imc < 21) scoreIMC = 1;
-    else if (imc < 23) scoreIMC = 2;
-    else scoreIMC = 3;
+    total += scoreIMC;
 
-    if (getEl("mnaF")) {
-        getEl("mnaF").value = scoreIMC;
-    }
-}
+    total += getNum("mnaG") + getNum("mnaH") + getNum("mnaI") +
+             getNum("mnaJ") + getNum("mnaK") + getNum("mnaL") +
+             getNum("mnaM") + getNum("mnaN") + getNum("mnaO") +
+             getNum("mnaP") + getNum("mnaQ") + getNum("mnaR");
 
-total += scoreIMC;
+    if(getEl("mnaTotal")) getEl("mnaTotal").value = total.toFixed(1);
 
-    // Itens G–R
-    total += getNum("mnaG");
-    total += getNum("mnaH");
-    total += getNum("mnaI");
-    total += getNum("mnaJ");
-    total += getNum("mnaK");
-    total += getNum("mnaL");
-    total += getNum("mnaM");
-    total += getNum("mnaN");
-    total += getNum("mnaO");
-    total += getNum("mnaP");
-    total += getNum("mnaQ");
-    total += getNum("mnaR");
-
-    if (getEl("mnaTotal")) {
-        getEl("mnaTotal").value = total.toFixed(1);
-    }
-
-    if (getEl("classMNA")) {
+    if(getEl("classMNA")){
         let classif = "Estado Nutricional Normal";
-        if (total < 17) classif = "Desnutrido";
-        else if (total < 24) classif = "Risco de Desnutrição";
-
+        if(total < 17) classif = "Desnutrido";
+        else if(total < 24) classif = "Risco de Desnutrição";
         getEl("classMNA").value = classif;
     }
 
     return total;
 }
 
+/* ================= NRS ================= */
 
-/* ================= NRS 2002 ================= */
+function calcularNRS(imc, idade){
 
-function calcularNRS(imc, idade) {
+    let total = getNum("nrsNutri") + getNum("nrsGrav");
 
-    let nutricao = getNum("nrsNutri");
-    let gravidade = getNum("nrsGrav");
-
-    let total = nutricao + gravidade;
-
-    if (idade >= 70) {
+    if(idade >= 70){
         total += 1;
-        if (getEl("nrsIdade")) getEl("nrsIdade").value = "+1";
-    } else {
-        if (getEl("nrsIdade")) getEl("nrsIdade").value = "0";
+        if(getEl("nrsIdade")) getEl("nrsIdade").value = "+1";
     }
 
-    if (getEl("nrsTotal")) getEl("nrsTotal").value = total;
-
-    if (getEl("classNRS")) {
-        getEl("classNRS").value =
-            total >= 3 ? "Iniciar suporte nutricional" : "Sem indicação imediata";
-    }
+    if(getEl("nrsTotal")) getEl("nrsTotal").value = total;
 
     return total;
 }
 
-/* ================= ICN ================= */
+/* ================= ICN INTEGRADO ================= */
 
-function calcularICN(mna, nrs, imc) {
+function calcularICN(mna, nrs, imc){
 
     let scoreIMC = 0;
-    if (imc < 22) scoreIMC = 0;
-    else if (imc <= 27) scoreIMC = 1;
+    if(imc < 22) scoreIMC = 0;
+    else if(imc <= 27) scoreIMC = 1;
     else scoreIMC = 2;
 
-    const icn = (mna * 0.4) + (nrs * 0.4) + (scoreIMC * 2);
+    const icnBase = (mna * 0.4) + (nrs * 0.4) + (scoreIMC * 2);
+
+    const scoreSarc = calcularScoreSarcopenia();
+
+    const icnFinal = icnBase + (scoreSarc * 1.5);
 
     let classificacao = "Baixo Risco";
-    if (icn < 8) classificacao = "Alto Risco Clínico";
-    else if (icn < 13) classificacao = "Risco Moderado";
 
-    if (getEl("icn")) getEl("icn").value = icn.toFixed(2);
-    if (getEl("classICN")) getEl("classICN").value = classificacao;
+    if(icnFinal < 8) classificacao = "Alto Risco Clínico";
+    else if(icnFinal < 13) classificacao = "Risco Moderado";
+
+    if(getEl("icn")) getEl("icn").value = icnFinal.toFixed(2);
+    if(getEl("classICN")) getEl("classICN").value = classificacao;
+
+    atualizarIndicadorNavbar(classificacao);
+
+    return classificacao;
 }
 
-/* ================= PES ================= */
+/* ================= NAVBAR ================= */
 
-function gerarPES(classificacao) {
+function atualizarIndicadorNavbar(classificacao){
 
-    if (!getEl("parecer")) return;
+    const indicador = getEl("indicadorRisco");
+    if(!indicador) return;
 
-    let texto = "Estado nutricional preservado.";
+    indicador.className = "indicador-risco";
 
-    if (classificacao === "Alto Risco Clínico") {
-        texto = "Desnutrição relacionada à ingestão insuficiente evidenciada por risco clínico elevado.";
+    if(classificacao === "Alto Risco Clínico"){
+        indicador.classList.add("alto");
+        indicador.innerText = "ICN: Alto";
     }
-    else if (classificacao === "Risco Moderado") {
-        texto = "Risco nutricional relacionado à condição clínica atual.";
+    else if(classificacao === "Risco Moderado"){
+        indicador.classList.add("moderado");
+        indicador.innerText = "ICN: Moderado";
     }
-
-    getEl("parecer").value = texto;
+    else{
+        indicador.classList.add("baixo");
+        indicador.innerText = "ICN: Baixo";
+    }
 }
 
+/* ================= ENGINE ================= */
 
-/* ================= ENGINE PRINCIPAL ================= */
-
-function calcularTudo() {
+function calcularTudo(){
 
     const idade = calcularIdade();
     const imc = calcularAntropometria();
+
+    calcularCircunferencias(imc, idade);
+
     const mna = calcularMNA(imc);
     const nrs = calcularNRS(imc, idade);
     const classificacao = calcularICN(mna, nrs, imc);
@@ -265,65 +278,18 @@ function calcularTudo() {
     gerarPES(classificacao);
 }
 
+/* ================= PES ================= */
 
-/* ================= BANCO LOCAL ================= */
+function gerarPES(classificacao){
 
-function obterBanco() {
-    return JSON.parse(localStorage.getItem("bancoILPI")) || {};
-}
+    if(!getEl("parecer")) return;
 
-function salvarBanco(banco) {
-    localStorage.setItem("bancoILPI", JSON.stringify(banco));
-}
+    let texto = "Estado nutricional preservado.";
 
-function salvarRegistro() {
+    if(classificacao === "Alto Risco Clínico")
+        texto = "Desnutrição relacionada à ingestão insuficiente evidenciada por risco clínico elevado.";
+    else if(classificacao === "Risco Moderado")
+        texto = "Risco nutricional relacionado à condição clínica atual.";
 
-    const nome = getVal("nome").trim().toUpperCase();
-    if (!nome) {
-        alert("Nome obrigatório.");
-        return;
-    }
-
-    const banco = obterBanco();
-
-    if (!banco[nome]) {
-        banco[nome] = {
-            criadoEm: new Date().toISOString(),
-            avaliacoes: []
-        };
-    }
-
-    const nova = {
-        data: new Date().toISOString(),
-        idade: getVal("idade"),
-        imc: getVal("imc"),
-        mna: getVal("mnaTotal"),
-        nrs: getVal("nrsTotal"),
-        icn: getVal("icn"),
-        classificacao: getVal("classICN"),
-        parecer: getVal("parecer")
-    };
-
-    banco[nome].avaliacoes.push(nova);
-    salvarBanco(banco);
-
-    alert("Avaliação salva com sucesso.");
-}
-/* ================= FOTO PREVIEW ================= */
-
-function carregarFoto(event){
-
-    const input = event.target;
-    const preview = getEl("fotoPreview");
-
-    if (!input.files || !input.files[0]) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-        preview.src = e.target.result;
-        preview.style.display = "block";
-    };
-
-    reader.readAsDataURL(input.files[0]);
+    getEl("parecer").value = texto;
 }
