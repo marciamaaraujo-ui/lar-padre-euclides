@@ -47,7 +47,7 @@
 
 <div class="form-group">
 <label>A – Ingesta alimentar</label>
-<select id="mnaA" onchange="calcularTudo()">
+<select id="mnaA" onchange="calcularMNA(0)">
 <option value="0">Redução grave</option>
 <option value="1">Redução moderada</option>
 <option value="2">Sem redução</option>
@@ -56,7 +56,7 @@
 
 <div class="form-group">
 <label>B – Perda de peso nos últimos 3 meses</label>
-<select id="mnaB" onchange="calcularTudo()">
+<select id="mnaB" onchange="calcularMNA(0)">
 <option value="0">Perda &gt;3 kg</option>
 <option value="1">Não sabe</option>
 <option value="2">Perda 1–3 kg</option>
@@ -66,7 +66,7 @@
 
 <div class="form-group">
 <label>C – Mobilidade</label>
-<select id="mnaC" onchange="calcularTudo()">
+<select id="mnaC" onchange="calcularMNA(0)">
 <option value="0">Restrito ao leito</option>
 <option value="1">Deambula com ajuda</option>
 <option value="2">Independente</option>
@@ -75,7 +75,7 @@
 
 <div class="form-group">
 <label>D – Doença aguda recente</label>
-<select id="mnaD" onchange="calcularTudo()">
+<select id="mnaD" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="2">Não</option>
 </select>
@@ -83,7 +83,7 @@
 
 <div class="form-group">
 <label>E – Problemas neuropsicológicos</label>
-<select id="mnaE" onchange="calcularTudo()">
+<select id="mnaE" onchange="calcularMNA(0)">
 <option value="0">Grave</option>
 <option value="1">Leve</option>
 <option value="2">Sem problema</option>
@@ -103,7 +103,7 @@
 
 <div class="form-group">
 <label>G – Vive independentemente</label>
-<select id="mnaG" onchange="calcularTudo()">
+<select id="mnaG" onchange="calcularMNA(0)">
 <option value="0">Não</option>
 <option value="1">Sim</option>
 </select>
@@ -111,7 +111,7 @@
 
 <div class="form-group">
 <label>H – Toma &gt;3 medicamentos/dia</label>
-<select id="mnaH" onchange="calcularTudo()">
+<select id="mnaH" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="1">Não</option>
 </select>
@@ -119,7 +119,7 @@
 
 <div class="form-group">
 <label>I – Lesão ou úlcera de pele</label>
-<select id="mnaI" onchange="calcularTudo()">
+<select id="mnaI" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="1">Não</option>
 </select>
@@ -127,7 +127,7 @@
 
 <div class="form-group">
 <label>J – Número de refeições/dia</label>
-<select id="mnaJ" onchange="calcularTudo()">
+<select id="mnaJ" onchange="calcularMNA(0)">
 <option value="0">1 refeição</option>
 <option value="1">2 refeições</option>
 <option value="2">3 refeições</option>
@@ -136,7 +136,7 @@
 
 <div class="form-group">
 <label>K – Consumo de proteína</label>
-<select id="mnaK" onchange="calcularTudo()">
+<select id="mnaK" onchange="calcularMNA(0)">
 <option value="0">Baixo</option>
 <option value="1">Moderado</option>
 <option value="2">Adequado</option>
@@ -145,7 +145,7 @@
 
 <div class="form-group">
 <label>L – Consumo de frutas e vegetais</label>
-<select id="mnaL" onchange="calcularTudo()">
+<select id="mnaL" onchange="calcularMNA(0)">
 <option value="0">Não</option>
 <option value="1">Sim</option>
 </select>
@@ -153,7 +153,7 @@
 
 <div class="form-group">
 <label>M – Ingestão hídrica</label>
-<select id="mnaM" onchange="calcularTudo()">
+<select id="mnaM" onchange="calcularMNA(0)">
 <option value="0">Pouco</option>
 <option value="1">Moderado</option>
 <option value="2">Adequado</option>
@@ -162,7 +162,7 @@
 
 <div class="form-group">
 <label>N – Autonomia alimentar</label>
-<select id="mnaN" onchange="calcularTudo()">
+<select id="mnaN" onchange="calcularMNA(0)">
 <option value="0">Dependente</option>
 <option value="1">Necessita ajuda</option>
 <option value="2">Independente</option>
@@ -171,7 +171,7 @@
 
 <div class="form-group">
 <label>O – Autoavaliação nutricional</label>
-<select id="mnaO" onchange="calcularTudo()">
+<select id="mnaO" onchange="calcularMNA(0)">
 <option value="0">Pior</option>
 <option value="1">Não sabe</option>
 <option value="2">Sem problema</option>
@@ -180,7 +180,7 @@
 
 <div class="form-group">
 <label>P – Autoavaliação saúde geral</label>
-<select id="mnaP" onchange="calcularTudo()">
+<select id="mnaP" onchange="calcularMNA(0)">
 <option value="0">Pior</option>
 <option value="1">Igual</option>
 <option value="2">Melhor</option>
@@ -189,7 +189,7 @@
 
 <div class="form-group">
 <label>Q – Circunferência do braço</label>
-<select id="mnaQ" onchange="calcularTudo()">
+<select id="mnaQ" onchange="calcularMNA(0)">
 <option value="0">PB &lt;21 cm</option>
 <option value="0.5">PB 21–22 cm</option>
 <option value="1">PB &gt;22 cm</option>
@@ -198,7 +198,7 @@
 
 <div class="form-group">
 <label>R – Circunferência da panturrilha</label>
-<select id="mnaR" onchange="calcularTudo()">
+<select id="mnaR" onchange="calcularMNA(0)">
 <option value="0">PP &lt;31 cm</option>
 <option value="1">PP ≥31 cm</option>
 </select>
