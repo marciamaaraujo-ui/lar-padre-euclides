@@ -115,25 +115,78 @@ function calcularIMC(){
 
     const peso = getNum("peso");
     const altura = getNum("altura");
+    const idade = getNum("idade");
 
     if(peso <= 0 || altura <= 0) return;
 
     const imc = peso / (altura * altura);
 
-    if(getEl("imc")) getEl("imc").value = imc.toFixed(2);
+    const campoIMC = getEl("imc");
+    const campoClass = getEl("classImc");
+
+    if(campoIMC) campoIMC.value = imc.toFixed(2);
 
     let classificacao = "";
+    let classeCSS = "";
 
-    if(imc < 18.5) classificacao = "Baixo Peso";
-    else if(imc < 25) classificacao = "Eutrofia";
-    else if(imc < 30) classificacao = "Sobrepeso";
-    else classificacao = "Obesidade";
+    /* ===== CLASSIFICAÇÃO POR FAIXA ETÁRIA ===== */
 
-    if(getEl("classImc")) getEl("classImc").value = classificacao;
+    if(idade >= 60){
+
+        // LIPSCHITZ – IDOSOS
+        if(imc < 22){
+            classificacao = "Baixo Peso (Idoso)";
+            classeCSS = "imc-baixo";
+            
+            // 🔴 ALERTA AUTOMÁTICO
+            alert("⚠ Atenção: IMC abaixo de 22 em idoso. Avaliar risco nutricional.");
+            
+        } else if(imc <= 27){
+            classificacao = "Eutrofia (Idoso)";
+            classeCSS = "imc-normal";
+        } else {
+            classificacao = "Excesso de Peso (Idoso)";
+            classeCSS = "imc-excesso";
+        }
+
+    } else {
+
+        // OMS – ADULTOS
+        if(imc < 18.5){
+            classificacao = "Baixo Peso";
+            classeCSS = "imc-baixo";
+        }
+        else if(imc < 25){
+            classificacao = "Eutrofia";
+            classeCSS = "imc-normal";
+        }
+        else if(imc < 30){
+            classificacao = "Sobrepeso";
+            classeCSS = "imc-excesso";
+        }
+        else{
+            classificacao = "Obesidade";
+            classeCSS = "imc-obesidade";
+        }
+    }
+
+    if(campoClass){
+        campoClass.value = classificacao;
+
+        // Remove classes anteriores
+        campoClass.classList.remove(
+            "imc-baixo",
+            "imc-normal",
+            "imc-excesso",
+            "imc-obesidade"
+        );
+
+        // Aplica nova classe
+        campoClass.classList.add(classeCSS);
+    }
 
     return imc;
 }
-
 /* ================= SARCOPENIA ================= */
 
 function calcularSarcopenia(){
