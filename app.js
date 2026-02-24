@@ -293,3 +293,82 @@ function gerarPES(classificacao){
 
     getEl("parecer").value = texto;
 }
+
+/* ===================================================== */
+/* BANCO DE DADOS LOCAL + PACIENTE ATIVO GLOBAL */
+/* ===================================================== */
+
+function obterBanco(){
+    return JSON.parse(localStorage.getItem("bancoILPI")) || {};
+}
+
+function salvarBanco(banco){
+    localStorage.setItem("bancoILPI", JSON.stringify(banco));
+}
+
+function salvarRegistro(){
+
+    const nome = getVal("nome").trim().toUpperCase();
+
+    if(!nome){
+        alert("Nome obrigatório.");
+        return;
+    }
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {
+            criadoEm: new Date().toISOString(),
+            avaliacoes: []
+        };
+    }
+
+    const novaAvaliacao = {
+        data: new Date().toISOString(),
+        idade: getVal("idade"),
+        imc: getVal("imc"),
+        mna: getVal("mnaTotal"),
+        nrs: getVal("nrsTotal"),
+        icn: getVal("icn"),
+        classificacao: getVal("classICN"),
+        parecer: getVal("parecer")
+    };
+
+    banco[nome].avaliacoes.push(novaAvaliacao);
+
+    salvarBanco(banco);
+
+    /* DEFINIR COMO PACIENTE ATIVO */
+    localStorage.setItem("pacienteAtivoILPI", nome);
+
+    atualizarPacienteAtivoNavbar();
+
+    alert("Avaliação salva e definida como paciente ativo.");
+}
+
+/* ================= PACIENTE ATIVO ================= */
+
+function atualizarPacienteAtivoNavbar(){
+
+    const nome = localStorage.getItem("pacienteAtivoILPI");
+    const banco = obterBanco();
+    const info = getEl("pacienteAtivoInfo");
+
+    if(!info) return;
+
+    if(!nome || !banco[nome]){
+        info.innerText = "👤 Nenhum paciente selecionado";
+        return;
+    }
+
+    const ultima = banco[nome].avaliacoes.slice(-1)[0];
+
+    info.innerText = `👤 ${nome} – ${ultima.idade} anos`;
+}
+
+/* ================= CARREGAMENTO AUTOMÁTICO ================= */
+
+document.addEventListener("DOMContentLoaded", function(){
+    atualizarPacienteAtivoNavbar();
+});
