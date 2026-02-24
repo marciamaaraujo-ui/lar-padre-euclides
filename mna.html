@@ -1,0 +1,184 @@
+<form>
+
+<section class="secao">
+<h2>MNA – Mini Nutritional Assessment (A–F Triagem)</h2>
+
+<div class="form-group">
+<label>A. Diminuição da ingestão alimentar nos últimos 3 meses devido à perda de apetite, problemas digestivos ou dificuldade de mastigar/deglutir?</label>
+<select id="mnaA" onchange="calcularTudo()">
+<option value="0">Redução grave</option>
+<option value="1">Redução moderada</option>
+<option value="2">Sem redução</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>B. Perda de peso nos últimos 3 meses?</label>
+<select id="mnaB" onchange="calcularTudo()">
+<option value="0">Perda &gt;3 kg</option>
+<option value="1">Não sabe</option>
+<option value="2">Perda 1–3 kg</option>
+<option value="3">Sem perda</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>C. Mobilidade</label>
+<select id="mnaC" onchange="calcularTudo()">
+<option value="0">Acamado ou cadeira</option>
+<option value="1">Capaz de levantar da cama/cadeira</option>
+<option value="2">Sai de casa</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>D. Sofreu estresse psicológico ou doença aguda nos últimos 3 meses?</label>
+<select id="mnaD" onchange="calcularTudo()">
+<option value="0">Sim</option>
+<option value="2">Não</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>E. Problemas neuropsicológicos</label>
+<select id="mnaE" onchange="calcularTudo()">
+<option value="0">Demência grave ou depressão</option>
+<option value="1">Demência leve</option>
+<option value="2">Sem problemas psicológicos</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>F. IMC (calculado automaticamente)</label>
+<input type="text" id="mnaF" readonly>
+</div>
+
+</section>
+
+
+<section class="secao">
+<h2>MNA – Avaliação Global (G–R)</h2>
+
+<div class="form-group">
+<label>G. Vive de forma independente?</label>
+<select id="mnaG" onchange="calcularTudo()">
+<option value="1">Sim</option>
+<option value="0">Não</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>H. Usa mais de 3 medicamentos por dia?</label>
+<select id="mnaH" onchange="calcularTudo()">
+<option value="0">Sim</option>
+<option value="1">Não</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>I. Lesões ou úlceras de pele?</label>
+<select id="mnaI" onchange="calcularTudo()">
+<option value="0">Sim</option>
+<option value="1">Não</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>J. Quantas refeições completas por dia?</label>
+<select id="mnaJ" onchange="calcularTudo()">
+<option value="0">1 refeição</option>
+<option value="1">2 refeições</option>
+<option value="2">3 refeições</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>K. Consumo diário de proteínas (laticínios, leguminosas, carne/peixe/aves)?</label>
+<select id="mnaK" onchange="calcularTudo()">
+<option value="0">0 ou 1 resposta positiva</option>
+<option value="0.5">2 respostas positivas</option>
+<option value="1">3 respostas positivas</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>L. Consome frutas ou vegetais diariamente?</label>
+<select id="mnaL" onchange="calcularTudo()">
+<option value="0">Não</option>
+<option value="1">Sim</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>M. Ingestão de líquidos por dia?</label>
+<select id="mnaM" onchange="calcularTudo()">
+<option value="0">Menos de 3 copos</option>
+<option value="0.5">3–5 copos</option>
+<option value="1">Mais de 5 copos</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>N. Forma de alimentação</label>
+<select id="mnaN" onchange="calcularTudo()">
+<option value="0">Dependente</option>
+<option value="1">Autônomo com dificuldade</option>
+<option value="2">Autônomo</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>O. Autoavaliação do estado nutricional</label>
+<select id="mnaO" onchange="calcularTudo()">
+<option value="0">Considera-se desnutrido</option>
+<option value="1">Não sabe</option>
+<option value="2">Considera-se bem nutrido</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>P. Autoavaliação da saúde em comparação com pessoas da mesma idade</label>
+<select id="mnaP" onchange="calcularTudo()">
+<option value="0">Pior</option>
+<option value="0.5">Não sabe</option>
+<option value="1">Igual</option>
+<option value="2">Melhor</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Q. Circunferência do braço (CB)</label>
+<select id="mnaQ" onchange="calcularTudo()">
+<option value="0">CB &lt; 21 cm</option>
+<option value="0.5">CB 21–22 cm</option>
+<option value="1">CB &gt; 22 cm</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>R. Circunferência da panturrilha (CP)</label>
+<select id="mnaR" onchange="calcularTudo()">
+<option value="0">CP &lt; 31 cm</option>
+<option value="1">CP ≥ 31 cm</option>
+</select>
+</div>
+
+</section>
+
+
+<section class="secao">
+<h2>Resultado Final</h2>
+
+<div class="form-group">
+<label>Pontuação Total (0–30)</label>
+<input type="text" id="mnaTotal" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação Nutricional</label>
+<input type="text" id="classMNA" readonly>
+</div>
+
+</section>
+
+</form>
