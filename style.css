@@ -326,5 +326,13 @@ header p{
   .container{
     padding:25px;
   }
-
+  
+.paciente-ativo{
+  font-size:0.95rem;
+  font-weight:600;
+  color:#0f766e;
+  margin-left:20px;
 }
+  
+}
+
