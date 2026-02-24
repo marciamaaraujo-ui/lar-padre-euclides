@@ -168,33 +168,57 @@ function calcularMNA(imc){
         "mnaQ","mnaR"
     ];
 
-    campos.forEach(id => total += getNum(id));
+    campos.forEach(id => {
+        const valor = parseFloat(getVal(id));
+        if(!isNaN(valor)){
+            total += valor;
+        }
+    });
+
+    /* ================= IMC (Item F) ================= */
 
     let scoreIMC = 0;
 
-    if(imc > 0){
+    if(typeof imc === "number" && imc > 0){
         if(imc < 19) scoreIMC = 0;
         else if(imc < 21) scoreIMC = 1;
         else if(imc < 23) scoreIMC = 2;
         else scoreIMC = 3;
     }
 
-    if(getEl("mnaF")) getEl("mnaF").value = scoreIMC;
+    if(getEl("mnaF")){
+        getEl("mnaF").value = scoreIMC;
+    }
 
     total += scoreIMC;
 
-    if(getEl("mnaTotal")) getEl("mnaTotal").value = total.toFixed(1);
+    /* ================= TOTAL ================= */
+
+    if(getEl("mnaTotal")){
+        getEl("mnaTotal").value = total.toFixed(1);
+    }
+
+    /* ================= CLASSIFICAÇÃO ================= */
 
     if(getEl("classMNA")){
-        let classif = "Estado Nutricional Normal";
-        if(total < 17) classif = "Desnutrido";
-        else if(total < 24) classif = "Risco de Desnutrição";
+
+        let classif = "";
+
+        if(total < 17){
+            classif = "Desnutrido";
+        }
+        else if(total < 24){
+            classif = "Risco de Desnutrição";
+        }
+        else{
+            classif = "Estado Nutricional Normal";
+        }
+
         getEl("classMNA").value = classif;
     }
 
     return total;
 }
-
 /* ================= NRS ================= */
 
 function calcularNRS(imc, idade){
