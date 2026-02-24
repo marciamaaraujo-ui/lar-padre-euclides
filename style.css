@@ -489,4 +489,31 @@ header p{
   transform:scale(1.03);
   transition:0.2s ease;
 }
+
+  /* ================= CORES IMC ================= */
+
+.imc-baixo{
+    background-color: #ffe5e5;
+    color: #b30000;
+    font-weight: bold;
+}
+
+.imc-normal{
+    background-color: #e6ffe6;
+    color: #006600;
+    font-weight: bold;
+}
+
+.imc-excesso{
+    background-color: #fff5e6;
+    color: #cc6600;
+    font-weight: bold;
+}
+
+.imc-obesidade{
+    background-color: #ffd6cc;
+    color: #990000;
+    font-weight: bold;
+}
+  
   }
