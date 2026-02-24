@@ -103,29 +103,26 @@ function calcularCircunferencias(imc, idade){
         else if(imc >=40){ cutoffBaixo -=10; cutoffMuitoBaixo -=10; }
     }
 
-    if(braco > 0){
-        if(braco < cutoffMuitoBaixo)
-            getEl("adequacaoBraco").value = "Muito Baixo (Alto risco)";
-        else if(braco < cutoffBaixo)
-            getEl("adequacaoBraco").value = "Baixo (Risco)";
-        else
-            getEl("adequacaoBraco").value = "Adequado";
-    }
+    const campoBraco = getEl("adequacaoBraco");
+
+if(braco > 0 && campoBraco){
+    if(braco < cutoffMuitoBaixo)
+        campoBraco.value = "Muito Baixo (Alto risco)";
+    else if(braco < cutoffBaixo)
+        campoBraco.value = "Baixo (Risco)";
+    else
+        campoBraco.value = "Adequado";
+}
 
     /* ===== PANTURRILHA ===== */
 
-    let cutoffPant = (sexo === "F") ? 33 : 34;
+    const campoPant = getEl("adequacaoPanturrilha");
 
-    if(imc >=25 && imc <30) cutoffPant -=3;
-    else if(imc >=30 && imc <40) cutoffPant -=7;
-    else if(imc >=40) cutoffPant -=12;
-
-    if(pant > 0){
-        if(pant < cutoffPant)
-            getEl("adequacaoPanturrilha").value = "Baixa (Risco Sarcopenia)";
-        else
-            getEl("adequacaoPanturrilha").value = "Adequada";
-    }
+if(pant > 0 && campoPant){
+    if(pant < cutoffPant)
+        campoPant.value = "Baixa (Risco Sarcopenia)";
+    else
+        campoPant.value = "Adequada";
 }
 
 /* ================= SCORE SARCOPENIA ================= */
@@ -201,9 +198,15 @@ function calcularNRS(imc, idade){
 
     let total = getNum("nrsNutri") + getNum("nrsGrav");
 
-    if(idade >= 70){
-        total += 1;
-        if(getEl("nrsIdade")) getEl("nrsIdade").value = "+1";
+    const campoIdade = getEl("nrsIdade");
+
+    if(campoIdade){
+        if(idade >= 70){
+            total += 1;
+            campoIdade.value = "+1";
+        } else {
+            campoIdade.value = "0";
+        }
     }
 
     if(getEl("nrsTotal")) getEl("nrsTotal").value = total;
@@ -215,21 +218,33 @@ function calcularNRS(imc, idade){
 
 function calcularICN(mna, nrs, imc){
 
-    let scoreIMC = 0;
-    if(imc < 22) scoreIMC = 0;
-    else if(imc <= 27) scoreIMC = 1;
-    else scoreIMC = 2;
+    /* ================= NORMALIZAÇÃO ================= */
 
-    const icnBase = (mna * 0.4) + (nrs * 0.4) + (scoreIMC * 2);
+    // MNA invertido (quanto menor, maior risco)
+    const mnaNormalizado = (30 - mna) / 3;   // escala ~0–10
 
+    // NRS já representa risco direto
+    const nrsScore = nrs;                    // escala 0–7
+
+    // IMC como fator complementar
+    let imcScore = 0;
+    if(imc < 22) imcScore = 2;
+    else if(imc > 30) imcScore = 1;
+
+    // Sarcopenia
     const scoreSarc = calcularScoreSarcopenia();
+    const sarcScore = scoreSarc * 1.2;
 
-    const icnFinal = icnBase + (scoreSarc * 1.5);
+    /* ================= ICN FINAL ================= */
+
+    const icnFinal = mnaNormalizado + nrsScore + imcScore + sarcScore;
 
     let classificacao = "Baixo Risco";
 
-    if(icnFinal < 8) classificacao = "Alto Risco Clínico";
-    else if(icnFinal < 13) classificacao = "Risco Moderado";
+    if(icnFinal >= 15)
+        classificacao = "Alto Risco Clínico";
+    else if(icnFinal >= 8)
+        classificacao = "Risco Moderado";
 
     if(getEl("icn")) getEl("icn").value = icnFinal.toFixed(2);
     if(getEl("classICN")) getEl("classICN").value = classificacao;
@@ -238,7 +253,6 @@ function calcularICN(mna, nrs, imc){
 
     return classificacao;
 }
-
 /* ================= NAVBAR ================= */
 
 function atualizarIndicadorNavbar(classificacao){
@@ -372,3 +386,60 @@ function atualizarPacienteAtivoNavbar(){
 document.addEventListener("DOMContentLoaded", function(){
     atualizarPacienteAtivoNavbar();
 });
+
+/* ================= FOTO RESIDENTE ================= */
+
+function carregarFoto(event){
+
+    const input = event.target;
+    const preview = document.getElementById("fotoPreview");
+
+    if(!input.files || !input.files[0]) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = "block";
+
+        // opcional: salvar no localStorage
+        localStorage.setItem("fotoTempILPI", e.target.result);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+}
+/* ================= ESCALA DE KATZ ================= */
+
+function calcularKatz(){
+
+    const campos = [
+        "katzBanho",
+        "katzVestir",
+        "katzHigiene",
+        "katzTransferencia",
+        "katzContinencia",
+        "katzAlimentacao"
+    ];
+
+    let total = 0;
+
+    campos.forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) total += parseInt(el.value) || 0;
+    });
+
+    const totalInput = document.getElementById("katzTotal");
+    if(totalInput) totalInput.value = total;
+
+    let classificacao = "";
+
+    if(total === 6)
+        classificacao = "Independente nas AVDs";
+    else if(total >= 3)
+        classificacao = "Dependência Parcial";
+    else
+        classificacao = "Dependência Importante";
+
+    const classInput = document.getElementById("katzClassificacao");
+    if(classInput) classInput.value = classificacao;
+}
