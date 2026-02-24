@@ -19,6 +19,102 @@ function getNum(id){
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
 
+/* ================= BANCO DE DADOS ================= */
+
+function obterBanco(){
+    return JSON.parse(localStorage.getItem("bancoILPI")) || {};
+}
+
+function salvarBanco(banco){
+    localStorage.setItem("bancoILPI", JSON.stringify(banco));
+}
+
+function criarPacienteSeNaoExistir(nome){
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {
+            criadoEm: new Date().toISOString(),
+            dadosBasicos: {},
+            foto: "",
+            mna: {},
+            antropometria: {},
+            nrs: {},
+            sarcopenia: {},
+            icn: {},
+            evolucao: []
+        };
+
+        salvarBanco(banco);
+    }
+
+    return banco;
+}
+
+/* ================= PACIENTE ATIVO ================= */
+
+function definirPacienteAtivo(nome){
+    localStorage.setItem("pacienteAtivoILPI", nome);
+}
+
+function obterPacienteAtivo(){
+    return localStorage.getItem("pacienteAtivoILPI");
+}
+
+/* ================= SALVAR REGISTRO ================= */
+
+function salvarRegistro(){
+
+    const nomeInput = getVal("nome").trim().toUpperCase();
+
+    if(!nomeInput){
+        alert("Digite o nome do residente.");
+        return;
+    }
+
+    // Criar paciente se não existir
+    criarPacienteSeNaoExistir(nomeInput);
+
+    const banco = obterBanco();
+
+    // Salvar dados básicos
+    banco[nomeInput].dadosBasicos = {
+        dataNascimento: getVal("dataNascimento"),
+        idade: getVal("idade"),
+        dataAdmissao: getVal("dataAdmissao"),
+        alergias: getVal("alergias"),
+        convenio: getVal("convenio"),
+        hygia: getVal("hygia"),
+        diagnosticos: getVal("diagnosticos"),
+        protese: getVal("protese")
+    };
+
+    salvarBanco(banco);
+
+    // Definir como paciente ativo
+    definirPacienteAtivo(nomeInput);
+
+    atualizarPacienteAtivoNavbar();
+
+    alert("Registro salvo com sucesso.");
+}
+function atualizarPacienteAtivoNavbar(){
+
+    const nome = obterPacienteAtivo();
+    const banco = obterBanco();
+    const info = getEl("pacienteAtivoInfo");
+
+    if(!info) return;
+
+    if(!nome || !banco[nome]){
+        info.innerText = "👤 Nenhum paciente selecionado";
+        return;
+    }
+
+    info.innerText = `👤 ${nome}`;
+}
+
 /* ================= MNA ================= */
 
 function calcularMNA(){
@@ -59,6 +155,28 @@ function calcularMNA(){
 
 document.addEventListener("DOMContentLoaded", function(){
 
+    atualizarPacienteAtivoNavbar();
+
+    const nome = obterPacienteAtivo();
+    const banco = obterBanco();
+
+    // Carregar dados básicos se existir paciente ativo
+    if(nome && banco[nome] && banco[nome].dadosBasicos){
+
+        const dados = banco[nome].dadosBasicos;
+
+        if(getEl("nome")) getEl("nome").value = nome;
+        if(getEl("dataNascimento")) getEl("dataNascimento").value = dados.dataNascimento || "";
+        if(getEl("idade")) getEl("idade").value = dados.idade || "";
+        if(getEl("dataAdmissao")) getEl("dataAdmissao").value = dados.dataAdmissao || "";
+        if(getEl("alergias")) getEl("alergias").value = dados.alergias || "";
+        if(getEl("convenio")) getEl("convenio").value = dados.convenio || "";
+        if(getEl("hygia")) getEl("hygia").value = dados.hygia || "";
+        if(getEl("diagnosticos")) getEl("diagnosticos").value = dados.diagnosticos || "";
+        if(getEl("protese")) getEl("protese").value = dados.protese || "";
+    }
+
+    // MNA auto cálculo
     const selects = document.querySelectorAll("[id^='mna']");
 
     selects.forEach(select => {
