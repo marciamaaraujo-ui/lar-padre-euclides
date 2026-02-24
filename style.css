@@ -1,49 +1,78 @@
-/* ============================= */
+/* ===================================================== */
 /* RESET GLOBAL */
-/* ============================= */
+/* ===================================================== */
 
-*{
+*,
+*::before,
+*::after{
   margin:0;
   padding:0;
   box-sizing:border-box;
 }
 
-/* ============================= */
+html{
+  scroll-behavior:smooth;
+}
+
+img{
+  max-width:100%;
+  display:block;
+}
+
+/* ===================================================== */
 /* VARIÁVEIS GLOBAIS */
-/* ============================= */
+/* ===================================================== */
 
 :root{
   --primary-color:#27ae60;
+  --primary-dark:#219150;
   --secondary-color:#2980b9;
-  --bg-input:#f0f4f2;
-  --text-color:#2c3e50;
-  --border-color:#dcdde1;
+  --accent-color:#0f766e;
+
   --bg-light:#f4f7f6;
+  --bg-input:#f0f4f2;
+  --bg-navbar:#f8f9fa;
+
+  --text-color:#2c3e50;
+  --text-muted:#64748b;
+
+  --border-color:#dcdde1;
+  --border-light:#e5e7eb;
+
   --shadow-light:0 8px 25px rgba(0,0,0,0.05);
+  --shadow-hover:0 6px 18px rgba(0,0,0,0.08);
+
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:15px;
+
+  --transition:0.2s ease-in-out;
 }
 
-/* ============================= */
+/* ===================================================== */
 /* BODY */
-/* ============================= */
+/* ===================================================== */
 
 body{
   font-family:'Inter', sans-serif;
   background:var(--bg-light);
   color:var(--text-color);
   line-height:1.6;
+  -webkit-font-smoothing:antialiased;
 }
 
 /* ===================================================== */
-/* NAVBAR INSTITUCIONAL DEFINITIVA */
+/* NAVBAR */
 /* ===================================================== */
 
 .navbar{
   width:100%;
-  background:#f8f9fa;
-  border-bottom:1px solid #e5e7eb;
+  background:var(--bg-navbar);
+  border-bottom:1px solid var(--border-light);
   position:sticky;
   top:0;
   z-index:1000;
+  backdrop-filter:blur(6px);
 }
 
 .nav-container{
@@ -53,17 +82,18 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  flex-wrap:wrap;
 }
 
 .nav-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  white-space:nowrap;
 }
 
 .nav-logo{
-  height:60px;
+  height:55px;
   width:auto;
 }
 
@@ -71,68 +101,88 @@ body{
   display:flex;
   align-items:center;
   gap:20px;
+  flex-wrap:wrap;
 }
 
 /* ===== LINKS ===== */
 
-
 .nav-links{
-    display:flex;
-    align-items:center;
-    gap:20px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
 }
 
 .nav-links a{
   text-decoration:none;
   font-weight:600;
-  font-size:1.1rem;
+  font-size:1rem;
   letter-spacing:0.3px;
   color:#334155;
-  transition:0.2s ease;
+  transition:var(--transition);
+  position:relative;
 }
 
 .nav-links a:hover{
-  color:#0f766e;
+  color:var(--accent-color);
 }
 
-/* ===== INDICADOR ICN ===== */
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-4px;
+  width:0;
+  height:2px;
+  background:var(--accent-color);
+  transition:var(--transition);
+}
+
+.nav-links a:hover::after{
+  width:100%;
+}
+
+/* ===== INDICADOR DE RISCO ===== */
 
 .indicador-risco{
-    padding:8px 18px;
-    border-radius:25px;
-    font-weight:700;
-    font-size:0.9rem;
+  padding:6px 16px;
+  border-radius:25px;
+  font-weight:700;
+  font-size:0.85rem;
+  white-space:nowrap;
 }
 
 .indicador-risco.alto{
-    background:#c62828;
-    color:#fff;
+  background:#c62828;
+  color:#fff;
 }
 
 .indicador-risco.moderado{
-    background:#f9a825;
-    color:#000;
+  background:#f9a825;
+  color:#000;
 }
 
 .indicador-risco.baixo{
-    background:#2e7d32;
-    color:#fff;
+  background:#2e7d32;
+  color:#fff;
 }
-/* ===== BOTÃO SALVAR ===== */
+
+/* ===== BOTÃO NAVBAR ===== */
 
 .btn-navbar{
-  background:#0f766e;
+  background:var(--accent-color);
   color:white;
   border:none;
   padding:8px 18px;
-  border-radius:8px;
+  border-radius:var(--radius-sm);
   font-weight:600;
   cursor:pointer;
-  transition:0.2s;
+  transition:var(--transition);
 }
 
 .btn-navbar:hover{
   background:#0c5e58;
+  box-shadow:var(--shadow-hover);
 }
 
 /* ===================================================== */
@@ -144,11 +194,13 @@ body{
   margin:30px auto;
   padding:40px;
   background:white;
-  border-radius:15px;
+  border-radius:var(--radius-lg);
   box-shadow:var(--shadow-light);
 }
 
-/* ================= GRID ================= */
+/* ===================================================== */
+/* GRID RESPONSIVO */
+/* ===================================================== */
 
 .grid{
   display:grid;
@@ -156,11 +208,13 @@ body{
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 }
 
-/* ================= FORMULÁRIOS ================= */
+/* ===================================================== */
+/* FORMULÁRIOS */
+/* ===================================================== */
 
 label{
   font-weight:600;
-  margin-bottom:5px;
+  margin-bottom:6px;
   display:block;
 }
 
@@ -169,11 +223,16 @@ select,
 textarea{
   width:100%;
   padding:12px;
-  border-radius:8px;
+  border-radius:var(--radius-sm);
   border:1px solid var(--border-color);
   background:var(--bg-input);
   font-size:14px;
-  transition:0.2s ease-in-out;
+  transition:var(--transition);
+}
+
+textarea{
+  resize:vertical;
+  min-height:100px;
 }
 
 input:focus,
@@ -182,39 +241,50 @@ textarea:focus{
   outline:none;
   background:white;
   border-color:var(--primary-color);
-  box-shadow:0 0 0 2px rgba(39,174,96,0.2);
+  box-shadow:0 0 0 3px rgba(39,174,96,0.15);
 }
 
-/* ================= BOTÕES GERAIS ================= */
+/* ===================================================== */
+/* BOTÕES GERAIS */
+/* ===================================================== */
 
 button{
   font-family:inherit;
+  cursor:pointer;
 }
 
 .btn-save{
   background:var(--primary-color);
   color:white;
-  padding:12px 20px;
+  padding:12px 22px;
   border:none;
-  border-radius:8px;
-  cursor:pointer;
+  border-radius:var(--radius-sm);
   font-weight:600;
-  transition:0.2s ease-in-out;
+  transition:var(--transition);
 }
 
 .btn-save:hover{
-  background:#219150;
-  transform:translateY(-1px);
+  background:var(--primary-dark);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-hover);
 }
 
-/* ================= CARDS ================= */
+/* ===================================================== */
+/* CARDS */
+/* ===================================================== */
 
 .stat-card{
   background:white;
   padding:25px;
-  border-radius:12px;
+  border-radius:var(--radius-md);
   box-shadow:var(--shadow-light);
   text-align:center;
+  transition:var(--transition);
+}
+
+.stat-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-hover);
 }
 
 .stat-card h3{
@@ -225,15 +295,18 @@ button{
 
 .stat-card p{
   font-size:14px;
-  opacity:0.7;
+  color:var(--text-muted);
 }
 
-/* ================= TABELAS ================= */
+/* ===================================================== */
+/* TABELAS */
+/* ===================================================== */
 
 table{
   width:100%;
   border-collapse:collapse;
   margin-top:20px;
+  font-size:14px;
 }
 
 th, td{
@@ -247,7 +320,13 @@ th{
   font-weight:600;
 }
 
-/* ================= FOTO + IDENTIFICAÇÃO ================= */
+tr:nth-child(even){
+  background:#fafafa;
+}
+
+/* ===================================================== */
+/* IDENTIFICAÇÃO + FOTO */
+/* ===================================================== */
 
 .linha-identificacao{
   display:flex;
@@ -273,13 +352,15 @@ th{
   width:200px;
   height:200px;
   object-fit:cover;
-  border-radius:14px;
+  border-radius:var(--radius-md);
   border:4px solid #2c7a7b;
   box-shadow:0 8px 20px rgba(0,0,0,0.15);
   display:none;
 }
 
-/* ================= SEÇÕES ================= */
+/* ===================================================== */
+/* SEÇÕES */
+/* ===================================================== */
 
 .secao{
   margin-bottom:40px;
@@ -291,7 +372,7 @@ th{
   margin-bottom:20px;
   font-size:1.3rem;
   font-weight:700;
-  color:#2c3e50;
+  color:var(--text-color);
 }
 
 header{
@@ -306,7 +387,7 @@ header h1{
 
 header p{
   font-size:1rem;
-  color:#7f8c8d;
+  color:var(--text-muted);
 }
 
 /* ===================================================== */
@@ -317,27 +398,48 @@ header p{
 
   .nav-container{
     flex-direction:column;
+    align-items:flex-start;
     gap:15px;
   }
 
   .nav-right{
+    width:100%;
     flex-direction:column;
+    align-items:flex-start;
     gap:12px;
   }
 
   .nav-links{
-    justify-content:center;
-    gap:14px;
+    width:100%;
+    flex-wrap:wrap;
+    gap:12px;
   }
 
   .container{
     padding:25px;
   }
-  
-.paciente-ativo{
-    white-space:nowrap;
-    font-weight:600;
-}
-  
+
+  .linha-identificacao{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
 }
 
+@media(max-width:600px){
+
+  .container{
+    padding:20px;
+  }
+
+  .nav-logo{
+    height:45px;
+  }
+
+  .btn-save,
+  .btn-navbar{
+    width:100%;
+    text-align:center;
+  }
+
+}
