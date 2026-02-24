@@ -151,6 +151,34 @@ function calcularMNA(){
     }
 }
 
+/* ================= SALVAR MNA ================= */
+
+function salvarMNA(){
+
+    const nome = obterPacienteAtivo();
+
+    if(!nome){
+        alert("Nenhum paciente ativo.");
+        return;
+    }
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        alert("Paciente não encontrado.");
+        return;
+    }
+
+    banco[nome].mna = {
+        data: new Date().toISOString(),
+        total: getVal("mnaTotal"),
+        classificacao: getVal("classMNA")
+    };
+
+    salvarBanco(banco);
+
+    alert("MNA salva com sucesso.");
+}
 /* ================= LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", function(){
