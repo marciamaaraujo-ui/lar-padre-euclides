@@ -445,9 +445,69 @@ function carregarFoto(event){
         };
 
     };
+function carregarFoto(event){
+
+    const file = event.target.files[0];
+    if(!file) return;
+
+    if(!file.type.startsWith("image/")){
+        alert("Selecione apenas arquivos de imagem.");
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function(){
+
+            const canvas = document.createElement("canvas");
+            const maxSize = 400;
+
+            let width = img.width;
+            let height = img.height;
+
+            if(width > height){
+                if(width > maxSize){
+                    height *= maxSize / width;
+                    width = maxSize;
+                }
+            } else {
+                if(height > maxSize){
+                    width *= maxSize / height;
+                    height = maxSize;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+            salvarFotoNoPaciente(compressedBase64);
+
+            const preview = getEl("fotoPreview");
+            if(preview){
+                preview.src = compressedBase64;
+                preview.style.display = "block";
+            }
+        };
+
+    };
 
     reader.readAsDataURL(file);
 }
+
+
+/* ================= SALVAR FOTO ================= */
+
 function salvarFotoNoPaciente(base64){
 
     const nome = getVal("nome").trim().toUpperCase();
@@ -469,6 +529,32 @@ function salvarFotoNoPaciente(base64){
     banco[nome].foto = base64;
 
     salvarBanco(banco);
+}
+
+/* ================= SALVAR MNA ================= */
+
+function salvarMNA(){
+
+    const nome = localStorage.getItem("pacienteAtivoILPI");
+    if(!nome){
+        alert("Nenhum paciente ativo.");
+        return;
+    }
+
+    const banco = obterBanco();
+    if(!banco[nome]) return;
+
+    const mnaData = {
+        data: new Date().toISOString(),
+        total: getVal("mnaTotal"),
+        classificacao: getVal("classMNA")
+    };
+
+    banco[nome].mna = mnaData;
+
+    salvarBanco(banco);
+
+    alert("MNA salva com sucesso.");
 }
 /* ================= KATZ ================= */
 
