@@ -310,47 +310,6 @@ color:#004d40;
     box-shadow:0 8px 20px rgba(0,0,0,0.15);
     display:none;
 }
-.btn-navbar{
-  background:#2c7a7b;
-  color:white;
-  border:none;
-  padding:8px 14px;
-  border-radius:6px;
-  font-size:0.85rem;
-  font-weight:600;
-  cursor:pointer;
-  margin-left:15px;
-  transition:0.3s;
-}
-
-.btn-navbar:hover{
-  background:#1f5f60;
-}
-
-.indicador-risco{
-  padding:6px 12px;
-  border-radius:20px;
-  font-size:0.8rem;
-  font-weight:600;
-  margin-left:20px;
-  color:white;
-}
-
-.indicador-risco.neutro{
-  background:#95a5a6;
-}
-
-.indicador-risco.baixo{
-  background:#2ecc71;
-}
-
-.indicador-risco.moderado{
-  background:#f39c12;
-}
-
-.indicador-risco.alto{
-  background:#e74c3c;
-}
 
 .secao{
   margin-bottom:40px;
