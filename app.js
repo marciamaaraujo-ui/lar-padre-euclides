@@ -369,22 +369,83 @@ function atualizarPacienteAtivoNavbar(){
 
 function carregarFoto(event){
 
-    const input = event.target;
-    const preview = getEl("fotoPreview");
+    const file = event.target.files[0];
+    if(!file) return;
 
-    if(!input.files || !input.files[0]) return;
+    if(!file.type.startsWith("image/")){
+        alert("Selecione apenas arquivos de imagem.");
+        event.target.value = "";
+        return;
+    }
 
     const reader = new FileReader();
 
     reader.onload = function(e){
-        preview.src = e.target.result;
-        preview.style.display = "block";
-        localStorage.setItem("fotoTempILPI", e.target.result);
+
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function(){
+
+            const canvas = document.createElement("canvas");
+            const maxSize = 400;
+
+            let width = img.width;
+            let height = img.height;
+
+            if(width > height){
+                if(width > maxSize){
+                    height *= maxSize / width;
+                    width = maxSize;
+                }
+            } else {
+                if(height > maxSize){
+                    width *= maxSize / height;
+                    height = maxSize;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+            salvarFotoNoPaciente(compressedBase64);
+
+            const preview = getEl("fotoPreview");
+            preview.src = compressedBase64;
+            preview.style.display = "block";
+        };
+
     };
 
-    reader.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(file);
 }
+function salvarFotoNoPaciente(base64){
 
+    const nome = getVal("nome").trim().toUpperCase();
+
+    if(!nome){
+        alert("Digite o nome e salve o paciente antes de adicionar foto.");
+        return;
+    }
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {
+            criadoEm: new Date().toISOString(),
+            avaliacoes: []
+        };
+    }
+
+    banco[nome].foto = base64;
+
+    salvarBanco(banco);
+}
 /* ================= KATZ ================= */
 
 function calcularKatz(){
@@ -419,13 +480,21 @@ function calcularKatz(){
 /* ================= LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", function(){
+
     atualizarPacienteAtivoNavbar();
 
-    const fotoSalva = localStorage.getItem("fotoTempILPI");
+    const nome = localStorage.getItem("pacienteAtivoILPI");
+    const banco = obterBanco();
     const preview = getEl("fotoPreview");
 
-    if(fotoSalva && preview){
-        preview.src = fotoSalva;
+    if(nome && banco[nome] && banco[nome].foto && preview){
+        preview.src = banco[nome].foto;
         preview.style.display = "block";
     }
+
+    const fotoUpload = getEl("fotoUpload");
+    if(fotoUpload){
+        fotoUpload.addEventListener("change", carregarFoto);
+    }
+
 });
