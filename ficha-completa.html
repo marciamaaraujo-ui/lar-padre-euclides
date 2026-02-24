@@ -59,6 +59,8 @@
 <input type="text" id="idade" class="auto" readonly>
 </div>
 
+<!-- ================= ANTROPOMETRIA ================= -->
+  
 <div class="form-group">
 <label>Peso (kg)</label>
 <input type="number" id="peso" step="any" oninput="calcularTudo()">
@@ -84,6 +86,34 @@
 <input type="text" id="classImc" class="auto" readonly>
 </div>
 
+<div class="grid">
+
+  <div class="form-group">
+    <label>Circunferência do Braço (cm)</label>
+    <input type="number" step="0.1" id="circBraco">
+  </div>
+
+  <div class="form-group">
+    <label>Adequação do Braço</label>
+    <input type="text" id="adequacaoBraco" class="auto" readonly>
+  </div>
+
+  <div class="form-group">
+    <label>Circunferência da Panturrilha (cm)</label>
+    <input type="number" step="0.1" id="circPanturrilha">
+  </div>
+
+  <div class="form-group">
+    <label>Adequação da Panturrilha</label>
+    <input type="text" id="adequacaoPanturrilha" class="auto" readonly>
+  </div>
+
+  <div class="form-group">
+    <label>Classificação Sarcopênica</label>
+    <input type="text" id="scoreSarcopenia" class="auto" readonly>
+  </div>
+
+</div>
 </section>
 
 <!-- ================= MNA ================= -->
