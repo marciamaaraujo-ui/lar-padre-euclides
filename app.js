@@ -465,5 +465,6 @@ document.addEventListener("DOMContentLoaded", function(){
             calcularICN();
         });
     });
-
+    /* ===== ATUALIZAR PAINEL ALERTAS ===== */
+atualizarPainelAlertas();
 });
