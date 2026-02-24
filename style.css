@@ -441,5 +441,52 @@ header p{
     width:100%;
     text-align:center;
   }
+/* ===================================================== */
+/* UPLOAD DE FOTO – UX PROFISSIONAL */
+/* ===================================================== */
 
+.foto-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
 }
+
+#fotoUpload{
+  display:none;
+}
+
+.btn-upload{
+  background:var(--accent-color);
+  color:white;
+  padding:8px 16px;
+  border-radius:var(--radius-sm);
+  font-weight:600;
+  cursor:pointer;
+  transition:var(--transition);
+  text-align:center;
+}
+
+.btn-upload:hover{
+  background:#0c5e58;
+  box-shadow:var(--shadow-hover);
+}
+
+#fotoPreview{
+  margin-top:10px;
+  width:200px;
+  height:200px;
+  object-fit:cover;
+  border-radius:50%;
+  border:4px solid #2c7a7b;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  display:none;
+  background:#f4f7f6;
+}
+
+/* Hover elegante quando já existe foto */
+#fotoPreview:hover{
+  transform:scale(1.03);
+  transition:0.2s ease;
+}
+  }
