@@ -119,26 +119,62 @@ IMC = Peso (kg) / Altura² (m)
 <!-- ICN -->
 <section>
 <h3>4. Índice de Condição Nutricional (ICN)</h3>
-<div class="method-card">
-<p>Algoritmo institucional integrado ao sistema que consolida MNA, NRS e IMC.</p>
 
+<div class="method-card">
+
+<p>
+O ICN é um algoritmo institucional integrativo que consolida MNA,
+NRS, IMC e marcador sarcopênico em uma única classificação clínica.
+</p>
+
+<h4>Estrutura Matemática</h4>
+
+<p><strong>1. Normalização do MNA:</strong></p>
 <div class="formula">
-ICN = (MNA × 0.4) + (NRS × 0.4) + (Score IMC × 2)
+MNA normalizado = (30 − MNA) ÷ 3
 </div>
 
-<p><strong>Classificação do ICN:</strong></p>
+<p>
+Essa transformação converte a escala do MNA (0–30) para faixa aproximada
+de 0–10 pontos, invertendo a lógica para que menor MNA represente maior risco.
+</p>
+
+<p><strong>2. NRS:</strong></p>
+<p>
+Mantido em sua escala original (0–7), representando gravidade nutricional
+associada à condição clínica.
+</p>
+
+<p><strong>3. Ajuste por IMC:</strong></p>
 <ul>
-<li>&lt; 8 → Alto Risco Clínico</li>
-<li>8 – 12,9 → Risco Moderado</li>
-<li>≥ 13 → Baixo Risco</li>
+<li>IMC &lt; 22 kg/m² → +2 pontos</li>
+<li>IMC &gt; 30 kg/m² → +1 ponto</li>
 </ul>
 
-<p>O Score IMC utilizado no cálculo é:</p>
+<p><strong>4. Fator Sarcopênico:</strong></p>
+<div class="formula">
+Sarcopenia score = Escore × 1,2
+</div>
+
+<h4>Fórmula Final</h4>
+
+<div class="formula">
+ICN = MNA normalizado + NRS + IMC score + Sarcopenia score
+</div>
+
+<h4>Classificação do ICN</h4>
+
 <ul>
-<li>IMC &lt; 22 → 0 pontos</li>
-<li>22–27 → 1 ponto</li>
-<li>&gt; 27 → 2 pontos</li>
+<li>ICN &lt; 8 → Baixo Risco</li>
+<li>8 – 14,9 → Risco Moderado</li>
+<li>≥ 15 → Alto Risco Clínico</li>
 </ul>
+
+<p>
+A classificação permite estratificação clínica,
+priorização assistencial e monitoramento longitudinal.
+</p>
+
 </div>
 </section>
 
