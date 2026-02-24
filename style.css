@@ -515,5 +515,24 @@ header p{
     color: #990000;
     font-weight: bold;
 }
-  
-  }
+  /* ================= CORES ICN ================= */
+ .icn-baixo{
+    background-color: #e6ffe6;
+    color: #006600;
+    font-weight: bold;
+}
+
+.icn-moderado{
+    background-color: #fff5cc;
+    color: #cc7a00;
+    font-weight: bold;
+}
+
+.icn-alto{
+    background-color: #ffd6d6;
+    color: #990000;
+    font-weight: bold;
+}
+
+}
+
