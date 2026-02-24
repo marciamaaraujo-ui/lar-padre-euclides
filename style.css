@@ -68,10 +68,13 @@ body {
   gap:25px;
 }
 
-.nav-links{
-  display:flex;
-  align-items:center;
-  gap:18px;
+.nav-links a{
+  text-decoration:none;
+  font-weight:600;
+  font-size:1.1rem;
+  letter-spacing:0.3px;
+  color:#334155;
+  transition:0.2s;
 }
 
 .nav-links a{
