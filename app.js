@@ -348,6 +348,46 @@ function calcularICN(){
     return score;
 }
 
+function atualizarPainelAlertas(){
+
+    const painel = getEl("painelAlertas");
+    if(!painel) return;
+
+    const idade = getNum("idade");
+    const imc = getNum("imc");
+    const icnClass = getVal("classICN");
+
+    let alertas = [];
+
+    /* IMC baixo em idoso */
+    if(idade >= 60 && imc > 0 && imc < 22){
+        alertas.push("⚠ IMC abaixo de 22 em idoso.");
+    }
+
+    /* ICN alto */
+    if(icnClass === "Alto Risco"){
+        alertas.push("🚨 ICN indica alto risco nutricional.");
+    }
+
+    /* NRS */
+    if(getNum("nrsTotal") >= 3){
+        alertas.push("⚠ NRS ≥ 3 (Risco Nutricional).");
+    }
+
+    /* Sarcopenia */
+    if(getVal("scoreSarcopenia").includes("Risco")){
+        alertas.push("⚠ Risco de sarcopenia identificado.");
+    }
+
+    if(alertas.length === 0){
+        painel.innerHTML = "<div class='alerta-item'>✔ Nenhum alerta ativo.</div>";
+        return;
+    }
+
+    painel.innerHTML = alertas
+        .map(a => `<div class="alerta-item">${a}</div>`)
+        .join("");
+}
 /* ================= LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", function(){
