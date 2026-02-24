@@ -11,19 +11,19 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="renderizarDashboard()">
+<body>
 
-<!-- NAVBAR INSTITUCIONAL -->
+<!-- ================= NAVBAR ================= -->
 <div class="navbar">
   <div class="nav-container">
 
-   <div class="nav-left">
-  <img src="assets/logo.png" class="nav-logo">
+    <div class="nav-left">
+      <img src="assets/logo.png" class="nav-logo">
 
-  <div id="pacienteAtivoInfo" class="paciente-ativo">
-    👤 Nenhum paciente selecionado
-  </div>
-</div>
+      <div id="pacienteAtivoInfo" class="paciente-ativo">
+        👤 Nenhum paciente selecionado
+      </div>
+    </div>
 
     <div class="nav-links">
       <a href="index.html">🏠 Início</a>
@@ -42,8 +42,8 @@
 
   </div>
 </div>
-    
-<!-- CONTEÚDO -->
+
+<!-- ================= CONTEÚDO ================= -->
 <div class="container">
 
 <h1>Painel Epidemiológico</h1>
@@ -55,42 +55,72 @@
 
 </div>
 
-<!-- SCRIPT DASHBOARD -->
+<!-- ================= APP GLOBAL ================= -->
+<script src="app.js"></script>
+
+<!-- ================= SCRIPT DASHBOARD ================= -->
 <script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    atualizarPacienteAtivoNavbar();
+    renderizarDashboard();
+
+});
 
 function renderizarDashboard(){
 
-const banco = JSON.parse(localStorage.getItem("bancoILPI")) || {};
-let contagem={};
+    const banco = obterBanco();
+    let contagem = {};
 
-Object.keys(banco).forEach(nome=>{
-(banco[nome].comorbidades||[]).forEach(c=>{
-contagem[c]=(contagem[c]||0)+1;
-});
-});
+    Object.keys(banco).forEach(nome => {
 
-const top=Object.entries(contagem)
-.sort((a,b)=>b[1]-a[1])
-.slice(0,5);
+        if(!banco[nome].comorbidades) return;
 
-new Chart(document.getElementById("graficoComorb"),{
-type:"bar",
-data:{
-labels:top.map(i=>i[0]),
-datasets:[{
-label:"Nº de Residentes",
-data:top.map(i=>i[1]),
-backgroundColor:"#4CAF50"
-}]
+        banco[nome].comorbidades.forEach(c => {
+            contagem[c] = (contagem[c] || 0) + 1;
+        });
+    });
+
+    const top = Object.entries(contagem)
+        .sort((a,b) => b[1] - a[1])
+        .slice(0,5);
+
+    const ctx = document.getElementById("graficoComorb");
+
+    if(!ctx) return;
+
+    if(top.length === 0){
+        ctx.parentElement.innerHTML += "<p style='margin-top:15px;'>Nenhum dado disponível.</p>";
+        return;
+    }
+
+    new Chart(ctx,{
+        type:"bar",
+        data:{
+            labels: top.map(i => i[0]),
+            datasets:[{
+                label:"Nº de Residentes",
+                data: top.map(i => i[1]),
+                backgroundColor:"#22c55e"
+            }]
+        },
+        options:{
+            responsive:true,
+            plugins:{
+                legend:{ display:false }
+            },
+            scales:{
+                y:{
+                    beginAtZero:true,
+                    ticks:{ stepSize:1 }
+                }
+            }
+        }
+    });
+
 }
-});
-}
-
 </script>
-
-<!-- APP PRINCIPAL -->
-  
-<script src="app.js"></script>
 
 </body>
 </html>
