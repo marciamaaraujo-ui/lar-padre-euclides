@@ -99,39 +99,31 @@ background:#1a252f;
 <body>
 
   <!-- NAVBAR INSTITUCIONAL -->
-<div class="navbar">
+<header class="main-header">
   <div class="nav-container">
-
-   <div class="nav-left">
-  <img src="assets/logo.png" class="nav-logo">
-
-  <div id="pacienteAtivoInfo" class="paciente-ativo">
-    👤 Nenhum paciente selecionado
-  </div>
-</div>
-
-    <div class="nav-right">
-
-      <div class="nav-links">
-        <a href="index.html">🏠 Início</a>
-        <a href="ficha-completa.html">📋 Avaliação</a>
-        <a href="exames-laboratoriais.html">🧪 Exames</a>
-        <a href="comorbidades.html">🏥 Comorbidades</a>
-        <a href="dashboard.html">📊 Dashboard</a>
-        <a href="metodologia.html">📘 Metodologia</a>
-        <a href="relatorio-executivo.html">📄 Relatório</a>
+    
+    <div class="header-logo">
+      <img src="assets/logo.png" alt="Logo" class="nav-logo">
+      <div id="pacienteAtivoInfo" class="paciente-ativo">
+        👤 Nenhum paciente selecionado
       </div>
+    </div>
 
-      <div id="indicadorRisco" class="indicador-risco neutro">
-        ICN: —
-      </div>
+    <nav class="main-nav">
+      <a href="index.html">🏠 Início</a>
+      <a href="ficha-completa.html">📋 Avaliação</a>
+      <a href="exames-laboratoriais.html">🧪 Exames</a>
+      <a href="comorbidades.html">🏥 Comorbidades</a>
+      <a href="dashboard.html">📊 Dashboard</a>
+    </nav>
 
+    <div class="header-actions">
+      <div id="indicadorRisco" class="indicador-risco neutro">ICN: —</div>
       <button class="btn-navbar" onclick="salvarRegistro()">💾 Salvar</button>
-
     </div>
 
   </div>
-</div>
+</header>
   
 <div class="container">
 
