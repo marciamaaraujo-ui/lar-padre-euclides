@@ -78,7 +78,6 @@ function atualizarPacienteAtivoNavbar(){
 /* ================= SALVAR REGISTRO UNIFICADO ================= */
 
 function salvarRegistro() {
-    // 1. Validação de dados antes de começar a animação
     const nomeInput = getVal("nome").trim().toUpperCase();
 
     if (!nomeInput) {
@@ -86,24 +85,23 @@ function salvarRegistro() {
         return;
     }
 
-    // 2. Iniciar efeito visual no botão
     const btn = document.querySelector('.btn-navbar');
     const originalText = btn.innerHTML;
 
     btn.innerHTML = "⏳ Salvando...";
-    btn.style.background = "#f39c12"; 
     btn.disabled = true;
 
-    // 3. Lógica Real de Salvamento (Executa imediatamente)
     criarPacienteSeNaoExistir(nomeInput);
     const banco = obterBanco();
 
+    // Aqui removemos o <br> que estava causando erro
     banco[nomeInput].dadosBasicos = {
         dataNascimento: getVal("dataNascimento"),
         idade: getVal("idade"),
         dataAdmissao: getVal("dataAdmissao"),
         alergias: getVal("alergias"),
-        convenio: getVal("convenio"),        hygia: getVal("hygia"),
+        convenio: getVal("convenio"),
+        hygia: getVal("hygia"),
         diagnosticos: getVal("diagnosticos"),
         protese: getVal("protese")
     };
@@ -112,18 +110,12 @@ function salvarRegistro() {
     definirPacienteAtivo(nomeInput);
     atualizarPacienteAtivoNavbar();
 
-    // 4. Finalizar animação após um pequeno delay para o usuário ver
     setTimeout(() => {
         btn.innerHTML = "✅ Salvo!";
-        btn.style.background = "#27ae60"; 
-
         setTimeout(() => {
             btn.innerHTML = originalText;
-            btn.style.background = ""; 
             btn.disabled = false;
         }, 2000);
-
-        console.log("Dados salvos com sucesso no Lar Padre Euclides!");
     }, 1000);
 }
 
@@ -415,74 +407,56 @@ document.addEventListener("DOMContentLoaded", function(){
     const nome = obterPacienteAtivo();
     const banco = obterBanco();
 
-    /* ===== CARREGAR DADOS ===== */
+    if(nome && banco[nome]){
+        const p = banco[nome];
 
-    if(nome && banco[nome]?.dadosBasicos){
-        const dados = banco[nome].dadosBasicos;
+        // Carregar Dados Básicos
+        if(p.dadosBasicos){
+            if(getEl("nome")) getEl("nome").value = nome;
+            if(getEl("dataNascimento")) getEl("dataNascimento").value = p.dadosBasicos.dataNascimento || "";
+            if(getEl("idade")) getEl("idade").value = p.dadosBasicos.idade || "";
+            if(getEl("dataAdmissao")) getEl("dataAdmissao").value = p.dadosBasicos.dataAdmissao || "";
+            if(getEl("alergias")) getEl("alergias").value = p.dadosBasicos.alergias || "";
+            if(getEl("convenio")) getEl("convenio").value = p.dadosBasicos.convenio || "";
+            if(getEl("hygia")) getEl("hygia").value = p.dadosBasicos.hygia || "";
+            if(getEl("diagnosticos")) getEl("diagnosticos").value = p.dadosBasicos.diagnosticos || "";
+            if(getEl("protese")) getEl("protese").value = p.dadosBasicos.protese || "";
+        }
 
-        if(getEl("nome")) getEl("nome").value = nome;
-        if(getEl("dataNascimento")) getEl("dataNascimento").value = dados.dataNascimento || "";
-        if(getEl("idade")) getEl("idade").value = dados.idade || "";
-        if(getEl("dataAdmissao")) getEl("dataAdmissao").value = dados.dataAdmissao || "";
-        if(getEl("alergias")) getEl("alergias").value = dados.alergias || "";
-        if(getEl("convenio")) getEl("convenio").value = dados.convenio || "";
-        if(getEl("hygia")) getEl("hygia").value = dados.hygia || "";
-        if(getEl("diagnosticos")) getEl("diagnosticos").value = dados.diagnosticos || "";
-        if(getEl("protese")) getEl("protese").value = dados.protese || "";
+        // CARREGAR CHECKBOXES DAS COMORBIDADES
+        if(p.comorbidades && Array.isArray(p.comorbidades)){
+            p.comorbidades.forEach(id => {
+                const cb = getEl(id);
+                if(cb) cb.checked = true;
+            });
+        }
+
+        if(p.mna){
+            if(getEl("mnaTotal")) getEl("mnaTotal").value = p.mna.total || "";
+            if(getEl("classMNA")) getEl("classMNA").value = p.mna.classificacao || "";
+        }
     }
 
-    if(nome && banco[nome]?.mna){
-        const mna = banco[nome].mna;
-        if(getEl("mnaTotal")) getEl("mnaTotal").value = mna.total || "";
-        if(getEl("classMNA")) getEl("classMNA").value = mna.classificacao || "";
-    }
-
-    /* ===== RECALCULAR ===== */
-
+    // Recalcular e configurar eventos (Mantenha o resto como estava)
     calcularIMC();
     calcularSarcopenia();
     calcularNRS();
     calcularICN();
+    atualizarPainelAlertas();
 
-    /* ===== EVENTOS ===== */
-
-    ["peso","altura"].forEach(id=>{
+    // Eventos de Input (Peso, Altura, etc)
+    ["peso","altura","circBraco","circPanturrilha","nrsNutri","nrsGrav"].forEach(id => {
         const el = getEl(id);
-        if(el){
-            el.addEventListener("input", ()=>{
-                calcularIMC();
-                calcularICN();
-            });
-        }
-    });
-
-    ["circBraco","circPanturrilha"].forEach(id=>{
-        const el = getEl(id);
-        if(el){
-            el.addEventListener("input", ()=>{
-                calcularSarcopenia();
-                calcularICN();
-            });
-        }
-    });
-
-    ["nrsNutri","nrsGrav"].forEach(id=>{
-        const el = getEl(id);
-        if(el){
-            el.addEventListener("change", ()=>{
-                calcularNRS();
-                calcularICN();
-            });
-        }
+        if(el) el.addEventListener("input", () => { 
+            calcularIMC(); calcularSarcopenia(); calcularNRS(); calcularICN(); 
+        });
     });
 
     const selects = document.querySelectorAll("[id^='mna']");
     selects.forEach(select => {
-        select.addEventListener("change", ()=>{
-            calcularMNA();
-            calcularICN();
-        });
+        select.addEventListener("change", () => { calcularMNA(); calcularICN(); });
     });
+});
     /* ===== ATUALIZAR PAINEL ALERTAS ===== */
 atualizarPainelAlertas();
 });
