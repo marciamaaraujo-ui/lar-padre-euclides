@@ -104,42 +104,39 @@ body{
   flex-wrap:wrap;
 }
 
-/* ===== LINKS ===== */
+/* ===== NAVEGAÇÃO PRINCIPAL (ATUALIZADO) ===== */
 
-.nav-links{
-  display:flex;
-  align-items:center;
-  gap:20px;
-  flex-wrap:wrap;
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espaço reduzido para caber todos os links */
 }
 
-.nav-links a{
-  text-decoration:none;
-  font-weight:600;
-  font-size:1rem;
-  letter-spacing:0.3px;
-  color:#334155;
-  transition:var(--transition);
-  position:relative;
+.main-nav a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem; /* Fonte levemente menor */
+  letter-spacing: 0.3px;
+  color: #334155;
+  transition: var(--transition);
+  position: relative;
+  white-space: nowrap; /* Impede que o texto do link quebre em duas linhas */
 }
 
-.nav-links a:hover{
-  color:var(--accent-color);
+/* Mantendo o efeito da linha embaixo ao passar o mouse */
+.main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: var(--transition);
 }
 
-.nav-links a::after{
-  content:"";
-  position:absolute;
-  left:0;
-  bottom:-4px;
-  width:0;
-  height:2px;
-  background:var(--accent-color);
-  transition:var(--transition);
-}
-
-.nav-links a:hover::after{
-  width:100%;
+.main-nav a:hover::after {
+  width: 100%;
 }
 
 /* ===== INDICADOR DE RISCO ===== */
