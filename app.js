@@ -75,19 +75,27 @@ function atualizarPacienteAtivoNavbar(){
     info.innerText = `👤 ${nome}`;
 }
 
-/* ================= SALVAR REGISTRO ================= */
+/* ================= SALVAR REGISTRO UNIFICADO ================= */
 
-function salvarRegistro(){
-
+function salvarRegistro() {
+    // 1. Validação de dados antes de começar a animação
     const nomeInput = getVal("nome").trim().toUpperCase();
 
-    if(!nomeInput){
-        alert("Digite o nome do residente.");
+    if (!nomeInput) {
+        alert("⚠️ Digite o nome do residente antes de salvar.");
         return;
     }
 
-    criarPacienteSeNaoExistir(nomeInput);
+    // 2. Iniciar efeito visual no botão
+    const btn = document.querySelector('.btn-navbar');
+    const originalText = btn.innerHTML;
 
+    btn.innerHTML = "⏳ Salvando...";
+    btn.style.background = "#f39c12"; 
+    btn.disabled = true;
+
+    // 3. Lógica Real de Salvamento (Executa imediatamente)
+    criarPacienteSeNaoExistir(nomeInput);
     const banco = obterBanco();
 
     banco[nomeInput].dadosBasicos = {
@@ -95,18 +103,28 @@ function salvarRegistro(){
         idade: getVal("idade"),
         dataAdmissao: getVal("dataAdmissao"),
         alergias: getVal("alergias"),
-        convenio: getVal("convenio"),
-        hygia: getVal("hygia"),
+        convenio: getVal("convenio"),<br>        hygia: getVal("hygia"),
         diagnosticos: getVal("diagnosticos"),
         protese: getVal("protese")
     };
 
     salvarBanco(banco);
-
     definirPacienteAtivo(nomeInput);
     atualizarPacienteAtivoNavbar();
 
-    alert("Registro salvo com sucesso.");
+    // 4. Finalizar animação após um pequeno delay para o usuário ver
+    setTimeout(() => {
+        btn.innerHTML = "✅ Salvo!";
+        btn.style.background = "#27ae60"; 
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = ""; 
+            btn.disabled = false;
+        }, 2000);
+
+        console.log("Dados salvos com sucesso no Lar Padre Euclides!");
+    }, 1000);
 }
 
 /* ================= IMC ================= */
@@ -468,29 +486,3 @@ document.addEventListener("DOMContentLoaded", function(){
     /* ===== ATUALIZAR PAINEL ALERTAS ===== */
 atualizarPainelAlertas();
 });
-function salvarRegistro() {
-    const btn = document.querySelector('.btn-navbar');
-    const originalText = btn.innerHTML;
-
-    // 1. Efeito visual de "Salvando..."
-    btn.innerHTML = "⏳ Salvando...";
-    btn.style.background = "#f39c12"; // Laranja (processando)
-    btn.disabled = true;
-
-    // Simula o tempo de salvamento (ex: 1.5 segundos)
-    setTimeout(() => {
-        // 2. Efeito de "Sucesso"
-        btn.innerHTML = "✅ Salvo!";
-        btn.style.background = "#27ae60"; // Verde (sucesso)
-
-        // 3. Volta ao estado original depois de 2 segundos
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.style.background = ""; // Volta ao CSS original
-            btn.disabled = false;
-        }, 2000);
-
-        // Aqui você colocaria a sua lógica real de salvar no Banco de Dados ou LocalStorage
-        console.log("Dados salvos com sucesso no Lar Padre Euclides!");
-    }, 1500);
-}
