@@ -468,3 +468,29 @@ document.addEventListener("DOMContentLoaded", function(){
     /* ===== ATUALIZAR PAINEL ALERTAS ===== */
 atualizarPainelAlertas();
 });
+function salvarRegistro() {
+    const btn = document.querySelector('.btn-navbar');
+    const originalText = btn.innerHTML;
+
+    // 1. Efeito visual de "Salvando..."
+    btn.innerHTML = "⏳ Salvando...";
+    btn.style.background = "#f39c12"; // Laranja (processando)
+    btn.disabled = true;
+
+    // Simula o tempo de salvamento (ex: 1.5 segundos)
+    setTimeout(() => {
+        // 2. Efeito de "Sucesso"
+        btn.innerHTML = "✅ Salvo!";
+        btn.style.background = "#27ae60"; // Verde (sucesso)
+
+        // 3. Volta ao estado original depois de 2 segundos
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = ""; // Volta ao CSS original
+            btn.disabled = false;
+        }, 2000);
+
+        // Aqui você colocaria a sua lógica real de salvar no Banco de Dados ou LocalStorage
+        console.log("Dados salvos com sucesso no Lar Padre Euclides!");
+    }, 1500);
+}
