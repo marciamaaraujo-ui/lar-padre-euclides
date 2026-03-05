@@ -103,7 +103,7 @@ function salvarRegistro() {
         idade: getVal("idade"),
         dataAdmissao: getVal("dataAdmissao"),
         alergias: getVal("alergias"),
-        convenio: getVal("convenio"),<br>        hygia: getVal("hygia"),
+        convenio: getVal("convenio"),        hygia: getVal("hygia"),
         diagnosticos: getVal("diagnosticos"),
         protese: getVal("protese")
     };
@@ -486,3 +486,49 @@ document.addEventListener("DOMContentLoaded", function(){
     /* ===== ATUALIZAR PAINEL ALERTAS ===== */
 atualizarPainelAlertas();
 });
+
+/* ================= SALVAR COMORBIDADES (CORREÇÃO) ================= */
+
+function salvarComorbidades() {
+    const nome = obterPacienteAtivo();
+    if (!nome) {
+        alert("⚠️ Selecione um residente primeiro!");
+        return;
+    }
+
+    const banco = obterBanco();
+    
+    // Lista de todos os IDs de checkboxes que você criou no HTML
+    const idsComorbidades = [
+        "has", "dislip", "venosa", "arritmia", "cardio", "icc", "trombose", "ivp", "aneurisma",
+        "dm1", "dm2", "insulino", "hipot", "obes", "hiperuri",
+        "alz", "park", "avc", "depressao", "ansiedade", "epilepsia", "esquiz", "encef", "microangio"
+    ];
+
+    // Filtra apenas os IDs que estão marcados (checked)
+    const selecionadas = idsComorbidades.filter(id => {
+        const el = getEl(id);
+        return el && el.checked;
+    });
+
+    // Salva no banco de dados do paciente específico
+    banco[nome].comorbidades = selecionadas;
+    
+    // Salva também as observações manuais (opcional)
+    banco[nome].detalhesClinicos = {
+        controle: document.querySelector("select")?.value || "",
+        obs: document.querySelector("textarea")?.value || "",
+        cid: document.querySelector("input[type='text']")?.value || ""
+    };
+
+    salvarBanco(banco);
+    
+    // Efeito visual de sucesso no botão
+    const btn = document.querySelector('.btn-save');
+    if(btn) {
+        btn.innerHTML = "✅ Dados Gravados!";
+        setTimeout(() => btn.innerHTML = "💾 Salvar", 2000);
+    }
+    
+    console.log("Comorbidades de " + nome + " atualizadas:", selecionadas);
+}
