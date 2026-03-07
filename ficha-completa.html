@@ -1,95 +1,123 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Avaliação Nutricional Integrada - ILPI</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
+
 <div class="navbar">
-  <div class="nav-container">
 
-    <div class="nav-left">
-      <img src="assets/logo.png" class="nav-logo">
-      <div id="pacienteAtivoInfo" class="paciente-ativo">
-        👤 Nenhum paciente selecionado
-      </div>
-    </div>
+<div class="nav-container">
 
-    <div class="nav-links">
-      <a href="index.html">🏠 Início</a>
-      <a href="ficha-completa.html">📋 Avaliação Completa</a>
-      <a href="exames-laboratoriais.html">🧪 Exames</a>
-      <a href="comorbidades.html">🏥 Comorbidades</a>
-      <a href="dashboard.html">📊 Dashboard</a>
-      <a href="metodologia.html">📘 Metodologia</a>
+<div class="nav-left">
 
-      <div id="indicadorRisco" class="indicador-risco neutro">
-        ICN: —
-      </div>
+<img src="assets/logo.png" class="nav-logo">
 
-          <div id="painelAlertas" class="painel-alertas"></div>
-      
-      <button class="btn-navbar" onclick="salvarRegistro()">💾 Salvar</button>
-    </div>
-
-  </div>
+<div id="pacienteAtivoInfo" class="paciente-ativo">
+👤 Nenhum paciente selecionado
 </div>
+
+</div>
+
+
+<div class="nav-links">
+
+<a href="index.html">🏠 Início</a>
+<a href="ficha-completa.html">📋 Avaliação Completa</a>
+<a href="exames-laboratoriais.html">🧪 Exames</a>
+<a href="comorbidades.html">🏥 Comorbidades</a>
+<a href="dashboard.html">📊 Dashboard</a>
+<a href="metodologia.html">📘 Metodologia</a>
+
+</div>
+
+
+<div class="nav-right">
+
+<div id="indicadorRisco" class="indicador-risco neutro">
+ICN: —
+</div>
+
+<button class="btn-navbar" onclick="salvarRegistro()">
+💾 Salvar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <div class="container">
 
 <h1>Avaliação Nutricional Integrada</h1>
 
+<div id="painelAlertas" class="painel-alertas"></div>
+
+
 <!-- ================= DADOS GERAIS ================= -->
+
 <section class="secao">
+
 <h2>Dados Gerais</h2>
 
 <div class="form-group">
+
 <label>Nome Completo</label>
 <input type="text" id="nome">
+
 </div>
 
+
 <div class="form-group">
+
 <label>Data de Nascimento</label>
-<input type="date" id="dataNascimento" onchange="calcularTudo()">
+<input type="date" id="dataNascimento">
+
 </div>
 
-<div class="form-group">
-<label>Sexo</label>
-<select id="sexo" onchange="calcularTudo()">
-<option value="">Selecione</option>
-<option value="F">Feminino</option>
-<option value="M">Masculino</option>
-</select>
-</div>
 
 <div class="form-group">
+
 <label>Idade (automático)</label>
 <input type="text" id="idade" class="auto" readonly>
+
 </div>
+
 </section>
 
+
 <!-- ================= ANTROPOMETRIA ================= -->
+
 <section class="secao">
+
 <h2>Antropometria</h2>
 
 <div class="form-group">
 <label>Peso (kg)</label>
-<input type="number" id="peso" step="any" oninput="calcularTudo()">
+<input type="number" id="peso" step="any">
 </div>
 
 <div class="form-group">
 <label>Altura (m)</label>
-<input type="number" id="altura" step="any" oninput="calcularTudo()">
+<input type="number" id="altura" step="any">
 </div>
 
 <div class="form-group">
 <label>Peso Habitual (kg)</label>
-<input type="number" id="pesoHab" step="any" oninput="calcularTudo()">
+<input type="number" id="pesoHab" step="any">
 </div>
 
 <div class="form-group">
@@ -101,7 +129,7 @@
 <label>Alerta de Perda de Peso</label>
 <input type="text" id="alertaPerdaPeso" class="auto" readonly>
 </div>
-  
+
 <div class="form-group">
 <label>IMC</label>
 <input type="text" id="imc" class="auto" readonly>
@@ -112,26 +140,17 @@
 <input type="text" id="classImc" class="auto" readonly>
 </div>
 
+
 <div class="grid">
 
 <div class="form-group">
 <label>Circunferência do Braço (cm)</label>
-<input type="number" step="0.1" id="circBraco" oninput="calcularTudo()">
-</div>
-
-<div class="form-group">
-<label>Adequação do Braço</label>
-<input type="text" id="adequacaoBraco" class="auto" readonly>
+<input type="number" step="0.1" id="circBraco">
 </div>
 
 <div class="form-group">
 <label>Circunferência da Panturrilha (cm)</label>
-<input type="number" step="0.1" id="circPanturrilha" oninput="calcularTudo()">
-</div>
-
-<div class="form-group">
-<label>Adequação da Panturrilha</label>
-<input type="text" id="adequacaoPanturrilha" class="auto" readonly>
+<input type="number" step="0.1" id="circPanturrilha">
 </div>
 
 <div class="form-group">
@@ -140,55 +159,103 @@
 </div>
 
 </div>
+
 </section>
 
+
 <!-- ================= NRS ================= -->
+
 <section class="secao">
+
 <h2>NRS 2002</h2>
 
-<select id="nrsNutri" onchange="calcularTudo()">
+<div class="form-group">
+
+<label>Estado Nutricional</label>
+
+<select id="nrsNutri">
+
 <option value="0">Normal</option>
 <option value="1">Perda leve</option>
 <option value="2">Perda moderada</option>
 <option value="3">Perda grave</option>
+
 </select>
 
-<select id="nrsGrav" onchange="calcularTudo()">
+</div>
+
+
+<div class="form-group">
+
+<label>Gravidade da Doença</label>
+
+<select id="nrsGrav">
+
 <option value="0">Sem estresse</option>
 <option value="1">Doença crônica</option>
 <option value="2">Cirurgia grande</option>
 <option value="3">Paciente crítico</option>
+
 </select>
 
-<input type="text" id="nrsIdade" class="auto" readonly>
+</div>
+
+
+<div class="form-group">
+<label>NRS Total</label>
 <input type="text" id="nrsTotal" class="auto" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação</label>
 <input type="text" id="classNRS" class="auto" readonly>
+</div>
 
 </section>
+
 
 <!-- ================= ICN ================= -->
+
 <section class="secao">
+
 <h2>Índice de Condição Nutricional (ICN)</h2>
 
+<div class="form-group">
+<label>Score ICN</label>
 <input type="text" id="icn" class="auto" readonly>
+</div>
+
+<div class="form-group">
+<label>Classificação</label>
 <input type="text" id="classICN" class="auto" readonly>
+</div>
 
 </section>
 
+
 <!-- ================= PES ================= -->
+
 <section class="secao">
+
 <h2>Diagnóstico Nutricional (PES)</h2>
+
 <textarea id="parecer" rows="5" class="auto" readonly></textarea>
+
 </section>
 
 </div>
 
+
 <script src="app.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-    atualizarPacienteAtivoNavbar();
+
+document.addEventListener("DOMContentLoaded",function(){
+
+atualizarPacienteAtivoNavbar();
+
 });
+
 </script>
 
 </body>
