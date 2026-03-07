@@ -1,39 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Ficha de Monitoramento Nutricional Integrado - Lar Padre Euclides</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
-<div class="navbar">
-  <div class="nav-container">
 
-    <div class="nav-left">
+<div class="navbar">
+
+<div class="nav-container">
+
+<div class="nav-left">
+
 <img src="assets/logo.png" class="nav-logo" alt="Logo Lar Padre Euclides">
 
-  <div id="pacienteAtivoInfo" class="paciente-ativo">
-    👤 Nenhum paciente selecionado
-  </div>
+<div id="pacienteAtivoInfo" class="paciente-ativo">
+👤 Nenhum paciente selecionado
 </div>
 
-  <div class="nav-links">
-  <a href="index.html">🏠 Início</a>
-  <a href="mna.html">📊 MNA</a>
-  <a href="ficha-completa.html">📋 Avaliação Completa</a>
-  <a href="exames-laboratoriais.html">🧪 Exames</a>
-  <a href="comorbidades.html">🏥 Comorbidades</a>
-  <a href="dashboard.html">📊 Dashboard</a>
-  <a href="metodologia.html">📘 Metodologia</a>
 </div>
+
+
+<div class="nav-links">
+
+<a href="index.html">🏠 Início</a>
+<a href="mna.html">📊 MNA</a>
+<a href="ficha-completa.html">📋 Avaliação Completa</a>
+<a href="exames-laboratoriais.html">🧪 Exames</a>
+<a href="comorbidades.html">🏥 Comorbidades</a>
+<a href="dashboard.html">📊 Dashboard</a>
+<a href="metodologia.html">📘 Metodologia</a>
+
+</div>
+
 
 <div class="nav-right">
-  <span class="icn-status">ICN: —</span>
-  <button class="btn-navbar" onclick="salvarRegistro()">💾 Salvar</button>
+
+<span class="icn-status">ICN: —</span>
+
+<button class="btn-navbar" onclick="salvarRegistro()">
+💾 Salvar
+</button>
+
+</div>
+
+</div>
+
 </div>
 
 
@@ -42,11 +64,15 @@
 <div class="container">
 
 <header>
-    <h1>Ficha de Monitoramento Nutricional Integrado</h1>
-    <p>Lar Padre Euclides</p>
+
+<h1>Ficha de Monitoramento Nutricional Integrado</h1>
+<p>Lar Padre Euclides</p>
+
 </header>
 
-<form autocomplete="off">
+
+<form autocomplete="off" onsubmit="return false;">
+
 
 <!-- ================= DADOS DO RESIDENTE ================= -->
 
@@ -56,49 +82,84 @@
 
 <div class="linha-identificacao">
 
-    <div class="form-group campo-nome">
-        <label>Nome Completo</label>
-        <input type="text" id="nome">
-    </div>
+<div class="form-group campo-nome">
 
-    <div class="foto-container">
+<label>Nome Completo</label>
 
-  <label for="fotoUpload" class="btn-upload">
-    📷 Selecionar Foto
-  </label>
-
-  <input 
-    type="file" 
-    id="fotoUpload" 
-    accept="image/*"
-  >
-
-  <img id="fotoPreview" alt="Foto do residente">
+<input 
+type="text"
+id="nome"
+placeholder="Digite o nome completo do residente"
+required
+>
 
 </div>
 
-  </div>
+
+<div class="foto-container">
+
+<label for="fotoUpload" class="btn-upload">
+📷 Selecionar Foto
+</label>
+
+<input
+type="file"
+id="fotoUpload"
+accept="image/*"
+style="display:none"
+>
+
+<img id="fotoPreview" alt="Foto do residente">
+
+</div>
+
+</div>
+
 
 <div class="grid">
 
-    <div class="form-group">
-        <label>Data de Nascimento</label>
-        <input type="date" id="dataNascimento" onchange="calcularIdade()">
-    </div>
+<div class="form-group">
 
-    <div class="form-group">
-        <label>Idade (automático)</label>
-        <input type="text" id="idade" class="auto" readonly>
-    </div>
+<label>Data de Nascimento</label>
 
-    <div class="form-group">
-        <label>Data da Admissão</label>
-        <input type="date" id="dataAdmissao">
-    </div>
+<input
+type="date"
+id="dataNascimento"
+onchange="calcularIdade()"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Idade (automático)</label>
+
+<input
+type="text"
+id="idade"
+class="auto"
+readonly
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Data da Admissão</label>
+
+<input
+type="date"
+id="dataAdmissao"
+>
+
+</div>
 
 </div>
 
 </section>
+
 
 <!-- ================= INFORMAÇÕES CLÍNICAS ================= -->
 
@@ -107,37 +168,43 @@
 <h2>Informações Clínicas</h2>
 
 <div class="form-group">
-    <label>Alergias</label>
-    <input type="text" id="alergias">
+<label>Alergias</label>
+<input type="text" id="alergias">
 </div>
 
 <div class="form-group">
-    <label>Convênio</label>
-    <input type="text" id="convenio">
+<label>Convênio</label>
+<input type="text" id="convenio">
 </div>
 
 <div class="form-group">
-    <label>Hygia</label>
-    <input type="text" id="hygia">
+<label>Hygia</label>
+<input type="text" id="hygia">
 </div>
 
 <div class="form-group">
-    <label>Diagnósticos Médicos</label>
-    <textarea id="diagnosticos" rows="3"></textarea>
+<label>Diagnósticos Médicos</label>
+<textarea id="diagnosticos" rows="3"></textarea>
 </div>
 
 <div class="form-group">
-    <label>Uso de Prótese</label>
-    <select id="protese">
-        <option value="">Selecionar</option>
-        <option value="Não utiliza">Não utiliza</option>
-        <option value="Prótese dentária">Prótese dentária</option>
-        <option value="Prótese ortopédica">Prótese ortopédica</option>
-        <option value="Ambas">Ambas</option>
-    </select>
+
+<label>Uso de Prótese</label>
+
+<select id="protese">
+
+<option value="">Selecionar</option>
+<option value="Não utiliza">Não utiliza</option>
+<option value="Prótese dentária">Prótese dentária</option>
+<option value="Prótese ortopédica">Prótese ortopédica</option>
+<option value="Ambas">Ambas</option>
+
+</select>
+
 </div>
 
 </section>
+
 
 <!-- ================= ESCALA DE KATZ ================= -->
 
@@ -146,61 +213,61 @@
 <h2>Escala de Katz – Avaliação Funcional</h2>
 
 <div class="form-group">
-    <label>1. Banho</label>
-    <select id="katzBanho" onchange="calcularKatz()">
-        <option value="1">Independente</option>
-        <option value="0">Dependente</option>
-    </select>
+<label>1. Banho</label>
+<select id="katzBanho">
+<option value="1">Independente</option>
+<option value="0">Dependente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>2. Vestir-se</label>
-    <select id="katzVestir" onchange="calcularKatz()">
-        <option value="1">Independente</option>
-        <option value="0">Dependente</option>
-    </select>
+<label>2. Vestir-se</label>
+<select id="katzVestir">
+<option value="1">Independente</option>
+<option value="0">Dependente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>3. Higiene Pessoal</label>
-    <select id="katzHigiene" onchange="calcularKatz()">
-        <option value="1">Independente</option>
-        <option value="0">Dependente</option>
-    </select>
+<label>3. Higiene Pessoal</label>
+<select id="katzHigiene">
+<option value="1">Independente</option>
+<option value="0">Dependente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>4. Transferência</label>
-    <select id="katzTransferencia" onchange="calcularKatz()">
-        <option value="1">Independente</option>
-        <option value="0">Dependente</option>
-    </select>
+<label>4. Transferência</label>
+<select id="katzTransferencia">
+<option value="1">Independente</option>
+<option value="0">Dependente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>5. Continência</label>
-    <select id="katzContinencia" onchange="calcularKatz()">
-        <option value="1">Continente</option>
-        <option value="0">Incontinente</option>
-    </select>
+<label>5. Continência</label>
+<select id="katzContinencia">
+<option value="1">Continente</option>
+<option value="0">Incontinente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>6. Alimentação</label>
-    <select id="katzAlimentacao" onchange="calcularKatz()">
-        <option value="1">Independente</option>
-        <option value="0">Dependente</option>
-    </select>
+<label>6. Alimentação</label>
+<select id="katzAlimentacao">
+<option value="1">Independente</option>
+<option value="0">Dependente</option>
+</select>
 </div>
 
 <div class="form-group">
-    <label>Pontuação Total (0–6)</label>
-    <input type="text" id="katzTotal" class="auto" readonly>
+<label>Pontuação Total (0–6)</label>
+<input type="text" id="katzTotal" class="auto" readonly>
 </div>
 
 <div class="form-group">
-    <label>Classificação Funcional</label>
-    <textarea id="katzClassificacao" class="auto" readonly rows="3"></textarea>
+<label>Classificação Funcional</label>
+<textarea id="katzClassificacao" class="auto" readonly rows="3"></textarea>
 </div>
 
 </section>
@@ -208,6 +275,7 @@
 </form>
 
 </div>
+
 
 <script src="app.js"></script>
 
