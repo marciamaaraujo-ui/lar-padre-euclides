@@ -75,6 +75,8 @@ function salvarRegistro() {
 
 /* ================= CÁLCULOS (IDADE, IMC, PERDA PESO, NRS, MNA, ICN) ================= */
 
+/* ================= CALCULAR IDADE ================= */
+
 function calcularIdade(){
 
     const nascimento = getVal("dataNascimento");
@@ -94,7 +96,41 @@ function calcularIdade(){
     if(getEl("idade"))
         getEl("idade").value = idade;
 }
+/* ================= ESCALA DE KATZ ================= */
 
+function calcularKatz(){
+
+    const campos = [
+        "katzBanho",
+        "katzVestir",
+        "katzHigiene",
+        "katzTransferencia",
+        "katzContinencia",
+        "katzAlimentacao"
+    ];
+
+    let total = 0;
+
+    campos.forEach(id=>{
+        total += parseInt(getVal(id)) || 0;
+    });
+
+    if(getEl("katzTotal"))
+        getEl("katzTotal").value = total;
+
+    let classe = "";
+
+    if(total === 6)
+        classe = "Independente para todas as atividades básicas";
+    else if(total >= 4)
+        classe = "Dependência parcial";
+    else
+        classe = "Dependência importante";
+
+    if(getEl("katzClassificacao"))
+        getEl("katzClassificacao").value = classe;
+}
+/* ================= CALCULAR IMC ================= */
 function calcularIMC(){
 
     const peso = getNum("peso");
@@ -130,6 +166,7 @@ function calcularIMC(){
     return imc;
 }
 
+/* ================= CALCULAR PERDA DE PESO ================= */
 function calcularPerdaPeso(){
 
     const pesoHabitual = getNum("pesoHab");
@@ -161,6 +198,7 @@ function calcularPerdaPeso(){
     return perda;
 }
 
+/* ================= CALCULAR SARCOPENIA ================= */
 function calcularSarcopenia(){
 
     const braco = getNum("circBraco");
@@ -178,6 +216,7 @@ if((braco > 0 && braco < 22) || (pant > 0 && pant < 31)){
     return res;
 }
 
+/* ================= CALCULAR NRS ================= */
 function calcularNRS(){
 
     const nutri = getNum("nrsNutri");
@@ -197,6 +236,7 @@ function calcularNRS(){
     return total;
 }
 
+/* ================= CALCULAR MNA ================= */
 function calcularMNA(){
 
     let total = 0;
@@ -224,6 +264,7 @@ function calcularMNA(){
         getEl("classMNA").value = classe;
 }
 
+/* ================= CALCULAR ICN ================= */
 function calcularICN(){
 
     const nome = obterPacienteAtivo();
@@ -269,6 +310,7 @@ function calcularICN(){
     atualizarPainelAlertas();
 }
 
+/* ================= CALCULAR IDADE ================= */
 function atualizarPainelAlertas(){
 
     const painel = getEl("painelAlertas");
@@ -330,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function(){
     calcularNRS();
     calcularICN();
     calcularPerdaPeso();
+    calcularKatz();
 
     document.querySelectorAll("input, select").forEach(el => {
         el.addEventListener("input", () => {
