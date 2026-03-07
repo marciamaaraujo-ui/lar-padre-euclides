@@ -10,26 +10,19 @@ function getNum(id){
     if(!el) return 0;
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
-
 /* ================= BANCO DE DADOS ================= */
-function obterBanco(){ return JSON.parse(localStorage.getItem("bancoILPI")) || {}; }
-function salvarBanco(banco){ localStorage.setItem("bancoILPI", JSON.stringify(banco)); }
 
-function criarPacienteSeNaoExistir(nome){
-    const banco = obterBanco();
-    if(!banco[nome]){
-        banco[nome] = {
-            criadoEm: new Date().toISOString(),
-            dadosBasicos: {},
-            mna: {},
-            comorbidades: [],
-            icn: {}
-        };
-        salvarBanco(banco);
+function obterBanco(){
+    try{
+        return JSON.parse(localStorage.getItem("bancoILPI")) || {};
+    }catch{
+        return {};
     }
-    return banco;
 }
 
+function salvarBanco(banco){
+    localStorage.setItem("bancoILPI", JSON.stringify(banco));
+}
 /* ================= PACIENTE ATIVO ================= */
 function definirPacienteAtivo(nome){ localStorage.setItem("pacienteAtivoILPI", nome); }
 function obterPacienteAtivo(){ return localStorage.getItem("pacienteAtivoILPI"); }
@@ -124,7 +117,7 @@ function calcularICN(){
     if(!nome || !banco[nome]) return;
 
     let score = 0;
-    const mna = parseFloat(banco[nome].mna?.total) || 0;
+    const mna = parseFloat(getVal("mnaTotal")) || 0;
     if(mna < 17) score += 3; else if(mna < 24) score += 2;
     if(getNum("nrsTotal") >= 3) score += 2;
     if((getEl("scoreSarcopenia")?.value || "").includes("Risco")) score += 1;
