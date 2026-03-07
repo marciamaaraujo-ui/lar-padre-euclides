@@ -95,10 +95,18 @@ function calcularSarcopenia(){
 }
 
 function calcularNRS(){
-    const n = getNum("nrsNutri"), g = getNum("nrsGrav"), i = getNum("idade") >= 70 ? 1 : 0;
-    const total = n + g + i;
+
+    const nutri = getNum("nrsNutri");
+    const grav = getNum("nrsGrav");
+    const idadeBonus = getNum("idade") >= 70 ? 1 : 0;
+
+    const total = nutri + grav + idadeBonus;
+
     if(getEl("nrsTotal")) getEl("nrsTotal").value = total;
-    if(getEl("classNRS")) getEl("classNRS").value = total >= 3 ? "Risco Nutricional" : "Sem Risco";
+
+    if(getEl("classNRS"))
+        getEl("classNRS").value = total >= 3 ? "Risco Nutricional" : "Sem Risco";
+
     return total;
 }
 
@@ -115,6 +123,31 @@ function calcularICN(){
     const nome = obterPacienteAtivo();
     const banco = obterBanco();
     if(!nome || !banco[nome]) return;
+
+    function calcularPerdaPeso(){
+
+    const pesoAnterior = getNum("pesoAnterior");
+    const pesoAtual = getNum("peso");
+
+    if(pesoAnterior <= 0 || pesoAtual <= 0) return;
+
+    const perda = ((pesoAnterior - pesoAtual) / pesoAnterior) * 100;
+
+    if(getEl("perdaPeso"))
+        getEl("perdaPeso").value = perda.toFixed(2);
+
+    let alerta = "Sem alerta";
+
+    if(perda >= 10)
+        alerta = "🚨 Perda grave";
+    else if(perda >= 5)
+        alerta = "⚠ Perda moderada";
+
+    if(getEl("alertaPerdaPeso"))
+        getEl("alertaPerdaPeso").value = alerta;
+
+    return perda;
+}
 
     let score = 0;
     const mna = parseFloat(getVal("mnaTotal")) || 0;
@@ -161,12 +194,21 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
-    calcularIMC(); calcularSarcopenia(); calcularNRS(); calcularICN();
+    calcularIMC(); 
+    calcularSarcopenia(); 
+    calcularNRS(); 
+    calcularICN();
+    calcularPerdaPeso();
     
     document.querySelectorAll("input, select").forEach(el => {
         el.addEventListener("input", () => { 
             if(el.id.startsWith("mna")) calcularMNA();
-            calcularIMC(); calcularSarcopenia(); calcularNRS(); calcularICN(); 
+            calcularIMC(); 
+            calcularSarcopenia(); 
+            calcularNRS(); 
+            calcularICN();
+            calcularPerdaPeso();
+            
         });
     });
 });
