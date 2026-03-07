@@ -10,6 +10,7 @@ function getNum(id){
     if(!el) return 0;
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
+
 /* ================= BANCO DE DADOS ================= */
 
 function obterBanco(){
@@ -23,7 +24,21 @@ function obterBanco(){
 function salvarBanco(banco){
     localStorage.setItem("bancoILPI", JSON.stringify(banco));
 }
+
+/* ================= CRIAR PACIENTE ================= */
+
+function criarPacienteSeNaoExistir(nome){
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {};
+        salvarBanco(banco);
+    }
+}
+
 /* ================= PACIENTE ATIVO ================= */
+
 function definirPacienteAtivo(nome){ localStorage.setItem("pacienteAtivoILPI", nome); }
 function obterPacienteAtivo(){ return localStorage.getItem("pacienteAtivoILPI"); }
 
@@ -62,6 +77,16 @@ function salvarRegistro() {
     };
 
     salvarBanco(banco);
+   
+    function criarPacienteSeNaoExistir(nome){
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {};
+        salvarBanco(banco);
+    }
+}
     definirPacienteAtivo(nomeInput);
     atualizarPacienteAtivoNavbar();
 
