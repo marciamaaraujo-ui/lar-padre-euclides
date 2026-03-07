@@ -36,6 +36,7 @@ function atualizarPacienteAtivoNavbar(){
 
 /* ================= SALVAR REGISTRO UNIFICADO ================= */
 function salvarRegistro() {
+
     const nomeInput = getVal("nome").trim().toUpperCase();
     if (!nomeInput) { alert("⚠️ Digite o nome do residente!"); return; }
 
@@ -43,8 +44,12 @@ function salvarRegistro() {
     if(btn) btn.innerHTML = "⏳ Salvando...";
     
     criarPacienteSeNaoExistir(nomeInput);
+    
     const banco = obterBanco();
 
+    if(!banco[nomeInput])
+        banco[nomeInput] = {};
+    
     banco[nomeInput].dadosBasicos = {
         dataNascimento: getVal("dataNascimento"),
         idade: getVal("idade"),
@@ -60,10 +65,12 @@ function salvarRegistro() {
     definirPacienteAtivo(nomeInput);
     atualizarPacienteAtivoNavbar();
 
-    setTimeout(() => {
-        btn.innerHTML = "✅ Salvo!";
-        setTimeout(() => btn.innerHTML = "💾 Salvar Registro", 2000);
-    }, 1000);
+    if(btn){
+        setTimeout(() => {
+            btn.innerHTML = "✅ Salvo!";
+            setTimeout(() => btn.innerHTML = "💾 Salvar Registro", 2000);
+        }, 1000);
+    }
 }
 
 /* ================= CÁLCULOS (IDADE, IMC, PERDA PESO, NRS, MNA, ICN) ================= */
@@ -136,8 +143,10 @@ function calcularPerdaPeso(){
 
     const perda = ((pesoHabitual - pesoAtual) / pesoHabitual) * 100;
 
+    const perdaAbs = Math.abs(perda);
+
     if(getEl("perdaPeso"))
-        getEl("perdaPeso").value = perda.toFixed(2);
+        getEl("perdaPeso").value = perdaAbs.toFixed(2);
 
     let alerta = "Sem alerta";
 
