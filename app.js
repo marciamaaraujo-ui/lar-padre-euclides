@@ -3,6 +3,7 @@
 /* ===================================================== */
 
 /* ================= UTILITÁRIOS ================= */
+    
 function getEl(id){ return document.getElementById(id); }
 function getVal(id){ const el = getEl(id); return el ? el.value : ""; }
 function getNum(id){
@@ -436,4 +437,42 @@ function salvarComorbidades() {
     salvarBanco(banco);
     const btn = document.querySelector('.btn-save');
     if(btn) { btn.innerHTML = "✅ Gravado!"; setTimeout(() => btn.innerHTML = "💾 Salvar", 2000); }
+}
+
+/* ================= FOTO DO RESIDENTE ================= */
+
+const fotoInput = getEl("fotoUpload");
+const fotoPreview = getEl("fotoPreview");
+
+if(fotoInput){
+
+    fotoInput.addEventListener("change", function(){
+
+        const arquivo = this.files[0];
+        if(!arquivo) return;
+
+        const leitor = new FileReader();
+
+        leitor.onload = function(e){
+
+            if(fotoPreview)
+                fotoPreview.src = e.target.result;
+
+            const nome = obterPacienteAtivo();
+            if(!nome) return;
+
+            const banco = obterBanco();
+
+            if(!banco[nome])
+                banco[nome] = {};
+
+            banco[nome].foto = e.target.result;
+
+            salvarBanco(banco);
+        };
+
+        leitor.readAsDataURL(arquivo);
+
+    });
+
 }
