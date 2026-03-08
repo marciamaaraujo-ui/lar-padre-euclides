@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
 <title>Comorbidades - ILPI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
 <style>
@@ -28,15 +30,11 @@ padding-bottom:8px;
 font-weight:600;
 }
 
-/* GRID ORGANIZADO */
-
 .checkbox-grid{
 display:grid;
 grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
 gap:14px 40px;
 }
-
-/* ALINHAMENTO PROFISSIONAL */
 
 .checkbox-item{
 display:flex;
@@ -56,75 +54,58 @@ cursor:pointer;
 cursor:pointer;
 }
 
-.obs-box{
-margin-top:35px;
-}
-
-textarea{
-width:100%;
-padding:12px;
-margin-top:10px;
-min-height:100px;
-font-size:14px;
-border-radius:6px;
-border:1px solid #dcdcdc;
-}
-
-select, input[type="text"]{
-padding:8px;
-margin-top:8px;
-border-radius:6px;
-border:1px solid #dcdcdc;
-width:250px;
-}
-
-.btn-save{
-margin-top:30px;
-padding:12px 30px;
-font-weight:bold;
-background:#2c3e50;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
-
-.btn-save:hover{
-background:#1a252f;
-}
-
 </style>
+
 </head>
 
 <body>
 
-  <!-- NAVBAR INSTITUCIONAL -->
-<header class="main-header">
-  <div class="nav-container">
-    
-    <div class="header-logo">
-      <img src="assets/logo.png" alt="Logo" class="nav-logo">
-      <div id="pacienteAtivoInfo" class="paciente-ativo">
-        👤 Nenhum paciente selecionado
-      </div>
-    </div>
+<!-- ================= NAVBAR ================= -->
 
-    <nav class="main-nav">
-      <a href="index.html">🏠 Início</a>
-      <a href="ficha-completa.html">📋 Avaliação</a>
-      <a href="exames-laboratoriais.html">🧪 Exames</a>
-      <a href="comorbidades.html">🏥 Comorbidades</a>
-      <a href="dashboard.html">📊 Dashboard</a>
-    </nav>
+<div class="navbar">
 
-    <div class="header-actions">
-      <div id="indicadorRisco" class="indicador-risco neutro">ICN: —</div>
-      <button class="btn-navbar" onclick="salvarRegistro()">💾 Salvar</button>
-    </div>
+<div class="nav-container">
 
-  </div>
-</header>
-  
+<div class="nav-left">
+
+<img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
+
+<div id="pacienteAtivoInfo" class="paciente-ativo">
+👤 Nenhum paciente selecionado
+</div>
+
+</div>
+
+
+<div class="nav-links">
+
+<a href="index.html">🏠 Início</a>
+<a href="ficha-completa.html">📋 Avaliação</a>
+<a href="exames-laboratoriais.html">🧪 Exames</a>
+<a href="comorbidades.html">🏥 Comorbidades</a>
+<a href="dashboard.html">📊 Dashboard</a>
+<a href="metodologia.html">📘 Metodologia</a>
+
+</div>
+
+
+<div class="nav-right">
+
+<div id="indicadorRisco" class="indicador-risco neutro">
+ICN: —
+</div>
+
+<button class="btn-navbar" onclick="salvarComorbidades()">
+💾 Salvar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <div class="container">
 
 <h1>Comorbidades Institucionais</h1>
@@ -134,7 +115,9 @@ background:#1a252f;
 <!-- ================= CARDIO ================= -->
 
 <div class="grupo">
+
 <h3>Doenças Cardiovasculares e Circulatórias</h3>
+
 <div class="checkbox-grid">
 
 <div class="checkbox-item"><input type="checkbox" id="has"><label for="has">Hipertensão Arterial (HAS)</label></div>
@@ -142,75 +125,141 @@ background:#1a252f;
 <div class="checkbox-item"><input type="checkbox" id="venosa"><label for="venosa">Insuficiência Venosa</label></div>
 <div class="checkbox-item"><input type="checkbox" id="arritmia"><label for="arritmia">Arritmia / Fibrilação Atrial</label></div>
 <div class="checkbox-item"><input type="checkbox" id="cardio"><label for="cardio">Cardiopatia</label></div>
-<div class="checkbox-item"><input type="checkbox" id="icc"><label for="icc">Insuficiência Cardíaca Crônica (ICC)</label></div>
+<div class="checkbox-item"><input type="checkbox" id="icc"><label for="icc">Insuficiência Cardíaca Crônica</label></div>
 <div class="checkbox-item"><input type="checkbox" id="trombose"><label for="trombose">Trombose / Tromboembolismo</label></div>
 <div class="checkbox-item"><input type="checkbox" id="ivp"><label for="ivp">Insuficiência Vascular Periférica</label></div>
 <div class="checkbox-item"><input type="checkbox" id="aneurisma"><label for="aneurisma">Aneurisma</label></div>
 
 </div>
+
 </div>
+
 
 <!-- ================= METABÓLICAS ================= -->
 
 <div class="grupo">
+
 <h3>Distúrbios Metabólicos e Endócrinos</h3>
+
 <div class="checkbox-grid">
 
-<div class="checkbox-item"><input type="checkbox" id="dm1"><label for="dm1">Diabetes Mellitus Tipo I</label></div>
-<div class="checkbox-item"><input type="checkbox" id="dm2"><label for="dm2">Diabetes Mellitus Tipo II</label></div>
-<div class="checkbox-item"><input type="checkbox" id="insulino"><label for="insulino">Insulino-dependente</label></div>
-<div class="checkbox-item"><input type="checkbox" id="hipot"><label for="hipot">Hipotireoidismo</label></div>
-<div class="checkbox-item"><input type="checkbox" id="obes"><label for="obes">Obesidade</label></div>
-<div class="checkbox-item"><input type="checkbox" id="hiperuri"><label for="hiperuri">Hiperuricemia</label></div>
+<div class="checkbox-item"><input type="checkbox" id="dm1"><label>Diabetes Mellitus Tipo I</label></div>
+<div class="checkbox-item"><input type="checkbox" id="dm2"><label>Diabetes Mellitus Tipo II</label></div>
+<div class="checkbox-item"><input type="checkbox" id="insulino"><label>Insulino-dependente</label></div>
+<div class="checkbox-item"><input type="checkbox" id="hipot"><label>Hipotireoidismo</label></div>
+<div class="checkbox-item"><input type="checkbox" id="obes"><label>Obesidade</label></div>
+<div class="checkbox-item"><input type="checkbox" id="hiperuri"><label>Hiperuricemia</label></div>
 
 </div>
+
 </div>
+
 
 <!-- ================= NEUROLÓGICAS ================= -->
 
 <div class="grupo">
+
 <h3>Doenças Neurológicas e Psiquiátricas</h3>
+
 <div class="checkbox-grid">
 
-<div class="checkbox-item"><input type="checkbox" id="alz"><label for="alz">Alzheimer</label></div>
-<div class="checkbox-item"><input type="checkbox" id="park"><label for="park">Parkinson</label></div>
-<div class="checkbox-item"><input type="checkbox" id="avc"><label for="avc">AVC / AVE</label></div>
-<div class="checkbox-item"><input type="checkbox" id="depressao"><label for="depressao">Depressão / TAB</label></div>
-<div class="checkbox-item"><input type="checkbox" id="ansiedade"><label for="ansiedade">Ansiedade</label></div>
-<div class="checkbox-item"><input type="checkbox" id="epilepsia"><label for="epilepsia">Epilepsia</label></div>
-<div class="checkbox-item"><input type="checkbox" id="esquiz"><label for="esquiz">Esquizofrenia</label></div>
-<div class="checkbox-item"><input type="checkbox" id="encef"><label for="encef">Encefalopatia</label></div>
-<div class="checkbox-item"><input type="checkbox" id="microangio"><label for="microangio">Microangiopatia</label></div>
-
-</div>
-</div>
-
-<!-- ================= CAMPOS MANUAIS ================= -->
-
-<div class="grupo obs-box">
-<h3>Observações Clínicas</h3>
-
-<label>Grau de Controle:</label><br>
-<select>
-<option>Selecionar</option>
-<option>Estável</option>
-<option>Descompensado</option>
-<option>Em investigação</option>
-</select>
-
-<textarea placeholder="Descrever histórico, intercorrências, medicamentos, evolução clínica..."></textarea>
-
-<label>CID (Opcional):</label><br>
-<input type="text" placeholder="Ex: I10, E11, G30...">
+<div class="checkbox-item"><input type="checkbox" id="alz"><label>Alzheimer</label></div>
+<div class="checkbox-item"><input type="checkbox" id="park"><label>Parkinson</label></div>
+<div class="checkbox-item"><input type="checkbox" id="avc"><label>AVC / AVE</label></div>
+<div class="checkbox-item"><input type="checkbox" id="depressao"><label>Depressão</label></div>
+<div class="checkbox-item"><input type="checkbox" id="ansiedade"><label>Ansiedade</label></div>
+<div class="checkbox-item"><input type="checkbox" id="epilepsia"><label>Epilepsia</label></div>
+<div class="checkbox-item"><input type="checkbox" id="esquiz"><label>Esquizofrenia</label></div>
+<div class="checkbox-item"><input type="checkbox" id="encef"><label>Encefalopatia</label></div>
+<div class="checkbox-item"><input type="checkbox" id="microangio"><label>Microangiopatia</label></div>
 
 </div>
 
-<button class="btn-save">💾 Salvar</button>
+</div>
 
 </form>
+
 </div>
 
-  <script src="app.js"></script>
+
+<script src="app.js"></script>
+
+<script>
+
+/* ================= SALVAR COMORBIDADES ================= */
+
+function salvarComorbidades(){
+
+const nome = localStorage.getItem("pacienteAtivo");
+
+if(!nome){
+alert("Selecione um paciente primeiro.");
+return;
+}
+
+const banco = obterBanco();
+
+if(!banco[nome]) banco[nome] = {};
+if(!banco[nome].comorbidades) banco[nome].comorbidades = [];
+
+const checks = document.querySelectorAll("#formComorbidades input[type='checkbox']");
+
+let lista = [];
+
+checks.forEach(c=>{
+if(c.checked){
+lista.push(c.labels[0].innerText);
+}
+});
+
+banco[nome].comorbidades = lista;
+
+salvarBanco(banco);
+
+alert("Comorbidades salvas com sucesso.");
+
+}
+
+
+/* ================= CARREGAR COMORBIDADES ================= */
+
+function carregarComorbidades(){
+
+const nome = localStorage.getItem("pacienteAtivo");
+
+if(!nome) return;
+
+const banco = obterBanco();
+
+if(!banco[nome]) return;
+
+const lista = banco[nome].comorbidades || [];
+
+const checks = document.querySelectorAll("#formComorbidades input[type='checkbox']");
+
+checks.forEach(c=>{
+
+const texto = c.labels[0].innerText;
+
+if(lista.includes(texto)){
+c.checked = true;
+}
+
+});
+
+}
+
+
+/* ================= INICIALIZAÇÃO ================= */
+
+document.addEventListener("DOMContentLoaded",function(){
+
+atualizarPacienteAtivoNavbar();
+carregarComorbidades();
+
+});
+
+</script>
 
 </body>
 </html>
