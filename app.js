@@ -1,5 +1,5 @@
 /* ===================================================== */
-/* SISTEMA NUTRICIONAL ILPI - VERSÃO FINAL ESTÁVEL       */
+/* SISTEMA NUTRICIONAL ILPI - VERSÃO ESTÁVEL COMPLETA    */
 /* ===================================================== */
 
 /* ================= UTILITÁRIOS ================= */
@@ -17,7 +17,7 @@ function getNum(id){
     return parseFloat((el.value || "").replace(",", ".")) || 0;
 }
 
-/* ================= BANCO DE DADOS ================= */
+/* ================= BANCO ================= */
 
 function obterBanco(){
     try{
@@ -31,20 +31,7 @@ function salvarBanco(banco){
     localStorage.setItem("bancoILPI", JSON.stringify(banco));
 }
 
-/* ================= CRIAR PACIENTE ================= */
-
-function criarPacienteSeNaoExistir(nome){
-
-    const banco = obterBanco();
-
-    if(!banco[nome]){
-        banco[nome] = {};
-        salvarBanco(banco);
-    }
-
-}
-
-/* ================= PACIENTE ATIVO ================= */
+/* ================= PACIENTE ================= */
 
 function definirPacienteAtivo(nome){
     localStorage.setItem("pacienteAtivoILPI", nome);
@@ -53,6 +40,23 @@ function definirPacienteAtivo(nome){
 function obterPacienteAtivo(){
     return localStorage.getItem("pacienteAtivoILPI");
 }
+
+function criarPacienteSeNaoExistir(nome){
+
+    const banco = obterBanco();
+
+    if(!banco[nome]){
+        banco[nome] = {
+            dadosBasicos:{},
+            avaliacoes:[],
+            comorbidades:[]
+        };
+        salvarBanco(banco);
+    }
+
+}
+
+/* ================= NAVBAR ================= */
 
 function atualizarPacienteAtivoNavbar(){
 
@@ -67,28 +71,38 @@ function atualizarPacienteAtivoNavbar(){
 
 }
 
+function atualizarIndicadorICN(){
+
+    const indicador = getEl("indicadorRisco");
+    if(!indicador) return;
+
+    const icn = getNum("icn");
+
+    indicador.innerText = icn ? `ICN: ${icn}` : "ICN: —";
+
+}
+
 /* ================= SALVAR REGISTRO ================= */
 
 function salvarRegistro(){
 
-    const nomeInput = getVal("nome").trim().toUpperCase();
+    let nome = getVal("nome").trim().toUpperCase();
 
-    if(!nomeInput){
-        alert("⚠️ Digite o nome do residente!");
-        return;
+    if(!nome){
+        const ativo = obterPacienteAtivo();
+        if(ativo){
+            nome = ativo;
+        }else{
+            alert("Digite o nome do residente.");
+            return;
+        }
     }
 
-    const btn = document.querySelector(".btn-navbar");
-    if(btn) btn.innerHTML = "⏳ Salvando...";
-
-    criarPacienteSeNaoExistir(nomeInput);
+    criarPacienteSeNaoExistir(nome);
 
     const banco = obterBanco();
 
-    if(!banco[nomeInput])
-        banco[nomeInput] = {};
-
-    banco[nomeInput].dadosBasicos = {
+    banco[nome].dadosBasicos = {
 
         dataNascimento:getVal("dataNascimento"),
         idade:getVal("idade"),
@@ -103,76 +117,32 @@ function salvarRegistro(){
 
     salvarBanco(banco);
 
-    definirPacienteAtivo(nomeInput);
+    definirPacienteAtivo(nome);
     atualizarPacienteAtivoNavbar();
 
-    if(btn){
-        setTimeout(()=>{
-            btn.innerHTML="✅ Salvo!";
-            setTimeout(()=>{
-                btn.innerHTML="💾 Salvar Registro";
-            },2000);
-        },1000);
-    }
+    alert("Registro salvo.");
 
 }
 
-/* ================= CALCULAR IDADE ================= */
+/* ================= IDADE ================= */
 
 function calcularIdade(){
 
-    const nascimento = getVal("dataNascimento");
-    if(!nascimento) return;
+    const nasc = getVal("dataNascimento");
+    if(!nasc) return;
 
     const hoje = new Date();
-    const nasc = new Date(nascimento);
+    const nascimento = new Date(nasc);
 
-    let idade = hoje.getFullYear() - nasc.getFullYear();
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
 
-    const mes = hoje.getMonth() - nasc.getMonth();
+    const mes = hoje.getMonth() - nascimento.getMonth();
 
-    if(mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())){
+    if(mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate()))
         idade--;
-    }
 
     if(getEl("idade"))
         getEl("idade").value = idade;
-
-}
-
-/* ================= ESCALA DE KATZ ================= */
-
-function calcularKatz(){
-
-    const campos=[
-        "katzBanho",
-        "katzVestir",
-        "katzHigiene",
-        "katzTransferencia",
-        "katzContinencia",
-        "katzAlimentacao"
-    ];
-
-    let total=0;
-
-    campos.forEach(id=>{
-        total+=parseInt(getVal(id))||0;
-    });
-
-    if(getEl("katzTotal"))
-        getEl("katzTotal").value=total;
-
-    let classe="";
-
-    if(total===6)
-        classe="Independente para todas as atividades básicas";
-    else if(total>=4)
-        classe="Dependência parcial";
-    else
-        classe="Dependência importante";
-
-    if(getEl("katzClassificacao"))
-        getEl("katzClassificacao").value=classe;
 
 }
 
@@ -180,105 +150,35 @@ function calcularKatz(){
 
 function calcularIMC(){
 
-    const peso=getNum("peso");
-    const altura=getNum("altura");
-    const idade=getNum("idade");
+    const peso = getNum("peso");
+    const altura = getNum("altura");
+    const idade = getNum("idade");
 
-    if(peso<=0 || altura<=0 || altura>3){
-        if(getEl("imc")) getEl("imc").value="";
-        if(getEl("classImc")) getEl("classImc").value="";
-        return;
-    }
+    if(peso<=0 || altura<=0) return;
 
-    const imc=peso/(altura*altura);
+    const imc = peso/(altura*altura);
 
     if(getEl("imc"))
-        getEl("imc").value=imc.toFixed(2);
+        getEl("imc").value = imc.toFixed(2);
 
     let classe="";
 
     if(idade>=60){
-        if(imc<22) classe="Baixo Peso (Idoso)";
-        else if(imc<=27) classe="Eutrofia (Idoso)";
-        else classe="Excesso de Peso (Idoso)";
-    }
-    else{
+
+        if(imc<22) classe="Baixo Peso";
+        else if(imc<=27) classe="Eutrofia";
+        else classe="Excesso de Peso";
+
+    }else{
+
         if(imc<18.5) classe="Baixo Peso";
         else if(imc<25) classe="Eutrofia";
         else classe="Sobrepeso";
+
     }
 
     if(getEl("classImc"))
-        getEl("classImc").value=classe;
-
-}
-
-/* ================= PERDA DE PESO ================= */
-
-function calcularPerdaPeso(){
-
-    const pesoHabitual=getNum("pesoHab");
-    const pesoAtual=getNum("peso");
-
-    if(pesoHabitual<=0 || pesoAtual<=0){
-        if(getEl("perdaPeso")) getEl("perdaPeso").value="";
-        if(getEl("alertaPerdaPeso")) getEl("alertaPerdaPeso").value="";
-        return;
-    }
-
-    const perda=((pesoHabitual-pesoAtual)/pesoHabitual)*100;
-    const perdaAbs=Math.abs(perda);
-
-    if(getEl("perdaPeso"))
-        getEl("perdaPeso").value=perdaAbs.toFixed(2);
-
-    let alerta="Sem alerta";
-
-    if(perda>=10)
-        alerta="🚨 Perda grave";
-    else if(perda>=5)
-        alerta="⚠ Perda moderada";
-
-    if(getEl("alertaPerdaPeso"))
-        getEl("alertaPerdaPeso").value=alerta;
-
-}
-
-/* ================= SARCOPENIA ================= */
-
-function calcularSarcopenia(){
-
-    const braco=getNum("circBraco");
-    const pant=getNum("circPanturrilha");
-
-    let res="Sem risco";
-
-    if((braco>0 && braco<22)||(pant>0 && pant<31))
-        res="Risco Sarcopênico";
-
-    if(getEl("scoreSarcopenia"))
-        getEl("scoreSarcopenia").value=res;
-
-}
-
-/* ================= NRS ================= */
-
-function calcularNRS(){
-
-    const nutri=getNum("nrsNutri");
-    const grav=getNum("nrsGrav");
-    const idadeBonus=getNum("idade")>=70?1:0;
-
-    const total=nutri+grav+idadeBonus;
-
-    if(getEl("nrsTotal"))
-        getEl("nrsTotal").value=total;
-
-    if(getEl("classNRS"))
-        getEl("classNRS").value=
-            total>=3
-            ?"Risco Nutricional"
-            :"Sem Risco";
+        getEl("classImc").value = classe;
 
 }
 
@@ -304,7 +204,7 @@ function calcularMNA(){
 
     let classe=
         total<17
-        ?"Desnutrido"
+        ?"Desnutrição"
         :total<24
         ?"Risco de Desnutrição"
         :"Estado Nutricional Normal";
@@ -314,21 +214,49 @@ function calcularMNA(){
 
 }
 
+/* ================= NRS ================= */
+
+function calcularNRS(){
+
+    const nutri=getNum("nrsNutri");
+    const grav=getNum("nrsGrav");
+    const idadeBonus=getNum("idade")>=70?1:0;
+
+    const total=nutri+grav+idadeBonus;
+
+    if(getEl("nrsTotal"))
+        getEl("nrsTotal").value=total;
+
+    if(getEl("classNRS"))
+        getEl("classNRS").value=
+            total>=3?"Risco Nutricional":"Sem Risco";
+
+}
+
+/* ================= SARCOPENIA ================= */
+
+function calcularSarcopenia(){
+
+    const braco=getNum("circBraco");
+    const pant=getNum("circPanturrilha");
+
+    let res="Sem risco";
+
+    if((braco>0 && braco<22)||(pant>0 && pant<31))
+        res="Risco Sarcopênico";
+
+    if(getEl("scoreSarcopenia"))
+        getEl("scoreSarcopenia").value=res;
+
+}
+
 /* ================= ICN ================= */
 
 function calcularICN(){
 
-    const nome=obterPacienteAtivo();
-    const banco=obterBanco();
-
-    if(!nome) return;
-
-    if(!banco[nome])
-        banco[nome]={};
-
     let score=0;
 
-    const mna=parseFloat(getVal("mnaTotal"))||0;
+    const mna=getNum("mnaTotal");
 
     if(mna<17) score+=3;
     else if(mna<24) score+=2;
@@ -336,7 +264,7 @@ function calcularICN(){
     if(getNum("nrsTotal")>=3)
         score+=2;
 
-    if((getEl("scoreSarcopenia")?.value||"").includes("Risco"))
+    if((getVal("scoreSarcopenia")||"").includes("Risco"))
         score+=1;
 
     if(getEl("icn"))
@@ -352,15 +280,50 @@ function calcularICN(){
     if(getEl("classICN"))
         getEl("classICN").value=classe;
 
-    banco[nome].icn={
-        score,
-        classificacao:classe,
-        data:new Date().toISOString()
+    atualizarIndicadorICN();
+
+}
+
+/* ================= SALVAR AVALIAÇÃO ================= */
+
+function salvarMNA(){
+
+    const nome = obterPacienteAtivo();
+
+    if(!nome){
+        alert("Selecione um residente primeiro.");
+        return;
+    }
+
+    const banco = obterBanco();
+
+    if(!banco[nome])
+        banco[nome]={avaliacoes:[]};
+
+    const registro={
+
+        data:new Date().toISOString(),
+
+        peso:getNum("peso"),
+        imc:getNum("imc"),
+        classImc:getVal("classImc"),
+
+        mna:getNum("mnaTotal"),
+        classMNA:getVal("classMNA"),
+
+        icn:getNum("icn"),
+        classICN:getVal("classICN")
+
     };
+
+    if(!banco[nome].avaliacoes)
+        banco[nome].avaliacoes=[];
+
+    banco[nome].avaliacoes.push(registro);
 
     salvarBanco(banco);
 
-    atualizarPainelAlertas();
+    alert("Avaliação salva com sucesso.");
 
 }
 
@@ -376,118 +339,45 @@ function atualizarPainelAlertas(){
     const imc=getNum("imc");
 
     if(getNum("idade")>=60 && imc>0 && imc<22)
-        alertas.push("⚠ IMC Baixo (Idoso)");
+        alertas.push("⚠ IMC baixo");
 
-    if(getEl("classICN") && getVal("classICN")==="Alto Risco")
-        alertas.push("🚨 ICN: ALTO RISCO");
+    if(getVal("classICN")==="Alto Risco")
+        alertas.push("🚨 ICN Alto Risco");
 
     if(getNum("nrsTotal")>=3)
         alertas.push("⚠ NRS ≥ 3");
 
     painel.innerHTML=
         alertas.length
-        ?alertas.map(a=>`<div class="alerta-item">${a}</div>`).join("")
+        ?alertas.map(a=>`<div>${a}</div>`).join("")
         :"✔ Sem alertas";
 
 }
 
-/* ================= FOTO DO RESIDENTE ================= */
-
-const fotoInput=getEl("fotoUpload");
-const fotoPreview=getEl("fotoPreview");
-
-if(fotoInput){
-
-    fotoInput.addEventListener("change",function(){
-
-        const arquivo=this.files[0];
-        if(!arquivo) return;
-
-        const leitor=new FileReader();
-
-        leitor.onload=function(e){
-
-            if(fotoPreview)
-                fotoPreview.src=e.target.result;
-
-            const nome=obterPacienteAtivo();
-            if(!nome) return;
-
-            const banco=obterBanco();
-
-            if(!banco[nome])
-                banco[nome]={};
-
-            banco[nome].foto=e.target.result;
-
-            salvarBanco(banco);
-
-        };
-
-        leitor.readAsDataURL(arquivo);
-
-    });
-
-}
-
-/* ================= EVENTO LOAD ================= */
+/* ================= LOAD ================= */
 
 document.addEventListener("DOMContentLoaded",function(){
 
     atualizarPacienteAtivoNavbar();
 
-    const nome=obterPacienteAtivo();
-    const banco=obterBanco();
-
-    if(nome && banco[nome]){
-
-        const p=banco[nome];
-
-        if(p.dadosBasicos){
-
-            Object.keys(p.dadosBasicos).forEach(k=>{
-                if(getEl(k))
-                    getEl(k).value=p.dadosBasicos[k];
-            });
-
-            if(getEl("nome"))
-                getEl("nome").value=nome;
-
-        }
-
-        if(p.comorbidades){
-            p.comorbidades.forEach(id=>{
-                if(getEl(id)) getEl(id).checked=true;
-            });
-        }
-
-        if(p.foto && getEl("fotoPreview"))
-            getEl("fotoPreview").src=p.foto;
-
-    }
-
     calcularIdade();
     calcularIMC();
     calcularSarcopenia();
     calcularNRS();
+    calcularMNA();
     calcularICN();
-    calcularPerdaPeso();
-    calcularKatz();
 
-    /* RECÁLCULO AUTOMÁTICO */
-
-    document.querySelectorAll("input, select").forEach(el=>{
+    document.querySelectorAll("input,select").forEach(el=>{
 
         el.addEventListener("input",()=>{
 
             calcularIdade();
             calcularIMC();
-            calcularPerdaPeso();
             calcularSarcopenia();
             calcularNRS();
             calcularMNA();
             calcularICN();
-            calcularKatz();
+            atualizarPainelAlertas();
 
         });
 
