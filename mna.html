@@ -1,132 +1,193 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MNA - Mini Avaliação Nutricional</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
+
 <div class="navbar">
-  <div class="nav-container">
 
-    <div class="nav-left">
-      <img src="assets/logo.png" class="nav-logo">
-      <div id="pacienteAtivoInfo" class="paciente-ativo">
-        👤 Nenhum paciente selecionado
-      </div>
-    </div>
+<div class="nav-container">
 
-    <div class="nav-links">
-      <a href="index.html">🏠 Início</a>
-      <a href="mna.html">🧠 MNA</a>
-      <a href="dashboard.html">📊 Dashboard</a>
-      <a href="metodologia.html">📘 Metodologia</a>
+<div class="nav-left">
 
-      <button class="btn-navbar" onclick="salvarMNA()">💾 Salvar MNA</button>
-    </div>
+<img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
 
-  </div>
+<div id="pacienteAtivoInfo" class="paciente-ativo">
+👤 Nenhum paciente selecionado
 </div>
+
+</div>
+
+
+<div class="nav-links">
+
+<a href="index.html">🏠 Início</a>
+<a href="mna.html">🧠 MNA</a>
+<a href="dashboard.html">📊 Dashboard</a>
+<a href="metodologia.html">📘 Metodologia</a>
+
+</div>
+
+
+<div class="nav-right">
+
+<button class="btn-navbar" onclick="salvarMNA()">
+💾 Salvar MNA
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <!-- ================= CONTAINER ================= -->
 
 <div class="container">
 
 <header>
-  <h1>Mini Avaliação Nutricional (MNA)</h1>
+<h1>Mini Avaliação Nutricional (MNA)</h1>
 </header>
+
 
 <form autocomplete="off">
 
+<!-- ================= TRIAGEM ================= -->
+
 <section class="secao">
+
 <h2>Triagem (A–F)</h2>
+
 
 <div class="form-group">
 <label>A – Ingesta alimentar</label>
+
 <select id="mnaA" onchange="calcularMNA(0)">
 <option value="0">Redução grave</option>
 <option value="1">Redução moderada</option>
 <option value="2">Sem redução</option>
 </select>
+
 </div>
 
+
 <div class="form-group">
+
 <label>B – Perda de peso nos últimos 3 meses</label>
+
 <select id="mnaB" onchange="calcularMNA(0)">
 <option value="0">Perda &gt;3 kg</option>
 <option value="1">Não sabe</option>
 <option value="2">Perda 1–3 kg</option>
 <option value="3">Sem perda</option>
 </select>
+
 </div>
 
+
 <div class="form-group">
+
 <label>C – Mobilidade</label>
+
 <select id="mnaC" onchange="calcularMNA(0)">
 <option value="0">Restrito ao leito</option>
 <option value="1">Deambula com ajuda</option>
 <option value="2">Independente</option>
 </select>
+
 </div>
 
+
 <div class="form-group">
+
 <label>D – Doença aguda recente</label>
+
 <select id="mnaD" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="2">Não</option>
 </select>
+
 </div>
 
+
 <div class="form-group">
+
 <label>E – Problemas neuropsicológicos</label>
+
 <select id="mnaE" onchange="calcularMNA(0)">
 <option value="0">Grave</option>
 <option value="1">Leve</option>
 <option value="2">Sem problema</option>
 </select>
+
 </div>
 
+
 <div class="form-group">
+
 <label>F – IMC (automático)</label>
+
 <input type="text" id="mnaF" readonly>
+
 </div>
 
 </section>
+
+
+<!-- ================= AVALIAÇÃO GLOBAL ================= -->
 
 <section class="secao">
 
 <h2>Avaliação Global (G–R)</h2>
 
+
 <div class="form-group">
 <label>G – Vive independentemente</label>
+
 <select id="mnaG" onchange="calcularMNA(0)">
 <option value="0">Não</option>
 <option value="1">Sim</option>
 </select>
 </div>
 
+
 <div class="form-group">
 <label>H – Toma &gt;3 medicamentos/dia</label>
+
 <select id="mnaH" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="1">Não</option>
 </select>
 </div>
 
+
 <div class="form-group">
 <label>I – Lesão ou úlcera de pele</label>
+
 <select id="mnaI" onchange="calcularMNA(0)">
 <option value="0">Sim</option>
 <option value="1">Não</option>
 </select>
 </div>
 
+
 <div class="form-group">
 <label>J – Número de refeições/dia</label>
+
 <select id="mnaJ" onchange="calcularMNA(0)">
 <option value="0">1 refeição</option>
 <option value="1">2 refeições</option>
@@ -134,8 +195,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>K – Consumo de proteína</label>
+
 <select id="mnaK" onchange="calcularMNA(0)">
 <option value="0">Baixo</option>
 <option value="1">Moderado</option>
@@ -143,16 +206,20 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>L – Consumo de frutas e vegetais</label>
+
 <select id="mnaL" onchange="calcularMNA(0)">
 <option value="0">Não</option>
 <option value="1">Sim</option>
 </select>
 </div>
 
+
 <div class="form-group">
 <label>M – Ingestão hídrica</label>
+
 <select id="mnaM" onchange="calcularMNA(0)">
 <option value="0">Pouco</option>
 <option value="1">Moderado</option>
@@ -160,8 +227,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>N – Autonomia alimentar</label>
+
 <select id="mnaN" onchange="calcularMNA(0)">
 <option value="0">Dependente</option>
 <option value="1">Necessita ajuda</option>
@@ -169,8 +238,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>O – Autoavaliação nutricional</label>
+
 <select id="mnaO" onchange="calcularMNA(0)">
 <option value="0">Pior</option>
 <option value="1">Não sabe</option>
@@ -178,8 +249,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>P – Autoavaliação saúde geral</label>
+
 <select id="mnaP" onchange="calcularMNA(0)">
 <option value="0">Pior</option>
 <option value="1">Igual</option>
@@ -187,8 +260,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>Q – Circunferência do braço</label>
+
 <select id="mnaQ" onchange="calcularMNA(0)">
 <option value="0">PB &lt;21 cm</option>
 <option value="0.5">PB 21–22 cm</option>
@@ -196,8 +271,10 @@
 </select>
 </div>
 
+
 <div class="form-group">
 <label>R – Circunferência da panturrilha</label>
+
 <select id="mnaR" onchange="calcularMNA(0)">
 <option value="0">PP &lt;31 cm</option>
 <option value="1">PP ≥31 cm</option>
@@ -206,30 +283,72 @@
 
 </section>
 
+
+<!-- ================= RESULTADO ================= -->
+
 <section class="secao">
+
 <h2>Resultado</h2>
-  
+
 <button type="button" onclick="salvarMNA()" class="btn-save">
 Salvar Avaliação MNA
 </button>
-  
-<div class="form-group">
-<label>Pontuação Total</label>
-<input type="text" id="mnaTotal" readonly>
-</div>
+
 
 <div class="form-group">
+
+<label>Pontuação Total</label>
+
+<input type="text" id="mnaTotal" readonly>
+
+</div>
+
+
+<div class="form-group">
+
 <label>Classificação</label>
+
 <input type="text" id="classMNA" readonly>
+
 </div>
 
 </section>
+
 
 </form>
 
 </div>
 
+
+
+<!-- ================= SCRIPT GLOBAL ================= -->
+
 <script src="app.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+if(typeof atualizarPacienteAtivoNavbar === "function"){
+    atualizarPacienteAtivoNavbar();
+}
+
+const imcCampo = document.getElementById("imc");
+const campoMNA = document.getElementById("mnaF");
+
+if(imcCampo && campoMNA){
+    campoMNA.value = imcCampo.value;
+}
+
+if(typeof calcularMNA === "function"){
+    calcularMNA(0);
+}
+
+});
+
+</script>
+
 
 </body>
 </html>
