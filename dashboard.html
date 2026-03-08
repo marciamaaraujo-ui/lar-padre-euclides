@@ -1,65 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Dashboard ILPI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
+
 <div class="navbar">
-  <div class="nav-container">
 
-    <div class="nav-left">
-      <img src="assets/logo.png" class="nav-logo">
+<div class="nav-container">
 
-      <div id="pacienteAtivoInfo" class="paciente-ativo">
-        👤 Nenhum paciente selecionado
-      </div>
-    </div>
+<div class="nav-left">
 
-    <div class="nav-links">
-      <a href="index.html">🏠 Início</a>
-      <a href="ficha-completa.html">📋 Avaliação Completa</a>
-      <a href="exames-laboratoriais.html">🧪 Exames</a>
-      <a href="comorbidades.html">🏥 Comorbidades</a>
-      <a href="dashboard.html">📊 Dashboard</a>
-      <a href="metodologia.html">📘 Metodologia</a>
+<img src="assets/logo.png" class="nav-logo" alt="Logo ILPI">
 
-      <div id="indicadorRisco" class="indicador-risco neutro">
-        ICN: —
-      </div>
-
-      <button class="btn-navbar" onclick="salvarRegistro()">💾 Salvar</button>
-    </div>
-
-  </div>
+<div id="pacienteAtivoInfo" class="paciente-ativo">
+👤 Nenhum paciente selecionado
 </div>
 
+</div>
+
+
+<div class="nav-links">
+
+<a href="index.html">🏠 Início</a>
+<a href="ficha-completa.html">📋 Avaliação Completa</a>
+<a href="exames-laboratoriais.html">🧪 Exames</a>
+<a href="comorbidades.html">🏥 Comorbidades</a>
+<a href="dashboard.html">📊 Dashboard</a>
+<a href="metodologia.html">📘 Metodologia</a>
+
+</div>
+
+
+<div class="nav-right">
+
+<div id="indicadorRisco" class="indicador-risco neutro">
+ICN: —
+</div>
+
+<button class="btn-navbar" onclick="salvarRegistro()">
+💾 Salvar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <!-- ================= CONTEÚDO ================= -->
+
 <div class="container">
 
 <h1>Painel Epidemiológico</h1>
 
 <section style="margin-top:40px;">
+
 <h3>Top 5 Comorbidades</h3>
+
 <canvas id="graficoComorb"></canvas>
+
+<div id="mensagemSemDados" style="margin-top:15px;color:#6b7280;"></div>
+
 </section>
 
 </div>
 
+
 <!-- ================= APP GLOBAL ================= -->
+
 <script src="app.js"></script>
 
+
 <!-- ================= SCRIPT DASHBOARD ================= -->
+
 <script>
+
+let graficoComorb = null;
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -68,58 +100,102 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
+
 function renderizarDashboard(){
 
     const banco = obterBanco();
+
+    const msg = document.getElementById("mensagemSemDados");
+
+    if(!banco || Object.keys(banco).length === 0){
+
+        if(msg){
+            msg.innerText = "Nenhum residente cadastrado no sistema.";
+        }
+
+        return;
+
+    }
+
     let contagem = {};
 
-    Object.keys(banco).forEach(nome => {
+    for(const nome in banco){
 
-        if(!banco[nome].comorbidades) return;
+        const dados = banco[nome];
 
-        banco[nome].comorbidades.forEach(c => {
+        if(!dados || !dados.comorbidades) continue;
+
+        dados.comorbidades.forEach(c => {
+
             contagem[c] = (contagem[c] || 0) + 1;
+
         });
-    });
+
+    }
 
     const top = Object.entries(contagem)
         .sort((a,b) => b[1] - a[1])
         .slice(0,5);
 
-    const ctx = document.getElementById("graficoComorb");
+    const ctx = document.getElementById("graficoComorb")?.getContext("2d");
 
     if(!ctx) return;
 
     if(top.length === 0){
-        ctx.parentElement.innerHTML += "<p style='margin-top:15px;'>Nenhum dado disponível.</p>";
+
+        if(msg){
+            msg.innerText = "Ainda não existem comorbidades registradas.";
+        }
+
         return;
+
     }
 
-    new Chart(ctx,{
+    if(graficoComorb){
+        graficoComorb.destroy();
+    }
+
+    graficoComorb = new Chart(ctx,{
+
         type:"bar",
+
         data:{
+
             labels: top.map(i => i[0]),
+
             datasets:[{
-                label:"Nº de Residentes",
+
+                label:"Número de Residentes",
+
                 data: top.map(i => i[1]),
+
                 backgroundColor:"#22c55e"
+
             }]
+
         },
+
         options:{
+
             responsive:true,
+
             plugins:{
                 legend:{ display:false }
             },
+
             scales:{
                 y:{
                     beginAtZero:true,
                     ticks:{ stepSize:1 }
                 }
             }
+
         }
+
     });
 
 }
+
 </script>
 
 </body>
